@@ -1,26 +1,30 @@
 ﻿using System;
 
-public class StoryBit
+namespace Floura.Core.Models
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string Text { get; set; }
-    public string Image { get; set; }
-    public int Order { get; set; }
-
-    public Guid StoryId { get; set; }
-    public Story Story { get; set; }
-
-    public StoryBit(string text, string image, int order)
+    public class StoryBits
     {
-        Text = text;
-        Image = image;
-        Order = order;
-    }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Text { get; set; }
+        public string Image { get; set; }
+        public int Order { get; set; }
 
-    public StoryBit() 
-    { 
+        public Guid StoryId { get; set; }
+        public Story Story { get; set; }
+
+    
+        public StoryBits(string text, string image, int order)
+        {
+            Text = text;
+            Image = image;
+            Order = order;
+        }
+
+        public StoryBits()
+        {
+
+        }
+
     }
 }
-
-
 

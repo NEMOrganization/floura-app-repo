@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Floura.Core.Interfaces;
+﻿using Floura.Core.Interfaces;
 using Floura.Core.Models;
 
 namespace Floura.Api.Repositories

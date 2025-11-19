@@ -1,33 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 
-public class Child
+namespace Floura.Core.Models
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string Name { get; set; }
-
-    private int _age;
-    public int Age
+    public class Child
     {
-        get => _age;
-        set
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Name { get; set; }
+        public int Age { get; set; }
+
+        public Guid UserId { get; set; }
+        public User User { get; set; } //der skal være en bruger tilknyttet barnet, ved ikke om det er korrekt
+
+
+        public Child(string name, int age)
         {
-            if (value < 2 || value > 5)
-                throw new ArgumentException("Child age must be between 2 and 5 years.");
-            _age = value;
+            Name = name;
+            Age = age;
         }
-    }
 
-    // Relation til User - skal være her fordi child tilhører en user
-    public Guid UserId { get; set; }
-    public User User { get; set; }
+        public Child()
+        {
 
-    public Child(string name, int age)
-    {
-        Name = name;
-        Age = age;
-    }
+        }
 
-    public Child()
-    {
     }
 }

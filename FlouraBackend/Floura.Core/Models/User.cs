@@ -1,22 +1,28 @@
 ﻿using System;
+using System.Collections.Generic;
 
-public class User
+namespace Floura.Core.Models
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string Email { get; set; }
-    public string PasswordHash { get; set; }
-    public List<Child> Children { get; set; } = new();
-    public Language Language { get; set; }
-
-    public User(string email, string passwordHash, Language language)
+    public class User
     {
-        Email = email;
-        PasswordHash = passwordHash;
-        Language = language;
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Email { get; set; }
+        public string PasswordHash { get; set; }
+        public List<Child> Children { get; set; } = new();
+        public Language Language { get; set; }
+
+
+        public User(string email, string passwordHash, Language language)
+        {
+            Email = email;
+            PasswordHash = passwordHash;
+            Language = language;
+        }
+
+        public User()
+        {
+
+        }
+
     }
-
-
-    public User()
-	{
-	}
 }

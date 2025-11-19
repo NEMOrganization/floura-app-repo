@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Floura.Core.Models;
 
-public class IStoryRepository
+namespace Floura.Core.Interfaces
 {
     public interface IStoryRepository
     {
@@ -14,5 +14,4 @@ public class IStoryRepository
 
         IEnumerable<Story> GetAll();
     }
-
 }

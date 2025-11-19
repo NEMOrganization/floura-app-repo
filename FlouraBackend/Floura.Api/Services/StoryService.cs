@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Floura.Core.Interfaces;
+using Floura.Core.Models;
+using Floura.Core.Models.Floura.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Floura.Core.Interfaces;
-using Floura.Core.Models;
 
-public class Class1
+namespace Floura.Core.Services
 {
     public class StoryService : IStoryService
     {
@@ -17,7 +18,6 @@ public class Class1
 
         public Story? Create(Story story)
         {
-         
             if (story == null)
                 throw new Exception("Story cannot be null.");
 
@@ -30,8 +30,9 @@ public class Class1
             if (!Enum.IsDefined(typeof(AgeRange), story.AgeRange))
                 throw new Exception("Invalid AgeRange.");
 
-            if (!story.CoverImage.EndsWith(".png") &&
-                !story.CoverImage.EndsWith(".jpg"))
+            if (string.IsNullOrWhiteSpace(story.CoverImage) ||
+               (!story.CoverImage.EndsWith(".png") &&
+                !story.CoverImage.EndsWith(".jpg")))
                 throw new Exception("CoverImage must be a PNG or JPG file.");
 
             story.StoryBits = story.StoryBits.OrderBy(b => b.Order).ToList();
