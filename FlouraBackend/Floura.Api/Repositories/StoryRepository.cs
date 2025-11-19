@@ -6,6 +6,7 @@ using Floura.Core.Models;
 
 namespace Floura.Api.Repositories
 {
+    // In-memory repository til test uden database lige nu, ved ikke om det er relevant
     public class StoryRepository : IStoryRepository
     {
         private readonly List<Story> _stories = new();
@@ -14,24 +15,32 @@ namespace Floura.Api.Repositories
         {
             // testdata 
             _stories.Add(new Story("En morgentur i dalen", "Morgentandbørstning historie", AgeRange.Age2To5, "billede1.png"));
-            _stories.Add(new Story("En tur ind i mørket", "Aften tandbørstning", AgeRange.Age6To8, "billede2.png"));
+            _stories.Add(new Story("En tur ind i mørket", "Aften tandbørstning", AgeRange.Age2To5, "billede2.png"));
         }
 
         public Story? Add(Story story)
         {
             if (story == null)
+                throw new ArgumentNullException("Story cannot be null");
+
+            try
+            {
+                if (story.Id == Guid.Empty)
+                    story.Id = Guid.NewGuid();
+
+                _stories.Add(story);
+                return story;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error adding story: " + ex.Message);
                 return null;
-
-            if (story.Id == Guid.Empty)
-                story.Id = Guid.NewGuid();
-
-            _stories.Add(story);
-            return story;
+            }
         }
 
         public IEnumerable<Story> GetAll()
         {
-            return _stories;
+            return new List<Story>(_stories); // returnere en kopi af listen
         }
 
         public Story? GetById(Guid id)
@@ -41,9 +50,9 @@ namespace Floura.Api.Repositories
 
         public Story? Update(Guid id, Story updatedStory)
         {
-            var existing = GetById(id);
+            Story? existing = GetById(id);
             if (existing == null)
-                return null;
+                throw new ArgumentException("No Id match");
 
             existing.Title = updatedStory.Title;
             existing.Summary = updatedStory.Summary;
@@ -56,12 +65,19 @@ namespace Floura.Api.Repositories
 
         public Story? RemoveById(Guid id)
         {
-            var story = GetById(id);
-            if (story == null)
-                return null;
+            try
+            {
+                Story? story = GetById(id);
+                if (story == null) return null;
 
-            _stories.Remove(story);
-            return story;
+                _stories.Remove(story);
+                return story;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error removing story: " + ex.Message);
+                return null;
+            }
         }
     }
 }
