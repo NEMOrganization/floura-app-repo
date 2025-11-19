@@ -1,10 +1,10 @@
-﻿using System;
+﻿//using System;
 
-namespace Floura.Tests
+//namespace Floura.Tests
 
-public class UserTests
-{
-	public UserTests()
-	{
-	}
-}
+//public class UserTests
+//{
+//	public UserTests()
+//	{
+//	}
+//}

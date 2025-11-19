@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\FlouraBackend\Floura.Api\Floura.Api.csproj" />
+    <ProjectReference Include="..\..\FlouraBackend\Floura.Core\Floura.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

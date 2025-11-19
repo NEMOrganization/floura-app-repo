@@ -1,7 +1,12 @@
 ﻿namespace Floura.Core
 {
-    public class Class1
+    public class Story
     {
+        public string Title { get; }
 
+        public Story(string title)
+        {
+            Title = title;
+        }
     }
 }
