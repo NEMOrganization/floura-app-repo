@@ -2,9 +2,9 @@ name: Backend CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, developer ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, developer ]
   workflow_dispatch: # <-- allows manual runs
 
 jobs:
@@ -39,6 +39,19 @@ jobs:
             nuget-${{ runner.os }}-
 
       # ----------------------------
+      # 3b. Cache build outputs
+      # ----------------------------
+      - name: Cache build outputs
+        uses: actions/cache@v4
+        with:
+          path: |
+            FlouraBackend/**/bin
+            FlouraBackend/**/obj
+          key: build-${{ runner.os }}-${{ hashFiles('FlouraBackend/**/*.csproj') }}
+          restore-keys: |
+            build-${{ runner.os }}-
+
+      # ----------------------------
       # 4. Restore dependencies
       # ----------------------------
       - name: Restore dependencies
@@ -59,29 +72,22 @@ jobs:
             /p:CollectCoverage=true /p:CoverletOutput=Tests/Floura.Tests/TestResults/coverage.xml /p:CoverletOutputFormat=cobertura
 
       # ----------------------------
-      # 7. Upload test results 
+      # 7. Upload test results (safe)
       # ----------------------------
       - name: Upload test results
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: backend-test-results
           path: Tests/Floura.Tests/TestResults/test_results.trx
 
       # ----------------------------
-      # 8. Upload coverage report
+      # 8. Upload coverage report (safe)
       # ----------------------------
       - name: Upload coverage report
+        if: ${{ akways() }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: Tests/Floura.Tests/TestResults/coverage.xml
 
-      # ----------------------------
-      # 9. Publish test results to GitHub UI
-      # ----------------------------
-      - name: Publish test results
-        uses: dorny/test-reporter@v1
-        with:
-          name: Backend Tests
-          path: Tests/Floura.Tests/TestResults/test_results.trx
-          reporter: trx
