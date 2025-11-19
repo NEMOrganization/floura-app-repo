@@ -10,6 +10,7 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30 # optinonal max runtime
 
     steps:
       # ----------------------------
@@ -50,10 +51,12 @@ jobs:
         run: dotnet build FlouraBackend/FlouraBackend.sln --no-restore
 
       # ----------------------------
-      # 6. Run tests + produce TRX
+      # 6. Run tests + coverage + TRX
       # ----------------------------
-      - name: Run tests 
-        run: dotnet test Tests/Floura.Tests/ --no-build --logger "trx;LogFileName=test_results.trx"
+      - name: Run tests with coverage
+        run: |
+          dotnet test Tests/Floura.Tests/ --no-build --logger "trx;LogFileName=test_results.trx" \
+            /p:CollectCoverage=true /p:CoverletOutput=Tests/Floura.Tests/TestResults/coverage.xml /p:CoverletOutputFormat=cobertura
 
       # ----------------------------
       # 7. Upload test results 
@@ -64,3 +67,21 @@ jobs:
           name: backend-test-results
           path: Tests/Floura.Tests/TestResults/test_results.trx
 
+      # ----------------------------
+      # 8. Upload coverage report
+      # ----------------------------
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: Tests/Floura.Tests/TestResults/coverage.xml
+
+      # ----------------------------
+      # 9. Publish test results to GitHub UI
+      # ----------------------------
+      - name: Publish test results
+        uses: dorny/test-reporter@v1
+        with:
+          name: Backend Tests
+          path: Tests/Floura.Tests/TestResults/test_results.trx
+          reporter: vstest
