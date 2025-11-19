@@ -85,7 +85,7 @@ jobs:
       # 8. Upload coverage report (safe)
       # ----------------------------
       - name: Upload coverage report
-        if: ${{ akways() }}
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
