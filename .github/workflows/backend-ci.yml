@@ -84,4 +84,4 @@ jobs:
         with:
           name: Backend Tests
           path: Tests/Floura.Tests/TestResults/test_results.trx
-          reporter: vstest
+          reporter: trx
