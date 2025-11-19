@@ -1,0 +1,65 @@
+name: Backend CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # ----------------------------
+      # 1. Checkout repository
+      # ----------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      # ----------------------------
+      # 2. Install .NET SDK
+      # ----------------------------
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # -----------------------------
+      # 3. Cache NuGet packages
+      # -----------------------------
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
+
+      # ----------------------------
+      # 4. Restore dependencies
+      # ----------------------------
+      - name: Restore dependencies
+        run: dotnet restore FlouraBackend/FlouraBackend.sln
+
+      # ----------------------------
+      # 5. Build the solution
+      # ----------------------------
+      - name: Build solution
+        run: dotnet build FlouraBackend/FlouraBackend.sln --no-restore
+
+      # ----------------------------
+      # 6. Run tests + produce TRX
+      # ----------------------------
+      - name: Run tests 
+        run: dotnet test Tests/Floura.Tests/ --no-build --logger "trx;LogFileName=test_results.trx"
+
+      # ----------------------------
+      # 7. Upload test results 
+      # ----------------------------
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: Tests/Floura.Tests/TestResults/test_results.trx
+
