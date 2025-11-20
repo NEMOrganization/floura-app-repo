@@ -4,53 +4,46 @@ using Floura.Core.Models.Enums;
 
 namespace Floura.Api.Repositories
 {
-    // In-memory repository til test uden database lige nu, ved ikke om det er relevant
+    // In-memory repository til test uden database lige nu
     public class StoryRepository : IStoryRepository
     {
         private readonly List<Story> _stories = new();
 
         public StoryRepository()
         {
-            // testdata 
+            // testdata
             _stories.Add(new Story("En morgentur i dalen", "Morgentandbørstning historie", AgeRange.Age2To5, "billede1.png"));
             _stories.Add(new Story("En tur ind i mørket", "Aften tandbørstning", AgeRange.Age2To5, "billede2.png"));
         }
 
-        public Story? Add(Story story)
+        public async Task<Story> AddAsync(Story story)
         {
             if (story == null)
                 throw new ArgumentNullException("Story cannot be null");
 
-            try
-            {
-                if (story.Id == Guid.Empty)
-                    story.Id = Guid.NewGuid();
+            if (story.Id == Guid.Empty)
+                story.Id = Guid.NewGuid();
 
-                _stories.Add(story);
-                return story;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error adding story: " + ex.Message);
-                return null;
-            }
+            _stories.Add(story);
+            return story;
         }
 
-        public IEnumerable<Story> GetAll()
+        public async Task<IEnumerable<Story>> GetAllAsync()
         {
-            return new List<Story>(_stories); // returnere en kopi af listen
+            return new List<Story>(_stories);
         }
 
-        public Story? GetById(Guid id)
+        public Task<Story?> GetByIdAsync(Guid id)
         {
-            return _stories.FirstOrDefault(s => s.Id == id);
+            Story? story = _stories.FirstOrDefault(s => s.Id == id);
+            return Task.FromResult(story);
         }
 
-        public Story? Update(Guid id, Story updatedStory)
+        public Task<Story?> UpdateAsync(Guid id, Story updatedStory)
         {
-            Story? existing = GetById(id);
+            Story? existing = _stories.FirstOrDefault(s => s.Id == id);
             if (existing == null)
-                throw new ArgumentException("No Id match");
+                return Task.FromResult<Story?>(null);
 
             existing.Title = updatedStory.Title;
             existing.Summary = updatedStory.Summary;
@@ -58,24 +51,17 @@ namespace Floura.Api.Repositories
             existing.AgeRange = updatedStory.AgeRange;
             existing.StoryBits = updatedStory.StoryBits;
 
-            return existing;
+            return Task.FromResult<Story?>(existing);
         }
 
-        public Story? RemoveById(Guid id)
+        public Task<bool> DeleteAsync(Guid id)
         {
-            try
-            {
-                Story? story = GetById(id);
-                if (story == null) return null;
+            Story? story = _stories.FirstOrDefault(s => s.Id == id);
+            if (story == null)
+                return Task.FromResult(false);
 
-                _stories.Remove(story);
-                return story;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error removing story: " + ex.Message);
-                return null;
-            }
+            _stories.Remove(story);
+            return Task.FromResult(true);
         }
     }
 }

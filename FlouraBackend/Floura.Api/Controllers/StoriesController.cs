@@ -9,7 +9,8 @@ namespace Floura.Api.Controllers
     [ApiController]
     public class StoriesController : ControllerBase
     {
-        private readonly IStoryService _storyService; // instans af storyService
+        private readonly IStoryService _storyService; 
+
 
         // Dependency Injection 
         public StoriesController(IStoryService storyService)

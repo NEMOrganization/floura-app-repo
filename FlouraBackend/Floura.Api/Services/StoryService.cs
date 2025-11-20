@@ -1,6 +1,5 @@
 ﻿using Floura.Core.Interfaces;
 using Floura.Core.Models;
-using Floura.Core.Models.Enums;
 
 namespace Floura.Core.Services
 {
@@ -13,77 +12,40 @@ namespace Floura.Core.Services
             _repository = repository;
         }
 
-        public Story? Create(Story story)
+        public async Task<Story?> CreateAsync(Story story)
         {
             if (story == null)
-                throw new ArgumentNullException(nameof(story), "Story cannot be null.");
+                throw new ArgumentNullException(nameof(story));
 
-            if (string.IsNullOrWhiteSpace(story.Title))
-                throw new ArgumentException("Title must not be empty.", nameof(story.Title));
-
-            if (story.Summary == null || story.Summary.Length < 10)
-                throw new ArgumentException("Summary must be at least 10 characters.", nameof(story.Summary));
-
-            if (!Enum.IsDefined(typeof(AgeRange), story.AgeRange))
-                throw new ArgumentException("Invalid AgeRange.", nameof(story.AgeRange));
-
-            if (string.IsNullOrWhiteSpace(story.CoverImage) ||
-               (!story.CoverImage.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
-                !story.CoverImage.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)))
-                throw new ArgumentException("CoverImage must be a PNG or JPG file.", nameof(story.CoverImage));
-
-            if (story.StoryBits != null)
-            {
-                story.StoryBits = story.StoryBits
-                    .OrderBy(b => b.Order)
-                    .ToList();
-            }
-
-            return _repository.Add(story);
+            return await _repository.AddAsync(story);
         }
 
-        public Story? GetById(Guid id)
+        public Task<Story?> GetByIdAsync(Guid id)
         {
-            return _repository.GetById(id);
+            return _repository.GetByIdAsync(id);
         }
 
-        public IEnumerable<Story> GetAll()
+        public Task<IEnumerable<Story>> GetAllAsync()
         {
-            return _repository.GetAll();
+            return _repository.GetAllAsync();
         }
 
-        public Story? Update(Guid id, Story updated)
+        public async Task<Story?> UpdateAsync(Guid id, Story story)
         {
-            var existing = _repository.GetById(id);
+            var existing = await _repository.GetByIdAsync(id);
             if (existing == null)
-                throw new KeyNotFoundException("Story not found.");
+                return null;
 
-            if (string.IsNullOrWhiteSpace(updated.Title))
-                throw new ArgumentException("Title must not be empty.", nameof(updated.Title));
-
-            if (updated.Summary == null || updated.Summary.Length < 10)
-                throw new ArgumentException("Summary must be at least 10 characters.", nameof(updated.Summary));
-
-            if (!Enum.IsDefined(typeof(AgeRange), updated.AgeRange))
-                throw new ArgumentException("Invalid AgeRange.", nameof(updated.AgeRange));
-
-            if (updated.StoryBits != null)
-            {
-                updated.StoryBits = updated.StoryBits
-                    .OrderBy(b => b.Order)
-                    .ToList();
-            }
-
-            return _repository.Update(id, updated);
+            return await _repository.UpdateAsync(id, story);
         }
 
-        public Story? Delete(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            var existing = _repository.GetById(id);
+            var existing = await _repository.GetByIdAsync(id);
             if (existing == null)
-                throw new KeyNotFoundException("Cannot delete. Story not found.");
+                return false;
 
-            return _repository.RemoveById(id);
+            return await _repository.DeleteAsync(id);
         }
     }
 }
