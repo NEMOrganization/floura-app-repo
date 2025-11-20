@@ -60,7 +60,25 @@ For detailed instructions, see [docs/backend-ci.md](docs/backend-ci.md).
 
 ## Testing Guidelines 
 
-*To be added.*
+# Floura.Tests
+
+## How to run tests
+- Open Test Explorer in Visual Studio
+- Click “Run All Tests”
+- Or use the CLI: dotnet test
+
+## Structure
+Tests are organized by layer:
+- Models/
+- Controllers/
+- Repositories/
+- Services/
+
+## Naming conventions
+- Class under test: Story
+- Test class: StoryTests.cs
+- Test method name: MethodName_Should_DoSomething()
+
 
 ## Known Issues / TODOs
 
