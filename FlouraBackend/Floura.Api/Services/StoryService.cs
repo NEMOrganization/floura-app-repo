@@ -1,9 +1,6 @@
 ﻿using Floura.Core.Interfaces;
 using Floura.Core.Models;
-using Floura.Core.Models.Floura.Core.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Floura.Core.Models.Enums;
 
 namespace Floura.Core.Services
 {
@@ -19,23 +16,28 @@ namespace Floura.Core.Services
         public Story? Create(Story story)
         {
             if (story == null)
-                throw new Exception("Story cannot be null.");
+                throw new ArgumentNullException(nameof(story), "Story cannot be null.");
 
             if (string.IsNullOrWhiteSpace(story.Title))
-                throw new Exception("Title must not be empty.");
+                throw new ArgumentException("Title must not be empty.", nameof(story.Title));
 
             if (story.Summary == null || story.Summary.Length < 10)
-                throw new Exception("Summary must be at least 10 characters.");
+                throw new ArgumentException("Summary must be at least 10 characters.", nameof(story.Summary));
 
             if (!Enum.IsDefined(typeof(AgeRange), story.AgeRange))
-                throw new Exception("Invalid AgeRange.");
+                throw new ArgumentException("Invalid AgeRange.", nameof(story.AgeRange));
 
             if (string.IsNullOrWhiteSpace(story.CoverImage) ||
-               (!story.CoverImage.EndsWith(".png") &&
-                !story.CoverImage.EndsWith(".jpg")))
-                throw new Exception("CoverImage must be a PNG or JPG file.");
+               (!story.CoverImage.EndsWith(".png", StringComparison.OrdinalIgnoreCase) &&
+                !story.CoverImage.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase)))
+                throw new ArgumentException("CoverImage must be a PNG or JPG file.", nameof(story.CoverImage));
 
-            story.StoryBits = story.StoryBits.OrderBy(b => b.Order).ToList();
+            if (story.StoryBits != null)
+            {
+                story.StoryBits = story.StoryBits
+                    .OrderBy(b => b.Order)
+                    .ToList();
+            }
 
             return _repository.Add(story);
         }
@@ -54,18 +56,23 @@ namespace Floura.Core.Services
         {
             var existing = _repository.GetById(id);
             if (existing == null)
-                throw new Exception("Story not found.");
+                throw new KeyNotFoundException("Story not found.");
 
             if (string.IsNullOrWhiteSpace(updated.Title))
-                throw new Exception("Title must not be empty.");
+                throw new ArgumentException("Title must not be empty.", nameof(updated.Title));
 
             if (updated.Summary == null || updated.Summary.Length < 10)
-                throw new Exception("Summary must be at least 10 characters.");
+                throw new ArgumentException("Summary must be at least 10 characters.", nameof(updated.Summary));
 
             if (!Enum.IsDefined(typeof(AgeRange), updated.AgeRange))
-                throw new Exception("Invalid AgeRange.");
+                throw new ArgumentException("Invalid AgeRange.", nameof(updated.AgeRange));
 
-            updated.StoryBits = updated.StoryBits.OrderBy(b => b.Order).ToList();
+            if (updated.StoryBits != null)
+            {
+                updated.StoryBits = updated.StoryBits
+                    .OrderBy(b => b.Order)
+                    .ToList();
+            }
 
             return _repository.Update(id, updated);
         }
@@ -74,7 +81,7 @@ namespace Floura.Core.Services
         {
             var existing = _repository.GetById(id);
             if (existing == null)
-                throw new Exception("Cannot delete. Story not found.");
+                throw new KeyNotFoundException("Cannot delete. Story not found.");
 
             return _repository.RemoveById(id);
         }

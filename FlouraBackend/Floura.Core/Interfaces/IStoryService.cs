@@ -4,10 +4,10 @@ namespace Floura.Core.Interfaces
 {
     public interface IStoryService
     {
-        Story? Create(Story story);
-        Story? GetById(Guid id);
-        IEnumerable<Story> GetAll();
-        Story? Update(Guid id, Story story);
-        Story? Delete(Guid id);
+        Task<Story?> CreateAsync(Story story);
+        Task<Story?> GetByIdAsync(Guid id);
+        Task<IEnumerable<Story>> GetAllAsync();
+        Task<Story?> UpdateAsync(Guid id, Story story);
+        Task<bool> DeleteAsync(Guid id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Floura.Core.Models.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace Floura.Core.Models

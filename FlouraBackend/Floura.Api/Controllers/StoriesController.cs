@@ -1,9 +1,7 @@
 ﻿using Floura.Core.Interfaces;
-using Floura.Core.Models;          
+using Floura.Core.Models;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-
-
 
 namespace Floura.Api.Controllers
 {
@@ -11,7 +9,7 @@ namespace Floura.Api.Controllers
     [ApiController]
     public class StoriesController : ControllerBase
     {
-        private readonly IStoryService _storyService;
+        private readonly IStoryService _storyService; // instans af storyService
 
         // Dependency Injection 
         public StoriesController(IStoryService storyService)
@@ -24,9 +22,9 @@ namespace Floura.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
         [EnableCors("MyAllowSpecificOrigins")]
-        public ActionResult<IEnumerable<Story>> GetAll()
+        public async Task<ActionResult<IEnumerable<Story>>> GetAll()
         {
-            IEnumerable<Story> stories = _storyService.GetAll();
+            var stories = await _storyService.GetAllAsync();
 
             if (!stories.Any())
             {
@@ -41,9 +39,9 @@ namespace Floura.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
         [EnableCors("MyAllowSpecificOrigins")]
-        public ActionResult<Story> Get(Guid id)
+        public async Task<ActionResult<Story>> Get(Guid id)
         {
-            Story? story = _storyService.GetById(id);
+            var story = await _storyService.GetByIdAsync(id);
 
             if (story == null)
             {
@@ -58,16 +56,21 @@ namespace Floura.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         [EnableCors("MyAllowSpecificOrigins")]
-        public ActionResult Post([FromBody] Story story)
+        public async Task<ActionResult<Story>> Post([FromBody] Story story)
         {
             if (story == null)
                 return BadRequest("Story object can't be null");
 
             try
             {
-                Story? newStory = _storyService.Create(story);
-                // Returnér 201 Created, ligesom du gør med fuglene
-                return Created("", newStory);
+                var newStory = await _storyService.CreateAsync(story);
+
+                // 201 Created + Location header
+                return CreatedAtAction(
+                    nameof(Get),
+                    new { id = newStory.Id },
+                    newStory
+                );
             }
             catch (Exception ex)
             {
@@ -81,11 +84,15 @@ namespace Floura.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id}")]
         [EnableCors("MyAllowSpecificOrigins")]
-        public ActionResult<Story> Put(Guid id, [FromBody] Story value)
+        public async Task<ActionResult<Story>> Put(Guid id, [FromBody] Story value)
         {
             try
             {
-                Story? updatedStory = _storyService.Update(id, value);
+                var updatedStory = await _storyService.UpdateAsync(id, value);
+
+                if (updatedStory == null)
+                    return NotFound("Story not found");
+
                 return Ok(updatedStory);
             }
             catch (Exception ex)
@@ -102,11 +109,15 @@ namespace Floura.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
         [EnableCors("MyAllowSpecificOrigins")]
-        public ActionResult<Story> Delete(Guid id)
+        public async Task<ActionResult<Story>> Delete(Guid id)
         {
             try
             {
-                Story? deleted = _storyService.Delete(id);
+                var deleted = await _storyService.DeleteAsync(id);
+
+                if (deleted == null)
+                    return NotFound("Story not found");
+
                 return Ok(deleted);
             }
             catch (Exception ex)

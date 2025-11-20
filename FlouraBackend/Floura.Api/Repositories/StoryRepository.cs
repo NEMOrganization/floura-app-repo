@@ -1,5 +1,6 @@
 ﻿using Floura.Core.Interfaces;
 using Floura.Core.Models;
+using Floura.Core.Models.Enums;
 
 namespace Floura.Api.Repositories
 {

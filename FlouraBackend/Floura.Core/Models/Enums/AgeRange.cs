@@ -1,4 +1,4 @@
-﻿namespace Floura.Core.Models
+﻿namespace Floura.Core.Models.Enums
 {
     public enum AgeRange
     {
