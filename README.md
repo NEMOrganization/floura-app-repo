@@ -5,7 +5,7 @@ This repository contains the Floura application, including the backend, tests an
 ## Project Structure 
 
 - **FlouraBackend/** - C# backend solution 
-	- `Floura.Api/` - API project
+	- `Floura.Api/` – ASP.NET Core Web API (controllers, Swagger, DI, CORS)
 	- `Floura.Core/` - Core logic
 	- `FlouraBackend.sln` - Solution file
 - **Tests/Floura.Tests/** - XUnit test project

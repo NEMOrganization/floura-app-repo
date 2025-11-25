@@ -12,13 +12,12 @@ namespace Floura.Api.Controllers
         private readonly IStoryService _storyService; 
 
 
-        // Dependency Injection 
+        
         public StoriesController(IStoryService storyService)
         {
             _storyService = storyService;
         }
 
-        // GET: api/Stories
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
@@ -35,7 +34,6 @@ namespace Floura.Api.Controllers
             return Ok(stories);
         }
 
-        // GET: api/Stories/{id}
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
@@ -52,7 +50,6 @@ namespace Floura.Api.Controllers
             return Ok(story);
         }
 
-        // POST: api/Stories
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
@@ -66,7 +63,6 @@ namespace Floura.Api.Controllers
             {
                 var newStory = await _storyService.CreateAsync(story);
 
-                // 201 Created + Location header
                 return CreatedAtAction(
                     nameof(Get),
                     new { id = newStory.Id },
@@ -75,12 +71,10 @@ namespace Floura.Api.Controllers
             }
             catch (Exception ex)
             {
-                // StoryService smider exceptions ved valideringsfejl
                 return BadRequest(ex.Message);
             }
         }
 
-        // PUT: api/Stories/{id}
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id}")]
@@ -105,7 +99,6 @@ namespace Floura.Api.Controllers
             }
         }
 
-        // DELETE: api/Stories/{id}
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id}")]
