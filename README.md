@@ -48,7 +48,7 @@ For detailed instructions, see [docs/backend-ci.md](docs/backend-ci.md).
 
 ## Architecture Overview 
 
-*To be added.*
+- See docs/architecture.md
 
 ## Database / Storage 
 
