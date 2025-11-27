@@ -15,7 +15,7 @@ This repository contains the Floura application, including the backend, tests an
 
 ## API Documentation
 
-The backend exposes a REST API for managing “Stories”, used by the Floura (TandbørsteApp) mobile application. Swagger provides interactive documentation and live testing of all endpoints.
+The backend exposes a REST API for managing “Stories”, used by the Floura mobile application. Swagger provides interactive documentation and live testing of all endpoints.
 
 ### Access Swagger UI
 When the backend is running locally, open:
