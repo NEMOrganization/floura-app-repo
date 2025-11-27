@@ -109,7 +109,7 @@ namespace Floura.Api.Controllers
             {
                 var deleted = await _storyService.DeleteAsync(id);
 
-                if (deleted == null)
+                if (!deleted)
                     return NotFound("Story not found");
 
                 return Ok(deleted);

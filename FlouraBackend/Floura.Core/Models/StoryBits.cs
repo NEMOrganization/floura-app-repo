@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Floura.Core.Models
 {
@@ -8,7 +9,7 @@ namespace Floura.Core.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public Guid Id { get; set; }
         [Required]
         public string Text { get; set; }
         [Required]
@@ -17,7 +18,8 @@ namespace Floura.Core.Models
         public int Order { get; set; }
 
         public Guid StoryId { get; set; }
-        public Story Story { get; set; }
+        [JsonIgnore]
+        public Story? Story { get; set; }
 
     
         public StoryBits(string text, string image, int order)

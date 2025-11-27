@@ -9,4 +9,6 @@ public class FlouraDbContext : DbContext
     }
 
     public DbSet<Story> Stories { get; set; }
+    public DbSet<StoryBits> StoryBits { get; set; }
+
 }

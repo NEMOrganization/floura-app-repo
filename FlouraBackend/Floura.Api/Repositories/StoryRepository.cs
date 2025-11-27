@@ -1,67 +1,73 @@
 ﻿using Floura.Core.Interfaces;
 using Floura.Core.Models;
-using Floura.Core.Models.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Floura.Api.Repositories
 {
-    // In-memory repository til test uden database lige nu
     public class StoryRepository : IStoryRepository
     {
-        private readonly List<Story> _stories = new();
+        private readonly FlouraDbContext _context;
 
-        public StoryRepository()
+        public StoryRepository(FlouraDbContext context)
         {
-            // testdata
-            _stories.Add(new Story("En morgentur i dalen", "Morgentandbørstning historie", AgeRange.Age2To5, "billede1.png"));
-            _stories.Add(new Story("En tur ind i mørket", "Aften tandbørstning", AgeRange.Age2To5, "billede2.png"));
+            _context = context;
+        }
+
+        public async Task<IEnumerable<Story>> GetAllAsync()
+        {
+            return await _context.Stories
+                .Include(s => s.StoryBits)
+                .ToListAsync();
+        }
+
+        public async Task<Story?> GetByIdAsync(Guid id)
+        {
+            return await _context.Stories
+                .Include(s => s.StoryBits)
+                .FirstOrDefaultAsync(s => s.Id == id);
         }
 
         public async Task<Story> AddAsync(Story story)
         {
             if (story == null)
-                throw new ArgumentNullException("Story cannot be null");
+                throw new ArgumentNullException(nameof(story));
 
             if (story.Id == Guid.Empty)
                 story.Id = Guid.NewGuid();
 
-            _stories.Add(story);
+            _context.Stories.Add(story);
+            await _context.SaveChangesAsync();
             return story;
         }
 
-        public async Task<IEnumerable<Story>> GetAllAsync()
+        public async Task<Story?> UpdateAsync(Guid id, Story story)
         {
-            return new List<Story>(_stories);
-        }
+            var existing = await _context.Stories
+                .Include(s => s.StoryBits)
+                .FirstOrDefaultAsync(s => s.Id == id);
 
-        public Task<Story?> GetByIdAsync(Guid id)
-        {
-            Story? story = _stories.FirstOrDefault(s => s.Id == id);
-            return Task.FromResult(story);
-        }
-
-        public Task<Story?> UpdateAsync(Guid id, Story updatedStory)
-        {
-            Story? existing = _stories.FirstOrDefault(s => s.Id == id);
             if (existing == null)
-                return Task.FromResult<Story?>(null);
+                return null;
 
-            existing.Title = updatedStory.Title;
-            existing.Summary = updatedStory.Summary;
-            existing.CoverImage = updatedStory.CoverImage;
-            existing.AgeRange = updatedStory.AgeRange;
-            existing.StoryBits = updatedStory.StoryBits;
+            existing.Title = story.Title;
+            existing.Summary = story.Summary;
+            existing.AgeRange = story.AgeRange;
+            existing.CoverImage = story.CoverImage;
+            existing.StoryBits = story.StoryBits;
 
-            return Task.FromResult<Story?>(existing);
+            await _context.SaveChangesAsync();
+            return existing;
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            Story? story = _stories.FirstOrDefault(s => s.Id == id);
-            if (story == null)
-                return Task.FromResult(false);
+            var existing = await _context.Stories.FindAsync(id);
+            if (existing == null)
+                return false;
 
-            _stories.Remove(story);
-            return Task.FromResult(true);
+            _context.Stories.Remove(existing);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

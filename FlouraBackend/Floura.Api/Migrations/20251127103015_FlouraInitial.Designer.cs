@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Floura.Api.Migrations
 {
     [DbContext(typeof(FlouraDbContext))]
-    [Migration("20251126115830_FlouraInitial")]
+    [Migration("20251127103015_FlouraInitial")]
     partial class FlouraInitial
     {
         /// <inheritdoc />
