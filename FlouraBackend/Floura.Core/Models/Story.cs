@@ -13,7 +13,7 @@ namespace Floura.Core.Models
         public Guid Id { get; set; }
 
         [Required]
-        public string Title { get; set; }
+        public required string Title { get; set; }
         [Required]
         [MinLength(10)]
         public required string Summary { get; set; }
