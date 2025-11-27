@@ -16,22 +16,14 @@ namespace Floura.Core.Models
         public string Title { get; set; }
         [Required]
         [MinLength(10)]
-        public string Summary { get; set; }
+        public required string Summary { get; set; }
         [Required]
-        public string CoverImage { get; set; }
+        public required string CoverImage { get; set; }
         [Required]
         public AgeRange AgeRange { get; set; }
 
         public List<StoryBits> StoryBits { get; set; } = new();
         
-
-        public Story(string title, string summary, AgeRange ageRange, string coverImage)
-        {
-            Title = title;
-            Summary = summary;
-            AgeRange = ageRange;
-            CoverImage = coverImage;
-        }
 
         public Story()
         {

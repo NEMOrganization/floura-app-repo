@@ -11,23 +11,15 @@ namespace Floura.Core.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         [Required]
-        public string Text { get; set; }
+        public required string Text { get; set; }
         [Required]
-        public string Image { get; set; }
+        public required string Image { get; set; }
         [Required]
         public int Order { get; set; }
 
         public Guid StoryId { get; set; }
         [JsonIgnore]
         public Story? Story { get; set; }
-
-    
-        public StoryBits(string text, string image, int order)
-        {
-            Text = text;
-            Image = image;
-            Order = order;
-        }
 
         public StoryBits()
         {
