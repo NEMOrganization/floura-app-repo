@@ -48,3 +48,26 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## ESLint & Prettier
+
+This project uses ESLint and Prettier to ensure code quality and consistent formatting.
+
+### Running locally
+
+- Lint your code:
+```bash
+npm run lint
+```
+
+## Useful Scripts
+
+| Script                  | Description |
+|-------------------------|-------------|
+| `npm expo start`        | Starts Expo app |
+| `npm run lint`          | Runs ESLint to check code |
+| `npm run lint:fix`      | Auto-fixes lint issues |
+| `npm run format`        | Formats code using Prettier |
+| `npm run reset-project` | Resets app to fresh project state |
+
+
