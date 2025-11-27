@@ -1,0 +1,23 @@
+[
+    {
+        "id": "1",
+        "title": "Flouras første eventyr",
+        "summary": "Følg Floura på hendes første eventyr i den magiske skov.",
+        "coverImageUrl": "https://example.com/images/floura_adventure.jpg",
+        "storyBits": [
+            {
+                "id": "1.1",
+                "content": "Floura vågnede op til en solrig morgen i den magiske skov...",
+                "imageUrl": "",
+                "order": 1
+            },
+            {
+                "id": "1.2",
+                "content": "Hun besluttede sig for at udforske de ukendte stier...",
+                "imageUrl": "",
+                "order": 2
+            }
+        ],
+        "ageRange": "2-5 år"
+    }
+]
