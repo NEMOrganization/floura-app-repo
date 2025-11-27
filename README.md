@@ -76,6 +76,17 @@ The backend CI workflow is implemented using GitHub Actions to ensure code build
 
 For detailed instructions, see [docs/backend-ci.md](docs/backend-ci.md).
 
+## Frontend CI / Workflow
+The frontend CI workflow is implemented using GitHub Actions to ensure code builds and tests pass before merging into `main`.
+
+- **Automatic triggers**:
+	- Push to `main` or developer branches 
+	- Pull requests to `main`
+- **Manual runs**: Manual runs are not configurated yet
+- **Branch protection**: PRs cannot be merged into `main` unless the workflow passes and required approvals are given. 
+
+For detailed instructions, see [docs/frontend-ci.md](docs/frontend-ci.md).
+
 ## Contribution Guidelines 
 
 - Use feature branches based off `developer`.
@@ -101,7 +112,7 @@ For detailed instructions, see [docs/backend-ci.md](docs/backend-ci.md).
 
 ## How to run tests
 - Open Test Explorer in Visual Studio
-- Click “Run All Tests”
+- Click ï¿½Run All Testsï¿½
 - Or use the CLI: dotnet test
 
 ## Structure

@@ -1,0 +1,33 @@
+name: Frontend CI
+
+on:
+  pull_request:
+    paths:
+      - "FlouraFrontend/FlouraMobileApp/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "FlouraFrontend/FlouraMobileApp/**"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: FlouraFrontend/FlouraMobileApp
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Use Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
