@@ -5,13 +5,50 @@ This repository contains the Floura application, including the backend, tests an
 ## Project Structure 
 
 - **FlouraBackend/** - C# backend solution 
-	- `Floura.Api/` - API project
+	- `Floura.Api/` – ASP.NET Core Web API (controllers, Swagger, DI, CORS)
 	- `Floura.Core/` - Core logic
 	- `FlouraBackend.sln` - Solution file
 - **Tests/Floura.Tests/** - XUnit test project
 - **.github/workflows/** - GitHub Actions workflows
 
 ## Getting Started 
+
+## API Documentation
+
+The backend exposes a REST API for managing “Stories”, used by the Floura mobile application. Swagger provides interactive documentation and live testing of all endpoints.
+
+### Access Swagger UI
+When the backend is running locally, open:
+http://localhost:<port>/swagger
+
+
+### Story Endpoints (CRUD)
+
+Base URL:
+/api/Stories
+
+#### GET /api/Stories
+Returns all stories.  
+200 OK
+
+#### GET /api/Stories/{id}
+Returns a single story by Guid.  
+200 OK  
+404 Not Found
+
+#### POST /api/Stories
+Creates a new story.
+
+Example body:
+```json
+{
+  "title": "Test story",
+  "summary": "This is a test story.",
+  "coverImage": "billede1.png",
+  "ageRange": 0,
+  "storyBits": []
+}
+
 
 ### Using terminal
 ```bash 
