@@ -12,7 +12,7 @@ namespace Floura.Core.Services
             _repository = repository;
         }
 
-        public async Task<Story?> CreateAsync(Story story)
+        public async Task<Story> CreateAsync(Story story)
         {
             if (story == null)
                 throw new ArgumentNullException(nameof(story));
