@@ -98,7 +98,13 @@ jobs:
         run: dotnet publish FlouraBackend/FlouraBackend.sln -c Release -o FlouraBackend/bin/Release/net8.0/publish
 
       # ----------------------------
-      # 10. Login to Azure with Service Principal
+      # 9b. Debug: list publish folder
+      # ----------------------------
+      - name: List publish folder contents
+        run: ls -R FlouraBackend/bin/Release/net8.0/publish
+
+      # ----------------------------
+      # 10. Azure Login
       # ----------------------------
       - name: Azure Login
         uses: azure/login@v1
