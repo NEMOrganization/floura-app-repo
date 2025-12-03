@@ -49,7 +49,7 @@
   },
   "overrides": [
   {
-    "files": ["*.spec.js", "*.test.js"],
+    "files": ["*.spec.js", "*.test.js", "*.spec.tsx", "*.test.tsx", "*.spec.ts", "*.test.ts"],
     "env": {
       "jest": true
     }
