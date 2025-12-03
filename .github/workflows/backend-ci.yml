@@ -98,12 +98,18 @@ jobs:
         run: dotnet publish FlouraBackend/FlouraBackend.sln -c Release -o FlouraBackend/bin/Release/net8.0/publish
 
       # ----------------------------
-      # 10. Deploy to Azure Web App via Service Principal
+      # 10. Login to Azure with Service Principal
+      # ----------------------------
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # ----------------------------
+      # 10b. Deploy to Azure Web App via Service Principal
       # ----------------------------
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'floura-backend-api'   
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AZURE_CREDENTIALS }} 
           package: 'FlouraBackend/bin/Release/net8.0/publish'
