@@ -373,17 +373,94 @@ public class StoryServiceUnitTest
     {
         // Arrange
         var storyId = Guid.NewGuid();
-
-        var existingStory = new Story
+        var exsintingStory = new Story
         {
             Id = storyId,
-            Title = "Old Title",
-            Summary = "Old summary",
-            CoverImage = "old.jpg",
+            Title = "New Title",
+            Summary = "New summary",
+            CoverImage = "new.jpg",
             AgeRange = Core.Models.Enums.AgeRange.Age2To5
         };
 
-        var updatedStory = new Story
+        _mockStoryRepository
+            .Setup(repo => repo.GetByIdAsync(storyId))
+            .ReturnsAsync(exsintingStory);
+
+        _mockStoryRepository
+            .Setup(repo => repo.UpdateAsync(storyId, exsintingStory))
+            .ThrowsAsync(new InvalidOperationException("error"));
+
+        var service = new StoryService(_mockStoryRepository.Object);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            service.UpdateAsync(storyId, exsintingStory));
+
+        _mockStoryRepository.Verify(repo => repo.GetByIdAsync(storyId), Times.Once);
+        _mockStoryRepository.Verify(repo => repo.UpdateAsync(storyId, exsintingStory), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldDeleteAndReturnTrue_WhenStoryExists()
+    {
+       // Arrange
+        var storyId = Guid.NewGuid();
+        var exsintingStory = new Story
+        {
+            Id = storyId,
+            Title = "New Title",
+            Summary = "New summary",
+            CoverImage = "new.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+        };
+
+        _mockStoryRepository
+            .Setup(repo => repo.GetByIdAsync(storyId))
+            .ReturnsAsync(exsintingStory);
+
+        _mockStoryRepository
+            .Setup(repo => repo.DeleteAsync(storyId))
+            .ReturnsAsync(true);
+
+        var service = new StoryService(_mockStoryRepository.Object);
+
+        // Act
+        var result = await service.DeleteAsync(storyId);
+
+
+        // Assert
+        Assert.True(result);
+        _mockStoryRepository.Verify(repo => repo.DeleteAsync(storyId), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldReturnFalse_WhenStoryDoesNotExist()
+    {
+        // Arrange 
+        var storyId = Guid.NewGuid();
+
+        _mockStoryRepository
+            .Setup(repo => repo.GetByIdAsync(storyId))
+            .ReturnsAsync((Story?)null);
+   
+        var service = new StoryService (_mockStoryRepository.Object);
+
+        // Act 
+        var result = await service.DeleteAsync(storyId);
+
+        // Assert
+        Assert.False(result);
+        _mockStoryRepository.Verify(repo => repo.GetByIdAsync(storyId), Times.Once);
+        _mockStoryRepository.Verify(repo => repo.DeleteAsync(It.IsAny<Guid>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ShouldPropagateException_WhenDeleteAsyncThrows()
+    {
+        
+        // Arrange
+        var storyId = Guid.NewGuid();
+        var existingStory = new Story
         {
             Id = storyId,
             Title = "New Title",
@@ -397,22 +474,15 @@ public class StoryServiceUnitTest
             .ReturnsAsync(existingStory);
 
         _mockStoryRepository
-            .Setup(repo => repo.UpdateAsync(storyId, updatedStory))
-            .ThrowsAsync(new InvalidOperationException("error"));
+            .Setup(repo => repo.DeleteAsync(storyId))
+            .ThrowsAsync(new InvalidOperationException("error Delete"));
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
-
-        // Act & Assert 
-        await Assert.ThrowsAsync<InvalidOperationException>(() =>
-            storyService.UpdateAsync(storyId, updatedStory));
+        var service = new StoryService(_mockStoryRepository.Object);
+        
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.DeleteAsync(storyId));
 
         _mockStoryRepository.Verify(repo => repo.GetByIdAsync(storyId), Times.Once);
-
-        _mockStoryRepository.Verify(
-            repo => repo.UpdateAsync(storyId, updatedStory),
-            Times.Once
-        );
+        _mockStoryRepository.Verify(repo => repo.DeleteAsync(storyId), Times.Once);
     }
 }
-
-
