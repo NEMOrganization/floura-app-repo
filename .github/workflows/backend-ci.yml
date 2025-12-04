@@ -101,7 +101,7 @@ jobs:
       # 9b. Debug: list publish folder
       # ----------------------------
       - name: List publish folder contents
-        run: ls -R FlouraBackend/bin/Release/net8.0/publish
+        run: ls -R publish
 
       # ----------------------------
       # 10. Azure Login
