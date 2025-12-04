@@ -3,6 +3,7 @@ using Floura.Core.Models;
 using Floura.Core.Services;
 using Moq;
 using System.Collections.Generic;
+using System.Reflection.PortableExecutable;
 using Xunit.Sdk;
 namespace Floura.Tests;
 
@@ -261,9 +262,111 @@ public class StoryServiceUnitTest
 
         _mockStoryRepository.Verify(repo => repo.GetAllAsync(), Times.Once);
     }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldUpdateAndReturnStory_WhenStoryExists()
+    {
+        // Arrange
+        var storyId = Guid.NewGuid();
+
+        var existingStory = new Story
+        {
+            Id = storyId,
+            Title = "Old Title",
+            Summary = "Old summary",
+            CoverImage = "old.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+        };
+
+        var updatedStory = new Story
+        {
+            Id = storyId,
+            Title = "New Title",
+            Summary = "New summary",
+            CoverImage = "new.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+        };
+
+        _mockStoryRepository
+            .Setup(repo => repo.GetByIdAsync(storyId))
+            .ReturnsAsync(existingStory);
+
+        _mockStoryRepository
+            .Setup(repo => repo.UpdateAsync(storyId, updatedStory))
+            .ReturnsAsync(updatedStory);
+
+        var storyService = new StoryService(_mockStoryRepository.Object);
+
+        // Act
+        var result = await storyService.UpdateAsync(storyId, updatedStory);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(updatedStory, result);
+
+        _mockStoryRepository.Verify(repo => repo.GetByIdAsync(storyId), Times.Once);
+        _mockStoryRepository.Verify(repo => repo.UpdateAsync(storyId, updatedStory), Times.Once);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldReturnNull_WhenStoryDoesNotExist()
+    {
+        // Arrange
+        var storyId = Guid.NewGuid();
+
+        var updatedStory = new Story
+        {
+            Id = storyId,
+            Title = "New Title",
+            Summary = "New summary",
+            CoverImage = "new.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+        };
+        _mockStoryRepository
+            .Setup(repo => repo.GetByIdAsync(storyId))
+            .ReturnsAsync((Story?)null);
+
+        var storyService = new StoryService(_mockStoryRepository.Object);
+
+        // Act
+        var result = await storyService.UpdateAsync(storyId, updatedStory);
+
+        // Assert
+        Assert.Null(result); 
+
+        _mockStoryRepository.Verify(repo => repo.GetByIdAsync(storyId), Times.Once);
+        _mockStoryRepository.Verify(repo => repo.UpdateAsync(It.IsAny<Guid>(), It.IsAny<Story>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ShouldPropagateException_WhenGetByIdAsyncThrows()
+    {
+        // Arrange
+        var storyId = Guid.NewGuid();
+        var updatedStory = new Story
+        {
+            Id = storyId,
+            Title = "New Title",
+            Summary = "New summary",
+            CoverImage = "new.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+        };
+
+        _mockStoryRepository
+            .Setup(repo => repo.GetByIdAsync(storyId))
+            .ThrowsAsync(new InvalidOperationException("error"));
+
+        var storyService = new StoryService(_mockStoryRepository.Object);
+
+        // Act & Assert
+        await Assert.ThrowsAsync<InvalidOperationException>(() =>
+            storyService.UpdateAsync(storyId, updatedStory)
+        );
+
+        // Ensure UpdateAsync was NEVER called since GetByIdAsync failed
+        _mockStoryRepository.Verify(
+            repo => repo.UpdateAsync(It.IsAny<Guid>(), It.IsAny<Story>()),
+            Times.Never
+        );
+    }
 }
-
-
-
-
-
