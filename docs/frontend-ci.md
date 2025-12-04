@@ -49,3 +49,21 @@ This document describes the frontend CI workflow for the Floura project.
 - **Lint errors**: run `npm run lint` locally to see the same errors. Use `npm run lint:fix` to auto-fix fixable issues.  
 - **Dependencies missing**: ensure `npm install` completed successfully and `package-lock.json` is up-to-date.  
 - **Workflow fails unexpectedly**: check logs in GitHub Actions for the exact failing step.
+
+## Jest
+**To be added**: 
+
+## React Native Testing Framework
+- **Run Test**: 
+npm test
+
+- **Write Test**: 
+Placement: FlouraFrontend/FlouraMobileApp/FrontendTests
+
+describe('component name')
+it (test name: 'test do ... when ...') 
+expect('when you do this).'we expect this'()
+**Tilføj mere om selve testen**:
+
+- **Troubleshooting**:
+If error message says 'Binding element 'fx. name' implicitly has an 'any' type --> You need to define an props interface. 
