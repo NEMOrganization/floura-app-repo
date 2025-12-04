@@ -95,7 +95,7 @@ jobs:
       # 9. Publish API for deploy
       # ----------------------------
       - name: Publish API
-        run: dotnet publish FlouraBackend/FlouraBackend.sln -c Release -o FlouraBackend/bin/Release/net8.0/publish
+        run: dotnet publish FlouraBackend/Floura.Api/Floura.Api.csproj -c Release -o publish
 
       # ----------------------------
       # 9b. Debug: list publish folder
@@ -117,5 +117,5 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'floura-backend-api'   
-          package: 'FlouraBackend/bin/Release/net8.0/publish'
+          app-name: 'floura-backend-api-eaemh0bvduhvfzad'   
+          package: 'publish'
