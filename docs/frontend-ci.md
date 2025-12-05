@@ -57,13 +57,33 @@ This document describes the frontend CI workflow for the Floura project.
 - **Run Test**: 
 npm test
 
+- **Placement**:
+FlouraFrontend/FlouraMobileApp/FrontendTests
+
+-**Naming convention**:
+"componentName".spec.tsx
+
+test name: 'what the test does ... when ...'
+
 - **Write Test**: 
-Placement: FlouraFrontend/FlouraMobileApp/FrontendTests
+Arrange, act and assert
 
 describe('component name')
 it (test name: 'test do ... when ...') 
 expect('when you do this).'we expect this'()
-**Tilføj mere om selve testen**:
 
 - **Troubleshooting**:
 If error message says 'Binding element 'fx. name' implicitly has an 'any' type --> You need to define an props interface. 
+
+- **Usefull tools and tips**:
+RNTL queries: 
+   getByText("click me") - finds the text
+   getByRole("button") - finds the element via role
+   *getByA11yLabel("...") - finds the element via accessibilityLabel => we dont use this one, but getByRole instead
+   getByTestId("...") - finds the element via testID-prop 
+
+Simulats user action:
+   fireEvent.press(element)
+   fireEvent.changeText(input, "..the new text..")
+
+
