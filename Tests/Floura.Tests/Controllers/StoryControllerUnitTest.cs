@@ -1,7 +1,6 @@
 ﻿using Floura.Api.Controllers;
 using Floura.Core.Interfaces;
 using Floura.Core.Models;
-using Floura.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -82,6 +81,107 @@ namespace Floura.Tests.Controllers
             Assert.Equal("The list is empty", notFoundResult.Value);
             _mockstoryService.Verify(controller => controller.GetAllAsync(), Times.Once);
         }
-        
+
+        [Fact]
+        public async Task Get_ReturnsOK_WhenStoryExists()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+            var newStory = new Story
+            {
+                Id = storyId,
+                Title = "Test Story",
+                Summary = "This is a test story.",
+                CoverImage = "http://example.com/image.jpg",
+                AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
+
+            _mockstoryService
+                .Setup(service => service.GetByIdAsync(storyId))
+                .ReturnsAsync(newStory);
+
+            var storyController = new StoriesController(_mockstoryService.Object);
+
+            // Act 
+            var result = await storyController.Get(storyId);
+
+            // Assert 
+            Assert.NotNull(result);
+            _mockstoryService.Verify(controller => controller.GetByIdAsync(storyId), Times.Once);
+
+        }
+
+
+        [Fact]
+        public async Task Get_ReturnsNotFound_WhenStoryDoesNotExistById()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+
+            _mockstoryService
+                .Setup(service => service.GetByIdAsync(storyId))
+                .ReturnsAsync((Story?)null);
+
+            var storyController = new StoriesController(_mockstoryService.Object);
+
+            // Act 
+            var result = await storyController.Get(storyId);
+
+            // Assert 
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.Equal("The id does not exist", notFoundResult.Value);
+            _mockstoryService.Verify(service => service.GetByIdAsync(storyId), Times.Once );
+            
+        }
+        [Fact]
+        public async Task Post_ReturnsBadRequest_WhenStoryIsNull()
+        {
+            // Arrange
+            Story? nullStory = null;
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act
+            var result = await controller.Post(nullStory);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("Story object can't be null", badRequestResult.Value);
+            _mockstoryService.Verify(service => service.CreateAsync(It.IsAny<Story>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Post_ReturnsCreated_WhenStoryIsValid()
+        {
+            // Arrange 
+            var storyId = Guid.NewGuid();
+            var story = new Story
+            {
+               Id = storyId,
+               Title = "Test Story 123",
+               Summary = "This is a test story.",
+               CoverImage = "http://example.com/image1.jpg",
+               AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
+
+            _mockstoryService
+                .Setup(service => service.CreateAsync(story))
+                .ReturnsAsync(story);
+
+            var storyController = new StoriesController(_mockstoryService.Object);
+
+            // Act
+            var result = await storyController.Post(story);
+
+
+            // Assert
+            var createdResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            var returnedStory = Assert.IsType<Story>(createdResult.Value);
+
+            Assert.Equal(storyId, returnedStory.Id);
+            _mockstoryService.Verify(service => service.CreateAsync(story), Times.Once);
+        }
+
+
     }
 }
+    
