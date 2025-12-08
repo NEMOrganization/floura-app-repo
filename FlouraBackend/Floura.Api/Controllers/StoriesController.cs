@@ -11,8 +11,6 @@ namespace Floura.Api.Controllers
     {
         private readonly IStoryService _storyService; 
 
-
-        
         public StoriesController(IStoryService storyService)
         {
             _storyService = storyService;

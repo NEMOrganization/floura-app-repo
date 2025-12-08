@@ -1,9 +1,7 @@
-﻿using Castle.Components.DictionaryAdapter.Xml;
-using Floura.Api.Controllers;
+﻿using Floura.Api.Controllers;
 using Floura.Core.Interfaces;
 using Floura.Core.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Moq;
 
 namespace Floura.Tests.Controllers
@@ -11,7 +9,6 @@ namespace Floura.Tests.Controllers
     public class StoryControllerUnitTest
     {
         private readonly Mock<IStoryService> _mockstoryService;
-        private readonly StoriesController? _storyController;
 
         public StoryControllerUnitTest()
         {
@@ -64,7 +61,7 @@ namespace Floura.Tests.Controllers
         }
 
         [Fact]
-        public async Task GetAll_ReturnsOK_WhenStoriesDoesNotExist()
+        public async Task GetAll_ReturnsOK_WhenStoriesDoesExist()
         {
             // Arrange
             var emptyList = new List<Story>();
@@ -243,6 +240,183 @@ namespace Floura.Tests.Controllers
 
             Assert.Equal(updatedStory.Id, story.Id);
             _mockstoryService.Verify(service => service.UpdateAsync(storyId, updatedStory), Times.Once);
+
+        }
+        [Fact]
+        public async Task Put_ReturnsNotFound_WhenStoryDoesNotExist()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+            var existingStory = new Story
+            {
+                Id = storyId,
+                Title = "New Title",
+                Summary = "New summary",
+                CoverImage = "new.jpg",
+                AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
+
+            _mockstoryService
+                .Setup(service => service.UpdateAsync(storyId, existingStory))
+                .ReturnsAsync((Story?)null);
+
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act
+            var result = await controller.Put(storyId, existingStory);
+
+            // Assert 
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.Equal("Story not found", notFoundResult.Value);
+            _mockstoryService.Verify(service => service.UpdateAsync(storyId, existingStory), Times.Once);
+        }
+        
+        [Fact]
+        public async Task Put_ReturnsNotFound_WhenServiceThrowsNotFoundException()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+            var newStory = new Story
+            {
+                Id = storyId,
+                Title = "Test Story",
+                Summary = "This is a test story.",
+                CoverImage = "http://example.com/image.jpg",
+                AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
+
+            _mockstoryService
+                .Setup(service => service.UpdateAsync(storyId, newStory))
+                .ThrowsAsync(new InvalidOperationException("Story not found"));
+
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act
+
+            var result = await controller.Put(storyId, newStory);
+
+            // Assert
+            var notFound = Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.Equal("Story not found", notFound.Value);
+            _mockstoryService.Verify(service => service.UpdateAsync(storyId, newStory), Times.Once);
+        }
+
+
+        [Fact]
+        public async Task Put_ReturnsBadRequest_WhenServiceThrowsOtherException()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+            var newStory = new Story
+            {
+                Id = storyId,
+                Title = "Test Story",
+                Summary = "This is a test story.",
+                CoverImage = "http://example.com/image.jpg",
+                AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
+
+            _mockstoryService
+                .Setup(service => service.UpdateAsync(storyId, newStory))
+                .ThrowsAsync(new InvalidOperationException("something went wrong"));
+
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act
+
+            var result = await controller.Put(storyId, newStory);
+
+            // Assert
+            var BadRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("something went wrong", BadRequest.Value);
+
+            _mockstoryService.Verify(service => service.UpdateAsync(storyId, newStory), Times.Once);
+        }
+
+        [Fact]
+        public async Task Delete_ReturnsOK_WhenDeletionSucceeds()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+            var story = new Story
+            {
+                Id = storyId,
+                Title = "Test Story",
+                Summary = "This is a test story.",
+                CoverImage = "http://example.com/image.jpg",
+                AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
+
+            _mockstoryService
+                .Setup(service => service.DeleteAsync(storyId))
+                .ReturnsAsync(true);
+
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act
+            var result = await controller.Delete(storyId);
+
+            // Assert
+            var ok = Assert.IsType<OkObjectResult>(result.Result);
+            Assert.True((bool)ok.Value);
+            _mockstoryService.Verify(service => service.DeleteAsync(storyId), Times.Once);
+
+        }
+        [Fact]
+        public async Task Delete_ReturnsNotFound_WhenDeletionFails()
+        {
+            // Arrange 
+            var storyId = Guid.NewGuid();
+
+            _mockstoryService
+                .Setup(service => service.DeleteAsync(storyId))
+                .ReturnsAsync(false); 
+
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act
+            var result = await controller.Delete(storyId);
+
+            // Assert
+            var notFound = Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.Equal("Story not found", notFound.Value);
+            _mockstoryService.Verify(service => service.DeleteAsync(storyId), Times.Once);
+        }
+
+
+
+        [Fact]
+        public async Task Delete_ReturnsNotFound_WhenServiceThrowsNotFoundException()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+            var story = new Story
+            {
+                Id = storyId,
+                Title = "Test Story",
+                Summary = "This is a test story.",
+                CoverImage = "http://example.com/image.jpg",
+                AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
+
+            _mockstoryService
+                 .Setup(service => service.DeleteAsync(storyId))
+                 .ThrowsAsync(new InvalidOperationException("Story not found"));
+
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act 
+            var result = await controller.Delete(storyId);
+
+            // Assert
+            var notFound = Assert.IsType<NotFoundObjectResult>(result.Result);
+            Assert.Equal("Story not found", notFound.Value);
+            _mockstoryService.Verify(service => service.DeleteAsync(storyId), Times.Once);
+
+        }
+        [Fact]
+        public async Task Delete_ReturnsBadRequest_WhenServiceThrowsOtherException()
+        {
 
         }
     }
