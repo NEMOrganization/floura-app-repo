@@ -2,9 +2,6 @@
 using Floura.Core.Models;
 using Floura.Core.Services;
 using Moq;
-using System.Collections.Generic;
-using System.Reflection.PortableExecutable;
-using Xunit.Sdk;
 namespace Floura.Tests;
 
 public class StoryServiceUnitTest
