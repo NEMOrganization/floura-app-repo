@@ -2,6 +2,9 @@
 using Floura.Core.Models;
 using Floura.Core.Services;
 using Moq;
+using System.Collections.Generic;
+using System.Reflection.PortableExecutable;
+using Xunit.Sdk;
 namespace Floura.Tests;
 
 public class StoryServiceUnitTest
@@ -59,9 +62,10 @@ public class StoryServiceUnitTest
     public async Task CreateAsync_ShouldPropagateException_WhenRepositoryThrows()
     {
         // Arrange
+        var storyId = Guid.NewGuid();
         var newStory = new Story
         {
-            Id = Guid.NewGuid(),
+            Id = storyId,
             Title = "Test Story",
             Summary = "This is a test story.",
             CoverImage = "http://example.com/image.jpg",
@@ -104,7 +108,7 @@ public class StoryServiceUnitTest
 
         // Assert 
         Assert.NotNull(result);
-        Assert.Equal(existingStory.Id, result.Id);
+        Assert.Equal(existingStory.Id, result.Id); 
         Assert.Equal(existingStory.Title, result.Title);
         _mockStoryRepository.Verify(repo => repo.GetByIdAsync(storyId), Times.Once);
 

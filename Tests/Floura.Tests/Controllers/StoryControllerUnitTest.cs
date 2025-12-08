@@ -1,7 +1,9 @@
-﻿using Floura.Api.Controllers;
+﻿using Castle.Components.DictionaryAdapter.Xml;
+using Floura.Api.Controllers;
 using Floura.Core.Interfaces;
 using Floura.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Moq;
 
 namespace Floura.Tests.Controllers
@@ -9,7 +11,7 @@ namespace Floura.Tests.Controllers
     public class StoryControllerUnitTest
     {
         private readonly Mock<IStoryService> _mockstoryService;
-        private readonly StoriesController _storyController;
+        private readonly StoriesController? _storyController;
 
         public StoryControllerUnitTest()
         {
@@ -181,7 +183,67 @@ namespace Floura.Tests.Controllers
             _mockstoryService.Verify(service => service.CreateAsync(story), Times.Once);
         }
 
+        [Fact]
+        public async Task Post_ReturnsBadRequest_WhenServiceThrowsException()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+            var newStory = new Story
+            {
+                Id = storyId,
+                Title = "Test Story",
+                Summary = "This is a test story.",
+                CoverImage = "http://example.com/image.jpg",
+                AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
 
+            _mockstoryService
+                .Setup(service => service.CreateAsync(newStory))
+                .ThrowsAsync(new InvalidOperationException("something went wrong"));
+
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act 
+            var result = await controller.Post(newStory);
+
+            // Assert 
+           var BadRequest = Assert.IsType<BadRequestObjectResult>(result.Result);
+            Assert.Equal("something went wrong", BadRequest.Value);
+
+            _mockstoryService.Verify(service => service.CreateAsync(newStory), Times.Once);
+        }
+
+        [Fact]
+        public async Task Put_ReturnsOK_WhenUpdateSucceeds()
+        {
+            // Arrange
+            var storyId = Guid.NewGuid();
+            var updatedStory = new Story
+            {
+                Id = storyId,
+                Title = "New Title",
+                Summary = "New summary",
+                CoverImage = "new.jpg",
+                AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            };
+
+            _mockstoryService
+                .Setup(service => service.UpdateAsync(storyId, updatedStory))
+                .ReturnsAsync(updatedStory);
+
+            var controller = new StoriesController(_mockstoryService.Object);
+
+            // Act 
+            var result = await controller.Put(storyId, updatedStory);
+
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var story = Assert.IsType<Story>(okResult.Value);
+
+            Assert.Equal(updatedStory.Id, story.Id);
+            _mockstoryService.Verify(service => service.UpdateAsync(storyId, updatedStory), Times.Once);
+
+        }
     }
 }
-    
