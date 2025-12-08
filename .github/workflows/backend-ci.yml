@@ -91,3 +91,10 @@ jobs:
           name: coverage-report
           path: Tests/Floura.Tests/TestResults/coverage.xml
 
+     # ----------------------------
+     # 9. environment varibles (safe)
+     # ----------------------------
+     env:
+       ConnectionStrings__DefaultConnection: ${{ secrets.DB_CONNECTION_STRING }}
+
+

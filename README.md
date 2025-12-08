@@ -104,7 +104,14 @@ For detailed instructions, see [docs/frontend-ci.md](docs/frontend-ci.md).
 
 ## Envronment Variables / Configuration 
 
-*To be added.*
+- Make a GitHub Secret: GitHub --> Repository --> Settings --> Secrets and variables --> Actions --> New repository secret
+- Add ONE secret pr variable 
+- Naming convention: eks. "API_URL" or "DB_Connection_String"
+
+- Update workflow: .github/workflows/backend-ci.yml or frontend-ci.yml
+	env: 
+	API_URL: ${{ secrets.API_URL }}
+	Connctionstring: ${{ secrets.DB_Connection_String }}
 
 ## Testing Guidelines 
 
