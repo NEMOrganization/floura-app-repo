@@ -94,7 +94,8 @@ jobs:
      # ----------------------------
      # 9. environment varibles (safe)
      # ----------------------------
-     env:
-       ConnectionStrings__DefaultConnection: ${{ secrets.DB_CONNECTION_STRING }}
+        env:
+        ConnectionStrings__DefaultConnection: ${{ secrets.DB_CONNECTION_STRING }}
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
 

@@ -5,7 +5,7 @@ This repository contains the Floura application, including the backend, tests an
 ## Project Structure 
 
 - **FlouraBackend/** - C# backend solution 
-	- `Floura.Api/` – ASP.NET Core Web API (controllers, Swagger, DI, CORS)
+	- `Floura.Api/` ï¿½ ASP.NET Core Web API (controllers, Swagger, DI, CORS)
 	- `Floura.Core/` - Core logic
 	- `FlouraBackend.sln` - Solution file
 - **Tests/Floura.Tests/** - XUnit test project
@@ -15,7 +15,7 @@ This repository contains the Floura application, including the backend, tests an
 
 ## API Documentation
 
-The backend exposes a REST API for managing “Stories”, used by the Floura mobile application. Swagger provides interactive documentation and live testing of all endpoints.
+The backend exposes a REST API for managing ï¿½Storiesï¿½, used by the Floura mobile application. Swagger provides interactive documentation and live testing of all endpoints.
 
 ### Access Swagger UI
 When the backend is running locally, open:
@@ -109,9 +109,17 @@ For detailed instructions, see [docs/frontend-ci.md](docs/frontend-ci.md).
 - Naming convention: eks. "API_URL" or "DB_Connection_String"
 
 - Update workflow: .github/workflows/backend-ci.yml or frontend-ci.yml
+	eksampel:
 	env: 
 	API_URL: ${{ secrets.API_URL }}
 	Connctionstring: ${{ secrets.DB_Connection_String }}
+
+- We don't have anything in frontend-ci.yml, since it doesn't containe any secrets
+- .env is for credentials which isn't secret, like our API_URL. 
+
+-* what do we have i backend-ci.yml: 
+	- ConnectionString
+	- Azure Credentials  
 
 ## Testing Guidelines 
 
