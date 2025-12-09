@@ -2,13 +2,20 @@
 using Floura.Core.Interfaces;
 using Floura.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+
+builder.Host.UseSerilog((context, services, configuration) => {
+    configuration
+        .WriteTo.Console()
+        .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day);
+});
+
 builder.Logging.AddDebug();
-builder.Logging.AddFile("logs/floura-backend-api-{Date}.txt");
+
 
 builder.Services.AddDbContext<FlouraDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
