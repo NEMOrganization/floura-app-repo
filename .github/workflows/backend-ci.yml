@@ -91,11 +91,13 @@ jobs:
           name: coverage-report
           path: Tests/Floura.Tests/TestResults/coverage.xml
 
-     # ----------------------------
-     # 9. environment varibles (safe)
-     # ----------------------------
+      # ----------------------------
+      # 9. environment variables (safe)
+      # ----------------------------
+      - name: Set environment variables
         env:
-        ConnectionStrings__DefaultConnection: ${{ secrets.DB_CONNECTION_STRING }}
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          ConnectionStrings__DefaultConnection: ${{ secrets.DB_CONNECTION_STRING }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+        run: echo "Environment variables configured"
 
 
