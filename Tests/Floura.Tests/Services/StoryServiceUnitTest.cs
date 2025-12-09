@@ -20,10 +20,11 @@ public class StoryServiceUnitTest
     [Fact]
     public async Task CreateAsync_ShouldCreateStory_Successfully()
     {
-        // Arrange 
+        // Arrange
+        var storyId = Guid.NewGuid();
         var newStory = new Story
         {
-            Id = Guid.NewGuid(),
+            Id = storyId,
             Title = "Test Story",
             Summary = "This is a test story.",
             CoverImage = "http://example.com/image.jpg",
