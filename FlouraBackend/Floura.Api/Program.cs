@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
+builder.Logging.AddFile("logs/floura-backend-api-{Date}.txt");
 
 builder.Services.AddDbContext<FlouraDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -31,6 +32,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseDeveloperExceptionPage();
 
 if (app.Environment.IsDevelopment())
 {
