@@ -3,6 +3,9 @@ using Floura.Core.Interfaces;
 using Floura.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole;
+using Serilog.Sinks.File;
 
 var builder = WebApplication.CreateBuilder(args);
 
