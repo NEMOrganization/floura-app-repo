@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 builder.Services.AddDbContext<FlouraDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -40,4 +44,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+try{
+    app.Run();
+}
+
+catch (Exception ex)
+{
+    Console.WriteLine($"Application failed to start: {ex}");
+    throw;
+}
