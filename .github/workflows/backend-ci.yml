@@ -92,6 +92,7 @@ jobs:
           path: Tests/Floura.Tests/TestResults/coverage.xml
 
       # ----------------------------
+<<<<<<< HEAD
       # 9. Publish API for deploy
       # ----------------------------
       - name: Publish API (Windows)
@@ -124,3 +125,14 @@ jobs:
         with:
           app-name: 'floura-backend-api'   
           package: 'FlouraBackend/publish'
+=======
+      # 9. environment variables (safe)
+      # ----------------------------
+      - name: Set environment variables
+        env:
+          ConnectionStrings__DefaultConnection: ${{ secrets.DB_CONNECTION_STRING }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+        run: echo "Environment variables configured"
+
+
+>>>>>>> main
