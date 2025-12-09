@@ -94,14 +94,19 @@ jobs:
       # ----------------------------
       # 9. Publish API for deploy
       # ----------------------------
-      - name: Publish API
-        run: dotnet publish FlouraBackend/Floura.Api/Floura.Api.csproj -c Release -o publish
+      - name: Publish API (Windows)
+        run: |
+            dotnet publish FlouraBackend/Floura.Api/Floura.Api.csproj \
+            -c Release \
+            -o FlouraBackend/publish \
+            --runtime win-x64 \
+            --self-contained false
 
       # ----------------------------
       # 9b. Debug: list publish folder
       # ----------------------------
       - name: List publish folder contents
-        run: ls -R publish
+        run: ls -R FlouraBackend/publish
 
       # ----------------------------
       # 10. Azure Login
@@ -118,4 +123,4 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'floura-backend-api'   
-          package: 'publish'
+          package: 'FlouraBackend/publish'
