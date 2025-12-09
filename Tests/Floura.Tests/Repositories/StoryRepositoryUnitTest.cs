@@ -1,53 +1,21 @@
-﻿//using Xunit;
-//using System.Collections.Generic;
+﻿using Floura.Api.Repositories;
+using Microsoft.EntityFrameworkCore;
 
-//public class StoryRepositoryTests
-//{
-//    [Fact]
-//    public void Add_ShouldAddStoryToRepository()
-//    {
-//        // Arrange
-//        var repo = new StoryRepository();
-//        var story = new Story { Title = "Test", Summary = "Summary" };
+namespace Floura.Tests
+{
+    public class StoryRepositoryTests
+    {
+        private readonly FlouraDbContext _context;
+        private readonly StoryRepository _repository;
 
-//        // Act
-//        repo.Add(story);
+        public StoryRepositoryTests()
+        {
+            var options = new DbContextOptionsBuilder<FlouraDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
 
-//        // Assert
-//        var all = repo.GetAll();
-//        Assert.Single(all);
-//        Assert.Equal("Test", all[0].Title);
-//    }
-
-//    [Fact]
-//    public void GetById_ShouldReturnCorrectStory()
-//    {
-//        // Arrange
-//        var repo = new StoryRepository();
-//        var story = new Story { Id = 1, Title = "A" };
-//        repo.Add(story);
-
-//        // Act
-//        var result = repo.GetById(1);
-
-//        // Assert
-//        Assert.NotNull(result);
-//        Assert.Equal("A", result.Title);
-//    }
-
-//    [Fact]
-//    public void Delete_ShouldRemoveStory()
-//    {
-//        // Arrange
-//        var repo = new StoryRepository();
-//        var story = new Story { Id = 1 };
-//        repo.Add(story);
-
-//        // Act
-//        repo.Delete(1);
-
-//        // Assert
-//        Assert.Empty(repo.GetAll());
-//    }
-//}
-
+            _context = new FlouraDbContext(options);
+            _repository = new StoryRepository(_context);
+        }
+    }
+}
