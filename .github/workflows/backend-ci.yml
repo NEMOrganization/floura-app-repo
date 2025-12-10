@@ -99,7 +99,7 @@ jobs:
             dotnet publish FlouraBackend/Floura.Api/Floura.Api.csproj \
             -c Release \
             -o FlouraBackend/publish \
-            --runtime win-x64 \
+            --runtime linux-x64 \
             --self-contained false
 
       # ----------------------------
