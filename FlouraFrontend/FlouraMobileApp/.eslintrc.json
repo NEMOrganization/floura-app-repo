@@ -2,7 +2,8 @@
   "env": {
     "browser": true,
     "es2021": true,
-    "node": true
+    "node": true,
+    "jest": true
   },
   "extends": [
     "eslint:recommended",
@@ -45,5 +46,13 @@
     ],
     "@typescript-eslint/no-explicit-any": "off",
     "react/prop-types": "off"
+  },
+  "overrides": [
+  {
+    "files": ["*.spec.js", "*.test.js", "*.spec.tsx", "*.test.tsx", "*.spec.ts", "*.test.ts"],
+    "env": {
+      "jest": true
+    }
   }
+]  
 }

@@ -416,3 +416,8 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Added ignore files
+.env
+appsettings.Development.json
+
