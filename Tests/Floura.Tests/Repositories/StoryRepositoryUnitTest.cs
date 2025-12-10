@@ -89,15 +89,15 @@ public class StoryRepositoryTests
             CoverImage = "http://example.com/image.jpg",
             AgeRange = Core.Models.Enums.AgeRange.Age2To5,
             StoryBits = new List<StoryBits>
-        {
-            new StoryBits
             {
-                Id = Guid.NewGuid(),
-                Text = "Bit",
-                Image = "s.png",
-                Order = 1,
+                new StoryBits
+                {
+                    Id = Guid.NewGuid(),
+                    Text = "Bit",
+                    Image = "s.png",
+                    Order = 1
+                }
             }
-        }
         };
 
         _context.Stories.Add(story);
@@ -118,19 +118,118 @@ public class StoryRepositoryTests
         var bit = bits.First();
         Assert.Equal("Bit", bit.Text);
     }
+
     [Fact]
     public async Task AddAsync_ThrowsArgumentNullException_WhenStoryIsNull()
     {
-        // Arrange 
-        var emptyList = new List<Story>();
+        // Act & Assert
+        await Assert.ThrowsAsync<ArgumentNullException>(
+            () => _repository.AddAsync(null!)
+        );
+    }
 
-        // Act & Assert 
-        var result = await _repository.GetAllAsync();
+    [Fact]
+    public async Task AddAsync_AddsStory_WhenStoryIsValid()
+    {
+        // Arrange
+        var storyId = Guid.NewGuid();
 
-        // Assert 
-        Assert.ThrowsAsync<ArgumentNullException>())
+        var story = new Story
+        {
+            Id = storyId,
+            Title = "Test Story",
+            Summary = "This is a test story.",
+            CoverImage = "http://example.com/image.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+        };
+
+        // Act
+        var result = await _repository.AddAsync(story);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.NotEqual(Guid.Empty, result.Id);
+
+        var dB = await _context.Stories.FindAsync(result.Id);
+        Assert.NotNull(dB);
+    }
+
+    [Fact]
+    public async Task UpdateAsync_Update_WhenStoryExists()
+    {
+        var id = Guid.NewGuid();
+
+        var existing = new Story
+        {
+            Id = id,
+            Title = "Old title",
+            Summary = "Old summary",
+            CoverImage = "old.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+        };
+
+        _context.Stories.Add(existing);
+        await _context.SaveChangesAsync();
+
+        var updated = new Story
+        {
+            Id = id,
+            Title = "New title",
+            Summary = "New summary",
+            CoverImage = "new.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+        };
+
+        var result = await _repository.UpdateAsync(id, updated);
+
+        Assert.NotNull(result);
+        Assert.Equal("New title", result!.Title);
+        Assert.Equal("New summary", result.Summary);
+        Assert.Equal("new.jpg", result.CoverImage);
+        Assert.Equal(Core.Models.Enums.AgeRange.Age2To5, result.AgeRange);
+
+        var fromDb = await _repository.GetByIdAsync(id);
+
+        Assert.NotNull(fromDb);
+        Assert.Equal("New title", fromDb!.Title);
+        Assert.Equal("New summary", fromDb.Summary);
+        Assert.Equal("new.jpg", fromDb.CoverImage);
+        Assert.Equal(Core.Models.Enums.AgeRange.Age2To5, fromDb.AgeRange);
     }
 
 
-}
 
+    [Fact]
+    public async Task UpdateAsync_ReturnsNull_WhenStoryDoesNotExist()
+    {
+        // Arrange
+        var storyId = Guid.NewGuid();
+        var updatedStory = new Story
+        {
+            Id = storyId,
+            Title = "New title",
+            Summary = "New summary",
+            CoverImage = "new.jpg",
+            AgeRange = Core.Models.Enums.AgeRange.Age2To5,
+        };
+
+        // Act
+        var result = await _repository.UpdateAsync(storyId, updatedStory);
+
+        // Assert
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ReturnsFalse_WhenStoryDoesNotExist()
+    {
+        // Arrange
+        var storyId = Guid.NewGuid();
+
+        // Act
+        var result = await _repository.DeleteAsync(storyId);
+
+        // Assert
+        Assert.False(result);
+    }
+}
