@@ -52,7 +52,7 @@ namespace Floura.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
         [EnableCors("MyAllowSpecificOrigins")]
-        public async Task<ActionResult<Story>> Post([FromBody] Story story)
+        public async Task<ActionResult<Story>> Post([FromBody] Story? story)
         {
             if (story == null)
                 return BadRequest("Story object can't be null");

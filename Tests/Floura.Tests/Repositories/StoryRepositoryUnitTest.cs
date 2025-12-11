@@ -18,7 +18,7 @@ public class StoryRepositoryTests
         _context = new FlouraDbContext(options);
         _repository = new StoryRepository(_context);
     }
-
+    [Fact]
     public void Dispose()
     {
         _context.Database.EnsureDeleted();

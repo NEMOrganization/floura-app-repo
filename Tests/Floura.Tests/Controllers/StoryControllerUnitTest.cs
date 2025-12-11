@@ -342,14 +342,6 @@ namespace Floura.Tests.Controllers
         {
             // Arrange
             var storyId = Guid.NewGuid();
-            var story = new Story
-            {
-                Id = storyId,
-                Title = "Test Story",
-                Summary = "This is a test story.",
-                CoverImage = "http://example.com/image.jpg",
-                AgeRange = Core.Models.Enums.AgeRange.Age2To5
-            };
 
             _mockStoryService
                 .Setup(service => service.DeleteAsync(storyId))
@@ -394,14 +386,6 @@ namespace Floura.Tests.Controllers
         {
             // Arrange
             var storyId = Guid.NewGuid();
-            var story = new Story
-            {
-                Id = storyId,
-                Title = "Test Story",
-                Summary = "This is a test story.",
-                CoverImage = "http://example.com/image.jpg",
-                AgeRange = Core.Models.Enums.AgeRange.Age2To5
-            };
 
             _mockStoryService
                  .Setup(service => service.DeleteAsync(storyId))

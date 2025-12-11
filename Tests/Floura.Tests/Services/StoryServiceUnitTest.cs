@@ -10,7 +10,6 @@ namespace Floura.Tests;
 public class StoryServiceUnitTest
 {
     private readonly Mock<IStoryRepository> _mockStoryRepository;
-    private readonly IStoryService _storyService;
 
     public StoryServiceUnitTest()
     {
