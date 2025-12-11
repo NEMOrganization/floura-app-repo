@@ -24,7 +24,7 @@ export default function StoriesOverviewScreen() {
         fetchStories();
     }, []);
 
-    if (isLoading) return <Text>Loading...</Text>;
+    if (isLoading) return <Text>Loading...</Text>; // should be replaced with loading screen, and this comment should be removed
     if (error) return <Text>Error: {error}</Text>;
 
     return (
