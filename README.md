@@ -1,26 +1,35 @@
-# Floura App 
+# Floura App
 
 This repository contains the Floura application, including the backend, tests and workflows for CI/CD.
 
-## Project Structure 
+## Project Structure
 
-- **FlouraBackend/** - C# backend solution 
-	- `Floura.Api/` � ASP.NET Core Web API (controllers, Swagger, DI, CORS)
-	- `Floura.Core/` - Core logic
-	- `FlouraBackend.sln` - Solution file
+- **FlouraBackend/** - C# backend solution
+  - `Floura.Api/` � ASP.NET Core Web API (controllers, Swagger, DI, CORS)
+  - `Floura.Core/` - Core logic
+  - `FlouraBackend.sln` - Solution file
 - **Tests/Floura.Tests/** - XUnit test project
 - **.github/workflows/** - GitHub Actions workflows
 
-## Getting Started 
+## Getting Started
 
 ## API Documentation
 
 The backend exposes a REST API for managing �Stories�, used by the Floura mobile application. Swagger provides interactive documentation and live testing of all endpoints.
 
 ### Access Swagger UI
+
 When the backend is running locally, open:
 http://localhost:<port>/swagger
 
+## Public API URL
+
+The API is deployed and publicly accessible at:
+
+**https://floura-api-asfmcdd6fdfkd4df.westeurope-01.azurewebsites.net/api**
+
+This is the base URL used by the Floura mobile application.  
+Replace `<your-api>` with the actual deployment hostname.
 
 ### Story Endpoints (CRUD)
 
@@ -28,19 +37,23 @@ Base URL:
 /api/Stories
 
 #### GET /api/Stories
+
 Returns all stories.  
 200 OK
 
 #### GET /api/Stories/{id}
+
 Returns a single story by Guid.  
 200 OK  
 404 Not Found
 
 #### POST /api/Stories
+
 Creates a new story.
 
 Example body:
-```json
+
+````json
 {
   "title": "Test story",
   "summary": "This is a test story.",
@@ -51,77 +64,77 @@ Example body:
 
 
 ### Using terminal
-```bash 
+```bash
 git clone <repo-url>
 cd floura-app-repo
 dotnet restore FlouraBackend/FlouraBackend.sln
 dotnet build FlouraBackend/FlouraBackend.sln
 dotnet test Tests/Floura.Tests/
-```
+````
 
-### Using GitHub UI 
-1. Select "Open with GitHub Desktop" and clone the repository. 
-2. Open FlouraBackend.sln in Visual Studio or your preferred IDE. 
-3. Restore dependencies and build the solution. 
+### Using GitHub UI
 
-## Backend CI / Workflow 
+1. Select "Open with GitHub Desktop" and clone the repository.
+2. Open FlouraBackend.sln in Visual Studio or your preferred IDE.
+3. Restore dependencies and build the solution.
+
+## Backend CI / Workflow
 
 The backend CI workflow is implemented using GitHub Actions to ensure code builds and tests pass before merging into `main`.
 
 - **Automatic triggers**:
-	- Push to `main` or developer branches 
-	- Pull requests to `main`
-- **Manual runs**: Use the **Actions --> Run workflow** button to trigger manually. 
-- **Branch protection**: PRs cannot be merged into `main` unless the workflow passes and required approvals are given. 
+  - Push to `main` or developer branches
+  - Pull requests to `main`
+- **Manual runs**: Use the **Actions --> Run workflow** button to trigger manually.
+- **Branch protection**: PRs cannot be merged into `main` unless the workflow passes and required approvals are given.
 
 For detailed instructions, see [docs/backend-ci.md](docs/backend-ci.md).
 
 ## Frontend CI / Workflow
+
 The frontend CI workflow is implemented using GitHub Actions to ensure code builds and tests pass before merging into `main`.
 
 - **Automatic triggers**:
-	- Push to `main` or developer branches 
-	- Pull requests to `main`
+  - Push to `main` or developer branches
+  - Pull requests to `main`
 - **Manual runs**: Manual runs are not configurated yet
-- **Branch protection**: PRs cannot be merged into `main` unless the workflow passes and required approvals are given. 
+- **Branch protection**: PRs cannot be merged into `main` unless the workflow passes and required approvals are given.
 
 For detailed instructions, see [docs/frontend-ci.md](docs/frontend-ci.md).
 
-## Contribution Guidelines 
+## Contribution Guidelines
 
 - Use feature branches based off `developer`.
-- Open pull requests to `main` once your feature or fix is ready. 
-- PRs require at least 1 review approval and passing backend CI workflow. 
-- Resolve all conversations before merging. 
+- Open pull requests to `main` once your feature or fix is ready.
+- PRs require at least 1 review approval and passing backend CI workflow.
+- Resolve all conversations before merging.
 
-## Architecture Overview 
+## Architecture Overview
 
 - See docs/architecture.md
 
-## Database / Storage 
+## Database / Storage
 
-*To be added.*
+_To be added._
 
-## Envronment Variables / Configuration 
+## Envronment Variables / Configuration
 
 - Make a GitHub Secret: GitHub --> Repository --> Settings --> Secrets and variables --> Actions --> New repository secret
-- Add ONE secret pr variable 
+- Add ONE secret pr variable
 - Naming convention: eks. "API_URL" or "DB_Connection_String"
 
 - Update workflow: .github/workflows/backend-ci.yml or frontend-ci.yml
-	eksampel:
-	env: 
-	API_URL: ${{ secrets.API_URL }}
-	Connctionstring: ${{ secrets.DB_Connection_String }}
+  eksampel:
+  env:
+  API_URL: ${{ secrets.API_URL }}
+  Connctionstring: ${{ secrets.DB_Connection_String }}
 
 - We don't have anything in frontend-ci.yml, since it doesn't containe any secrets
-- .env is for credentials which isn't secret, like our API_URL. 
+- .env is for credentials which isn't secret, like our API_URL.
 
--* what do we have i backend-ci.yml: 
-	- ConnectionString
-	- Azure Credentials  
+-\* what do we have i backend-ci.yml: - ConnectionString - Azure Credentials
 
-## Testing Guidelines 
+## Testing Guidelines
 The backend includes automated unit tests to ensure system reliability.
 
 - Tests are located in the Floura.Tests project.
@@ -138,28 +151,30 @@ The backend includes automated unit tests to ensure system reliability.
 
 
 ## How to run tests
+
 - Open Test Explorer in Visual Studio
 - Click �Run All Tests�
 - Or use the CLI: dotnet test
 
 ## Structure
+
 Tests are organized by layer:
+
 - Models/
 - Controllers/
 - Repositories/
 - Services/
 
 ## Naming conventions
+
 - Class under test: Story
 - Test class: StoryTests.cs
 - Test method name: MethodName_Should_DoSomething()
 
-
 ## Known Issues / TODOs
 
-*To be added.*
+_To be added._
 
-## References / External Docs 
+## References / External Docs
 
-*To be added.*
-
+_To be added._

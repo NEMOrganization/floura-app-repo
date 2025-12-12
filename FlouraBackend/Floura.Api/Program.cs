@@ -2,8 +2,23 @@
 using Floura.Core.Interfaces;
 using Floura.Core.Services;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole;
+using Serilog.Sinks.File;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+
+builder.Host.UseSerilog((context, services, configuration) => {
+    configuration
+        .WriteTo.Console()
+        .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day);
+});
+
+builder.Logging.AddDebug();
+
 
 builder.Services.AddDbContext<FlouraDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -28,6 +43,8 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.UseDeveloperExceptionPage();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -40,4 +57,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+try{
+    app.Run();
+}
+
+catch (Exception ex)
+{
+    Console.WriteLine($"Application failed to start: {ex}");
+    throw;
+}

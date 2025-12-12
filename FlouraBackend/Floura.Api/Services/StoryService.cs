@@ -1,4 +1,4 @@
-﻿using Floura.Core.Interfaces;
+﻿ using Floura.Core.Interfaces;
 using Floura.Core.Models;
 
 namespace Floura.Core.Services
