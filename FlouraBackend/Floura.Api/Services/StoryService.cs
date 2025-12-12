@@ -1,4 +1,4 @@
-﻿using Floura.Core.Interfaces;
+﻿ using Floura.Core.Interfaces;
 using Floura.Core.Models;
 
 namespace Floura.Core.Services
@@ -37,7 +37,7 @@ namespace Floura.Core.Services
                 return null;
 
             return await _repository.UpdateAsync(id, story);
-        }
+        } 
 
         public async Task<bool> DeleteAsync(Guid id)
         {

@@ -1,17 +1,35 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Text } from "react-native";
+import { storyService } from "../services/storyService";
 import { Story } from "../models/Story";
-import stories from "../mock/stories.json";
 import StoriesList from "../components/StoriesList";    
 
 export default function StoriesOverviewScreen() {
+    const [stories, setStories] = useState<Story[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-    const displayedStories: Story[] = stories;
+    useEffect(() => {
+        const fetchStories = async () => {
+            try {
+                const data = await storyService.getStories();
+                setStories(data);   
+            } catch (err: any) {
+                setError(err.message || 'An error occurred while fetching stories.');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchStories();
+    }, []);
+
+    if (isLoading) return <Text>Loading...</Text>; // should be replaced with loading screen, and this comment should be removed
+    if (error) return <Text>Error: {error}</Text>;
 
     return (
         <View style={styles.container}>
-            <StoriesList items={displayedStories} />
+            <StoriesList items={stories} />
         </View>
     );
 }

@@ -25,6 +25,23 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## API Integration
+
+The frontend connects to the Floura backend API using a shared API client and feature-specific services.
+
+**Public API URL:**
+
+EXPO_PUBLIC_API_URL="https://floura-api-asfmcdd6fdfkd4df.westeurope-01.azurewebsites.net/api"
+
+
+- All API requests go through `src/api/apiClient.ts`  
+- Feature services (like `storyService`) use the client  
+- Components call services, not `fetch()` directly  
+
+A simple integration test verifies the app can successfully fetch data from the API:
+
+> For full API documentation (endpoints, request examples, etc.), see the **backend README**.
+
 ## Get a fresh project
 
 When you're ready, run:
