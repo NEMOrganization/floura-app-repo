@@ -37,7 +37,7 @@ namespace Floura.Core.Services
                 return null;
 
             return await _repository.UpdateAsync(id, story);
-        }
+        } 
 
         public async Task<bool> DeleteAsync(Guid id)
         {
