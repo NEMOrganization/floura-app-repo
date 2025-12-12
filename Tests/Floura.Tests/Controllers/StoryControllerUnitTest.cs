@@ -354,7 +354,7 @@ namespace Floura.Tests.Controllers
 
             // Assert
             var ok = Assert.IsType<OkObjectResult>(result.Result);
-            Assert.True((bool)ok.Value);
+            Assert.True((bool?)ok.Value);
             _mockStoryService.Verify(service => service.DeleteAsync(storyId), Times.Once);
 
         }
