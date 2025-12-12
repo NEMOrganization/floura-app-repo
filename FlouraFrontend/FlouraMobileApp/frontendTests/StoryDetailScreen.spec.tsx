@@ -27,7 +27,7 @@ describe("StoryDetailScreen", () => {
     expect(getByText(mockStory.summary)).toBeTruthy();
 
     //CoverImage
-    const img = getByTestId("story-image");
+    const img = getByTestId("story-cover-image");
     expect(img.props.source).toEqual({ uri: mockStory.coverImageUrl });
   });
 
