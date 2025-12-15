@@ -4,7 +4,12 @@ import { StoriesProvider } from "@/src/context/StoriesContext";
 export default function RootLayout() {
   return (
     <StoriesProvider>
-      <Stack />
+      <Stack 
+        screenOptions={{
+          headerShown: true,
+          title: "",
+        }}
+      />
     </StoriesProvider>
   );
 }
