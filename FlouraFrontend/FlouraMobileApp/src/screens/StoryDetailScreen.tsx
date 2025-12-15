@@ -13,7 +13,6 @@ export default function StoryDetailScreen() {
 
   const [story, setStory] = useState<Story | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!storyId) return;
@@ -22,8 +21,8 @@ export default function StoryDetailScreen() {
       try {
         const data = await storyService.getStoryById(storyId);
         setStory(data);
-      } catch (err: any) {
-        setError(err.message ?? "Failed to load story");
+      } catch (err) {
+        router.replace("/errorScreen?message=Ups! Vi kunne ikke finde historien"); 
       } finally {
         setIsLoading(false);
       }
@@ -40,13 +39,15 @@ export default function StoryDetailScreen() {
     );
   }
 
-  if (error || !story) {
+  if(!story) return null;
+
+ /*  if (error || !story) {
     return (
       <View style={styles.center}>
         <Text>{error ?? "Story not found"}</Text>
       </View>
     );
-  }
+  } */
 
   return (
     <ScrollView style={styles.container}>

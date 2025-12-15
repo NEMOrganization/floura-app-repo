@@ -14,6 +14,9 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@expo-google-fonts/chewy": "^0.4.0",
+    "@expo-google-fonts/comic-neue": "^0.4.1",
+    "@expo-google-fonts/lexend": "^0.4.1",
     "@expo/vector-icons": "^15.0.3",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
@@ -56,7 +59,9 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "setupFilesAfterEnv": ["./jest-setup-after-env.ts"]
+    "setupFilesAfterEnv": [
+      "./jest-setup-after-env.ts"
+    ]
   },
   "private": true
 }
