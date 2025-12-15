@@ -8,12 +8,16 @@ import Summary from "../components/Summary";
 import { storyService } from "../services/storyService";
 import { Story } from "../models/Story";
 
+import { useStories } from "../context/StoriesContext";
+
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
+  const { upsertStory } = useStories();
 
   const [story, setStory] = useState<Story | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (!storyId) return;
@@ -22,6 +26,7 @@ export default function StoryDetailScreen() {
       try {
         const data = await storyService.getStoryById(storyId);
         setStory(data);
+        upsertStory(data);
       } catch (err: any) {
         setError(err.message ?? "Failed to load story");
       } finally {
@@ -30,7 +35,7 @@ export default function StoryDetailScreen() {
     };
 
     fetchStory();
-  }, [storyId]);
+  }, [storyId, upsertStory]);
 
   if (isLoading) {
     return (
