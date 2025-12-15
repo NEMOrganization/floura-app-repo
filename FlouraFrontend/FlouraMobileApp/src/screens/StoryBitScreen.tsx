@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ScrollView, View, Button, StyleSheet, Text } from "react-native";
+import { View, Button, StyleSheet, Text } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useStories } from "../context/StoriesContext";
 
@@ -61,6 +61,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     lineHeight: 26,
+    color: "#333",
   },
   nav: {
     flexDirection: "row",
