@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { View, Button, StyleSheet, Text } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { View, StyleSheet, Text } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useStories } from "../context/StoriesContext";
+
+import StoryBitHeader from "../components/StoryBit/StoryBitHeader";
+import StoryBitNavigationArrow from "../components/StoryBit/StoryBitNavigationArrow";
+import StoryBitContent from "../components/StoryBit/StoryBitContent";
 
 export default function StoryBitScreen() {
       const { storyId } = useLocalSearchParams<{ storyId: string }>();
       const { getStoryById } = useStories();
-      
       const story = getStoryById(storyId);
+      
+      const router = useRouter();
       const [currentIndex, setCurrentIndex] = useState(0);
 
       if (!story) {
@@ -20,30 +25,29 @@ export default function StoryBitScreen() {
 
       const currentBit = story.storyBits[currentIndex];
 
+      const handleNext = () => setCurrentIndex((i) => i + 1);
+      const handlePrev = () => setCurrentIndex((i) => i - 1);
+      const handleBack = () => router.back();
+
       return (
         <View style={styles.container}>
-            {/* StoryBit text */}
-            <View>
-                <Text>{currentBit.content}</Text>
-            </View>
-            {/* Navigation buttons */}
-            <View>
-                <Button 
-                title="tilbage"
-                disabled={currentIndex === 0}
-                onPress={() => setCurrentIndex((i) => i - 1)}
-                />
-                <Text>
-                    {currentIndex + 1} / {story.storyBits.length}
-                </Text>
-                <Button 
-                title="frem"
-                disabled={currentIndex === story.storyBits.length - 1}
-                onPress={() => setCurrentIndex((i) => i + 1)}
-                />
-            </View>
+            <StoryBitHeader
+                currentIndex={currentIndex}
+                totalBits={story.storyBits.length}
+                onBack={handleBack}
+            />
+
+            <StoryBitContent content={currentBit.content} />
+
+            <StoryBitNavigationArrow
+                onPrev={handlePrev}
+                onNext={handleNext}
+                disablePrev={currentIndex === 0}
+                disableNext={currentIndex === story.storyBits.length - 1}
+                color="#ddb52f"
+            />
         </View>
-      )
+  );
 
     
 }
@@ -51,22 +55,6 @@ export default function StoryBitScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    justifyContent: "space-between",
-  },
-  textContainer: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  text: {
-    fontSize: 18,
-    lineHeight: 26,
-    color: "#333",
-  },
-  nav: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   center: {
     flex: 1,
