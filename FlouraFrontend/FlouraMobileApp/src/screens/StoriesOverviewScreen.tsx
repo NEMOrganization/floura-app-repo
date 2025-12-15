@@ -15,7 +15,7 @@ export default function StoriesOverviewScreen() {
       try {
         const data = await storyService.getStories();
         setStories(data);
-        await new Promise((r) => setTimeout(r, 2000)); // TEMP: kun for at se loading
+        await new Promise((r) => setTimeout(r, 2000)); // TEMP: kun for at se loading. skal fjernes senere
       } catch (err: any) {
         setError(err.message || 'An error occurred while fetching stories.');
       } finally {

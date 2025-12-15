@@ -7,13 +7,24 @@ const LoadingScreen = () => {
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
-        Animated.timing(pasteAnim, { toValue: 1, duration: 650, useNativeDriver: true }),
-        Animated.timing(pasteAnim, { toValue: 0, duration: 650, useNativeDriver: true }),
+        Animated.timing(pasteAnim, {
+          toValue: 1,
+          duration: 650,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pasteAnim, {
+          toValue: 0,
+          duration: 650,
+          useNativeDriver: true,
+        }),
       ])
     ).start();
   }, []);
 
-  const scaleX = pasteAnim.interpolate({ inputRange: [0, 1], outputRange: [0.2, 1] });
+  const scaleX = pasteAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.2, 1],
+  });
 
   return (
     <View style={styles.container}>
@@ -26,7 +37,7 @@ const LoadingScreen = () => {
         </View>
       </View>
 
-      <Text style={styles.text}>Indlæser historier…</Text>
+      <Text style={styles.text}>Floura tænker på historier…</Text>
     </View>
   );
 };
@@ -34,7 +45,7 @@ const LoadingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#D9FFE6", // mint fra jeres palette
+    backgroundColor: "#8AC7FF",
     justifyContent: "center",
     alignItems: "center",
     padding: 24,
@@ -42,10 +53,10 @@ const styles = StyleSheet.create({
   brushRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 18,
+    marginBottom: 20,
   },
   brush: {
-    fontSize: 44,
+    fontSize: 48,
     marginRight: 10,
   },
   brushHead: {
@@ -64,20 +75,19 @@ const styles = StyleSheet.create({
     width: 28,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#F5FBC1", // gul fra jeres palette
-    opacity: 0.95,
+    backgroundColor: "#F5FBC1",
   },
   paste: {
     height: 12,
     width: 70,
     borderRadius: 999,
-    backgroundColor: "#FF9AA2", // coral fra jeres palette
-    opacity: 0.9,
+    backgroundColor: "#FF9AA2",
   },
   text: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#2E2E2E",
+    marginTop: 12,
+    fontSize: 22,
+    fontFamily: "ComicNeue-Bold",
+    color: "#FFFFFF",
   },
 });
 
