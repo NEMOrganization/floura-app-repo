@@ -14,13 +14,15 @@ export default function StoriesOverviewScreen() {
         const fetchStories = async () => {
             try {
                 const data = await storyService.getStories();
+                if (!data) {
+                throw new Error("Hov.. Der er ikke nogen historie.");
+                }
+
                 setStories(data);   
-            } catch (err) {
+            } catch {
                 router.replace(
-                "/errorScreen?message=Ups! Vi kunne ikke hente historierne"
+                "/errorScreen?message=Historierne er vist blevet væk"
              );
-            //catch (err: any) {
-                //setError(err.message || 'An error occurred while fetching stories.');
             } finally {
                 setIsLoading(false);
             }
@@ -34,7 +36,6 @@ export default function StoriesOverviewScreen() {
     } 
 
     if (isLoading) return <Text>Loading...</Text>; // should be replaced with loading screen, and this comment should be removed
-    //if (error) return <Text>Error: {error}</Text>;
 
     return (
         <View style={styles.container}>

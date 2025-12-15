@@ -20,9 +20,13 @@ export default function StoryDetailScreen() {
     const fetchStory = async () => {
       try {
         const data = await storyService.getStoryById(storyId);
+        if (!data) {
+        throw new Error("Hov, historien findes ikke");
+      }
         setStory(data);
-      } catch (err) {
-        router.replace("/errorScreen?message=Ups! Vi kunne ikke finde historien"); 
+
+      } catch {
+        router.replace("/errorScreen?message=Vi kunne ikke finde den historie"); 
       } finally {
         setIsLoading(false);
       }
@@ -40,14 +44,6 @@ export default function StoryDetailScreen() {
   }
 
   if(!story) return null;
-
- /*  if (error || !story) {
-    return (
-      <View style={styles.center}>
-        <Text>{error ?? "Story not found"}</Text>
-      </View>
-    );
-  } */
 
   return (
     <ScrollView style={styles.container}>
