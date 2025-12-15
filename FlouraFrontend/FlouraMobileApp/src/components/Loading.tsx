@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Animated } from "react-native";
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 
 const LoadingScreen = () => {
   const pasteAnim = useRef(new Animated.Value(0)).current;
@@ -17,7 +17,7 @@ const LoadingScreen = () => {
           duration: 650,
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
   }, []);
 
@@ -29,15 +29,19 @@ const LoadingScreen = () => {
   return (
     <View style={styles.container} testID="loading-screen">
       <View style={styles.brushRow} testID="loading-brush-row">
-        <Text style={styles.brush} testID="loading-toothbrush">🪥</Text>
+        <Text style={styles.brush} testID="loading-toothbrush">
+          🪥
+        </Text>
 
-        <View style={styles.brushHead}testID="loading-brush-head">
+        <View style={styles.brushHead} testID="loading-brush-head">
           <Animated.View style={[styles.paste, { transform: [{ scaleX }] }]} />
           <View style={styles.bristles} testID="loading-bristles" />
         </View>
       </View>
 
-      <Text style={styles.text} testID="loading-text">Floura tænker…</Text>
+      <Text style={styles.text} testID="loading-text">
+        Floura tænker…
+      </Text>
     </View>
   );
 };
@@ -45,14 +49,14 @@ const LoadingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#8AC7FF",
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: '#8AC7FF',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 24,
   },
   brushRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 20,
   },
   brush: {
@@ -63,31 +67,31 @@ const styles = StyleSheet.create({
     width: 120,
     height: 34,
     borderRadius: 18,
-    backgroundColor: "#FFFFFF",
-    justifyContent: "center",
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
     paddingHorizontal: 10,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   bristles: {
-    position: "absolute",
+    position: 'absolute',
     right: 10,
     top: 8,
     width: 28,
     height: 18,
     borderRadius: 9,
-    backgroundColor: "#F5FBC1",
+    backgroundColor: '#F5FBC1',
   },
   paste: {
     height: 12,
     width: 70,
     borderRadius: 999,
-    backgroundColor: "#FF9AA2",
+    backgroundColor: '#FF9AA2',
   },
   text: {
     marginTop: 12,
     fontSize: 22,
-    fontFamily: "ComicNeue-Bold",
-    color: "#FFFFFF",
+    fontFamily: 'ComicNeue-Bold',
+    color: '#FFFFFF',
   },
 });
 
