@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
+import { router } from "expo-router";
 import { storyService } from "../services/storyService";
 import { Story } from "../models/Story";
 import StoriesList from "../components/StoriesList";    
@@ -24,12 +25,17 @@ export default function StoriesOverviewScreen() {
         fetchStories();
     }, []);
 
+      function handlePressStory(story: Story) {
+    router.push(`../stories/${story.id}`);
+  } 
+
     if (isLoading) return <Text>Loading...</Text>; // should be replaced with loading screen, and this comment should be removed
     if (error) return <Text>Error: {error}</Text>;
 
     return (
         <View style={styles.container}>
-            <StoriesList items={stories} />
+            <StoriesList items={stories} 
+             onPressStory={handlePressStory} />
         </View>
     );
 }

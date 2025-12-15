@@ -1,0 +1,15 @@
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import Summary from '../src/components/Summary';
+
+
+describe("Summary", () => {
+    
+    it("Renders the summery", () => {
+        // arrange
+        const { getByText } = render(<Summary text="Flouras adventure summary" />);
+
+        // assert
+        expect(getByText("Flouras adventure summary")).toBeTruthy();
+    });
+});
