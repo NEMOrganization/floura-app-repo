@@ -1,5 +1,5 @@
 // export const BASE_URL = 'https://floura-api-asfmcdd6fdfkd4df.westeurope-01.azurewebsites.net/api';
-export const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+export const BASE_URL = process.env.EXPO_PUBLIC_API_URL
 
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
