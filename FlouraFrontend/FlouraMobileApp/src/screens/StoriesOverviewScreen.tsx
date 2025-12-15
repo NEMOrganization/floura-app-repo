@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { storyService } from "../services/storyService";
 import { Story } from "../models/Story";
-import StoriesList from "../components/StoriesList";    
+import StoriesList from "../components/StoriesList";
+import LoadingScreen from "../components/Loading";    
 
 export default function StoriesOverviewScreen() {
     const [stories, setStories] = useState<Story[]>([]);
@@ -24,7 +25,7 @@ export default function StoriesOverviewScreen() {
         fetchStories();
     }, []);
 
-    if (isLoading) return <Text>Loading...</Text>; // should be replaced with loading screen, and this comment should be removed
+    if (isLoading) return <LoadingScreen />;
     if (error) return <Text>Error: {error}</Text>;
 
     return (
