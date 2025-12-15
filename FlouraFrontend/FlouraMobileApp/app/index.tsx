@@ -1,9 +1,11 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Stack } from "expo-router";
 import StoriesOverviewScreen from "../src/screens/StoriesOverviewScreen";
 
 export default function Index() {
   return (
-    <StoriesOverviewScreen />
+    <>
+      <Stack.Screen options={{ title: "", headerBackVisible: false }} />
+      <StoriesOverviewScreen />
+    </>
   );
 }
-

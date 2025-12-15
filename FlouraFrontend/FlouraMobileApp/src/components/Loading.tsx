@@ -27,17 +27,17 @@ const LoadingScreen = () => {
   });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.brushRow}>
-        <Text style={styles.brush}>🪥</Text>
+    <View style={styles.container} testID="loading-screen">
+      <View style={styles.brushRow} testID="loading-brush-row">
+        <Text style={styles.brush} testID="loading-toothbrush">🪥</Text>
 
-        <View style={styles.brushHead}>
+        <View style={styles.brushHead}testID="loading-brush-head">
           <Animated.View style={[styles.paste, { transform: [{ scaleX }] }]} />
-          <View style={styles.bristles} />
+          <View style={styles.bristles} testID="loading-bristles" />
         </View>
       </View>
 
-      <Text style={styles.text}>Floura tænker på historier…</Text>
+      <Text style={styles.text} testID="loading-text">Floura tænker…</Text>
     </View>
   );
 };
