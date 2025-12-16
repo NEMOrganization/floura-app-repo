@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, View, Button, StyleSheet, Text } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
+import React, { useEffect, useState } from 'react';
+import { ScrollView, View, Button, StyleSheet, Text } from 'react-native';
+import { useLocalSearchParams, router } from 'expo-router';
+import LoadingScreen from '../components/Loading';
 
-import Title from "../components/Title";
-import StoryImage from "../components/StoryImage";
-import Summary from "../components/Summary";
-import { storyService } from "../services/storyService";
-import { Story } from "../models/Story";
+import Title from '../components/Title';
+import StoryImage from '../components/StoryImage';
+import Summary from '../components/Summary';
+import { storyService } from '../services/storyService';
+import { Story } from '../models/Story';
 
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
@@ -16,14 +17,17 @@ export default function StoryDetailScreen() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!storyId) return;
-
+  if (!storyId) {
+    setIsLoading(false);
+    setError('Missing storyId');
+    return;
+  }
     const fetchStory = async () => {
       try {
         const data = await storyService.getStoryById(storyId);
         setStory(data);
       } catch (err: any) {
-        setError(err.message ?? "Failed to load story");
+        setError(err.message ?? 'Failed to load story');
       } finally {
         setIsLoading(false);
       }
@@ -33,17 +37,14 @@ export default function StoryDetailScreen() {
   }, [storyId]);
 
   if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  return <LoadingScreen />;
+}
+
 
   if (error || !story) {
     return (
       <View style={styles.center}>
-        <Text>{error ?? "Story not found"}</Text>
+        <Text>{error ?? 'Story not found'}</Text>
       </View>
     );
   }
@@ -52,18 +53,13 @@ export default function StoryDetailScreen() {
     <ScrollView style={styles.container}>
       <Title text={story.title} />
 
-      <StoryImage
-        source={story.coverImageUrl}
-        testID="story-image"
-      />
+      <StoryImage source={story.coverImageUrl} testID="story-image" />
 
       <Summary text={story.summary} />
 
       <Button
         title="Læs historien"
-        onPress={() =>
-          router.push(`../stories/${story.id}/bits`)
-        }
+        onPress={() => router.push(`../stories/${story.id}/bits`)}
       />
     </ScrollView>
   );
@@ -75,11 +71,7 @@ const styles = StyleSheet.create({
   },
   center: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
-
-
-
-
