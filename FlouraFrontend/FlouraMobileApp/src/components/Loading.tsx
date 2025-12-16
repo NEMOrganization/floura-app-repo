@@ -19,7 +19,7 @@ const LoadingScreen = () => {
         }),
       ]),
     ).start();
-  }, []);
+  },  [pasteAnim]);
 
   const scaleX = pasteAnim.interpolate({
     inputRange: [0, 1],
