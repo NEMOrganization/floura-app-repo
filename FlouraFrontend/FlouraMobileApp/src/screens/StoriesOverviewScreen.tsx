@@ -4,6 +4,7 @@ import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import StoriesList from '../components/StoriesList';
 import LoadingScreen from '../components/Loading';
+import { router } from 'expo-router';
 
 export default function StoriesOverviewScreen() {
   const [stories, setStories] = useState<Story[]>([]);
@@ -26,12 +27,15 @@ export default function StoriesOverviewScreen() {
     fetchStories();
   }, []);
 
+  function handlePressStory(story: Story) {
+    router.push(`../stories/${story.id}`);
+  }
   if (isLoading) return <LoadingScreen />;
   if (error) return <Text>Error: {error}</Text>;
 
   return (
     <View style={styles.container}>
-      <StoriesList items={stories} />
+      <StoriesList items={stories} onPressStory={handlePressStory} />
     </View>
   );
 }
