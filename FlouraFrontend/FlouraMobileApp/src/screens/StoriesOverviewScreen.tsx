@@ -8,15 +8,21 @@ import StoriesList from "../components/StoriesList";
 export default function StoriesOverviewScreen() {
     const [stories, setStories] = useState<Story[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
+    //const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchStories = async () => {
             try {
                 const data = await storyService.getStories();
+                if (!data) {
+                throw new Error("Der er ikke nogen historie");
+                }
+
                 setStories(data);   
-            } catch (err: any) {
-                setError(err.message || 'An error occurred while fetching stories.');
+            } catch {
+                router.replace(
+                "/errorScreen?message=Historierne er blevet væk"
+             );
             } finally {
                 setIsLoading(false);
             }
@@ -25,12 +31,11 @@ export default function StoriesOverviewScreen() {
         fetchStories();
     }, []);
 
-      function handlePressStory(story: Story) {
-    router.push(`../stories/${story.id}`);
-  } 
+    function handlePressStory(story: Story) {
+        router.push(`/stories/${story.id}`);
+    } 
 
     if (isLoading) return <Text>Loading...</Text>; // should be replaced with loading screen, and this comment should be removed
-    if (error) return <Text>Error: {error}</Text>;
 
     return (
         <View style={styles.container}>

@@ -16,7 +16,6 @@ export default function StoryDetailScreen() {
 
   const [story, setStory] = useState<Story | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
 
   useEffect(() => {
@@ -25,10 +24,14 @@ export default function StoryDetailScreen() {
     const fetchStory = async () => {
       try {
         const data = await storyService.getStoryById(storyId);
+        if (!data) {
+        throw new Error("Historien findes ikke");
+      }
         setStory(data);
         upsertStory(data);
-      } catch (err: any) {
-        setError(err.message ?? "Failed to load story");
+      } catch {
+        router.replace("/errorScreen?message=Historien gemmer sig");
+
       } finally {
         setIsLoading(false);
       }
@@ -45,13 +48,7 @@ export default function StoryDetailScreen() {
     );
   }
 
-  if (error || !story) {
-    return (
-      <View style={styles.center}>
-        <Text>{error ?? "Story not found"}</Text>
-      </View>
-    );
-  }
+  if(!story) return null;
 
   return (
     <ScrollView style={styles.container}>
