@@ -2,8 +2,8 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import "@testing-library/jest-native/extend-expect";
 import { Dimensions } from "react-native";
-
 import ErrorScreen from "../app/errorScreen";
+import { useLocalSearchParams } from "expo-router";
 
 const mockReplace = jest.fn();
 
@@ -30,13 +30,13 @@ describe("ErrorScreen", () => {
   });
 
   it("Shows fallback-text if message is null", () => {
-    const { useLocalSearchParams } = require("expo-router");
-    useLocalSearchParams.mockReturnValueOnce({});
+  (useLocalSearchParams as jest.Mock).mockReturnValueOnce({});
 
-    const { getByText } = render(<ErrorScreen />);
+  const { getByText } = render(<ErrorScreen />);
 
-    expect(getByText("Historien gemmer sig vist")).toBeTruthy();
-  });
+  expect(getByText("Historien gemmer sig vist")).toBeTruthy();
+});
+
 
   it("Calls router.replace('/') when retry-button is pressed", () => {
     const { getByText } = render(<ErrorScreen />);
