@@ -2,8 +2,6 @@ import React from "react";
 import { render, fireEvent, act } from "@testing-library/react-native";
 import StoryBitScreen from "../src/screens/StoryBitScreen";
 import { Story } from "@/src/models/Story";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Text } from "react-native";
 
 
 jest.mock('@expo/vector-icons', () => {
