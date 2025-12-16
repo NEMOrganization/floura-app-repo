@@ -15,13 +15,13 @@ export default function StoriesOverviewScreen() {
             try {
                 const data = await storyService.getStories();
                 if (!data) {
-                throw new Error("Hov.. Der er ikke nogen historie.");
+                throw new Error("Der er ikke nogen historie");
                 }
 
                 setStories(data);   
             } catch {
                 router.replace(
-                "/errorScreen?message=Historierne er vist blevet væk"
+                "/errorScreen?message=Historierne er blevet væk"
              );
             } finally {
                 setIsLoading(false);

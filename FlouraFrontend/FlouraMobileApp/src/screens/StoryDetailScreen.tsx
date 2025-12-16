@@ -21,7 +21,7 @@ export default function StoryDetailScreen() {
       try {
         const data = await storyService.getStoryById(storyId);
         if (!data) {
-        throw new Error("Hov, historien findes ikke");
+        throw new Error("Historien findes ikke");
       }
         setStory(data);
 
