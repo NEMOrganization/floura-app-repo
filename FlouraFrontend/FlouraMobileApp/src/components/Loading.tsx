@@ -19,7 +19,7 @@ const LoadingScreen = () => {
         }),
       ]),
     ).start();
-  },  [pasteAnim]);
+  }, [pasteAnim]);
 
   const scaleX = pasteAnim.interpolate({
     inputRange: [0, 1],
@@ -49,7 +49,7 @@ const LoadingScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#8AC7FF',
+    backgroundColor: '#EAF4FF',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   brush: {
     fontSize: 48,
     marginRight: 10,
+    color: '#df4c4cff',
   },
   brushHead: {
     width: 120,
@@ -88,10 +89,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF9AA2',
   },
   text: {
-    marginTop: 12,
-    fontSize: 22,
-    fontFamily: 'ComicNeue-Bold',
-    color: '#FFFFFF',
+    fontSize: 35,
+    color: '#850E35',
+    marginBottom: 30,
+    textAlign: 'center',
+    fontFamily: 'Roboto',
   },
 });
 
