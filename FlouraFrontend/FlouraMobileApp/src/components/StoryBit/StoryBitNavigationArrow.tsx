@@ -16,14 +16,14 @@ export default function StoryBitNavigationArrow({ onPrev, onNext, disablePrev, d
     <>
       {/* Left Arrow */}
       {!disablePrev && (
-        <TouchableOpacity style={[styles.arrow, styles.left]} onPress={onPrev}>
+        <TouchableOpacity style={[styles.arrow, styles.left]} onPress={onPrev} testID="previous-arrow">
           <Feather name="arrow-left" size={size} color={color} />
         </TouchableOpacity>
       )}
 
       {/* Right Arrow */}
       {!disableNext && (
-        <TouchableOpacity style={[styles.arrow, styles.right]} onPress={onNext}>
+        <TouchableOpacity style={[styles.arrow, styles.right]} onPress={onNext} testID="next-arrow">
           <Feather name="arrow-right" size={size} color={color} />
         </TouchableOpacity>
       )}
