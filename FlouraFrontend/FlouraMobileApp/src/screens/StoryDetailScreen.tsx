@@ -26,7 +26,7 @@ export default function StoryDetailScreen() {
         setStory(data);
 
       } catch {
-        router.replace("/errorScreen?message=Vi kunne ikke finde den historie"); 
+        router.replace("/errorScreen?message=Historien gemmer sig"); 
       } finally {
         setIsLoading(false);
       }

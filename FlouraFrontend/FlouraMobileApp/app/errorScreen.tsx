@@ -33,8 +33,8 @@ export default function ErrorScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: "center", alignItems: "center", padding: 20, backgroundColor: "#FFE8CD", },
-  title:{fontSize: 35, color: "#850E35", textAlign:"center", fontFamily:"Roboto" },
-  text: { fontSize: 35, color: "#850E35", marginBottom: 30, textAlign: "center", fontFamily:"Roboto" },
+  title:{fontSize: 35, color: "#850E35", marginBottom: 10, textAlign:"center", fontFamily:"Roboto" },
+  text: { fontSize: 30, color: "#850E35", marginBottom: 30, textAlign: "center", fontFamily:"Roboto" },
   image: { width: 150, height: 150, marginBottom: 20,},
   buttonContainer:{}
 });
