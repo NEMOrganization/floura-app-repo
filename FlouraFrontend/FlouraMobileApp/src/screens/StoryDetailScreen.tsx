@@ -8,11 +8,15 @@ import Summary from "../components/Summary";
 import { storyService } from "../services/storyService";
 import { Story } from "../models/Story";
 
+import { useStories } from "../context/StoriesContext";
+
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
+  const { upsertStory } = useStories();
 
   const [story, setStory] = useState<Story | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     if (!storyId) return;
@@ -24,16 +28,17 @@ export default function StoryDetailScreen() {
         throw new Error("Historien findes ikke");
       }
         setStory(data);
-
+        upsertStory(data);
       } catch {
-        router.replace("/errorScreen?message=Historien gemmer sig"); 
+        router.replace("/errorScreen?message=Historien gemmer sig");
+
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchStory();
-  }, [storyId]);
+  }, [storyId, upsertStory]);
 
   if (isLoading) {
     return (
