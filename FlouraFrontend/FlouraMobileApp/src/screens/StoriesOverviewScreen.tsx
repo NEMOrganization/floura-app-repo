@@ -36,7 +36,8 @@ export default function StoriesOverviewScreen() {
     router.push(`../stories/${story.id}`);
   }
   if (isLoading) return <LoadingScreen />;
-  if (error) return <Text>Error: {error}</Text>;
+
+
 
   return (
     <View style={styles.container}>
