@@ -22,7 +22,6 @@ export default function StoryDetailScreen() {
   useEffect(() => {
   if (!storyId) {
     setIsLoading(false);
-    setError('Missing storyId');
     return;
   }
     const fetchStory = async () => {
