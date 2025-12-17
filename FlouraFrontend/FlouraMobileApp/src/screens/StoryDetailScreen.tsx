@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { ScrollView, View, Button, StyleSheet, Text } from "react-native";
-import { useLocalSearchParams, router } from "expo-router";
+import React, { useEffect, useState } from 'react';
+import { ScrollView, Button, StyleSheet} from 'react-native';
+import { useLocalSearchParams, router } from 'expo-router';
+import LoadingScreen from '../components/Loading';
 
 import Title from "../components/Title";
 import StoryImage from "../components/StoryImage";
@@ -19,8 +20,10 @@ export default function StoryDetailScreen() {
 
 
   useEffect(() => {
-    if (!storyId) return;
-
+  if (!storyId) {
+    setIsLoading(false);
+    return;
+  }
     const fetchStory = async () => {
       try {
         const data = await storyService.getStoryById(storyId);
@@ -41,12 +44,9 @@ export default function StoryDetailScreen() {
   }, [storyId, upsertStory]);
 
   if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+  return <LoadingScreen />;
+}
+
 
   if(!story) return null;
 
@@ -54,18 +54,13 @@ export default function StoryDetailScreen() {
     <ScrollView style={styles.container}>
       <Title text={story.title} />
 
-      <StoryImage
-        source={story.coverImageUrl}
-        testID="story-image"
-      />
+      <StoryImage source={story.coverImageUrl} testID="story-image" />
 
       <Summary text={story.summary} />
 
       <Button
         title="Læs historien"
-        onPress={() =>
-          router.push(`../stories/${story.id}/bits`)
-        }
+        onPress={() => router.push(`../stories/${story.id}/bits`)}
       />
     </ScrollView>
   );
@@ -77,11 +72,7 @@ const styles = StyleSheet.create({
   },
   center: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
-
-
-
-
