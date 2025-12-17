@@ -115,7 +115,12 @@ For detailed instructions, see [docs/frontend-ci.md](docs/frontend-ci.md).
 
 ## Database / Storage
 
-_To be added._
+The project uses Entity Framework Core Code First.
+
+### Migration
+
+- Add-Migration InitialCreate
+- Update-Database
 
 ## Envronment Variables / Configuration
 
@@ -135,6 +140,7 @@ _To be added._
 -\* what do we have i backend-ci.yml: - ConnectionString - Azure Credentials
 
 ## Testing Guidelines
+
 The backend includes automated unit tests to ensure system reliability.
 
 - Tests are located in the Floura.Tests project.
@@ -146,9 +152,7 @@ The backend includes automated unit tests to ensure system reliability.
 - All tests run through GitHub Actions CI.
 - The solution reaches 80%+ code coverage.
 
-
 # Floura.Tests
-
 
 ## How to run tests
 
