@@ -7,22 +7,27 @@ import LoadingScreen from '../components/Loading';
 import { router } from 'expo-router';
 
 export default function StoriesOverviewScreen() {
-  const [stories, setStories] = useState<Story[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+    const [stories, setStories] = useState<Story[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    //const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchStories = async () => {
-      try {
-        const data = await storyService.getStories();
-        setStories(data);
-        await new Promise((r) => setTimeout(r, 2000)); // TEMP: kun for at se loading. skal fjernes senere
-      } catch (err: any) {
-        setError(err.message || 'An error occurred while fetching stories.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    useEffect(() => {
+        const fetchStories = async () => {
+            try {
+                const data = await storyService.getStories();
+                if (!data) {
+                throw new Error("Der er ikke nogen historie");
+                }
+
+                setStories(data);   
+            } catch {
+                router.replace(
+                "/errorScreen?message=Historierne er blevet væk"
+             );
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
     fetchStories();
   }, []);

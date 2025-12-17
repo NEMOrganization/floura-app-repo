@@ -19,8 +19,8 @@ export default function Button({
 }: ButtonProps) {
 
     const stylesForVariant = {
-        primary: {backgroundColor: "#007AFF"}, 
-        secondary: {backgroundColor: "#888"}
+        primary: {backgroundColor: "#FCF5EE"}, 
+        secondary: {backgroundColor: "#FFC4C4"}
     }[variant];
 
     return (
@@ -51,7 +51,8 @@ export default function Button({
             opacity: 0.5
         },
         text: {
-            color: "white",
-            fontWeight: "600"
+            color: "#850E35",
+            fontWeight: "400",
+            fontSize: 18,
         }
     });

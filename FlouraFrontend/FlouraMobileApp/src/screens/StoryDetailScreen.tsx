@@ -3,18 +3,21 @@ import { ScrollView, View, Button, StyleSheet, Text } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import LoadingScreen from '../components/Loading';
 
-import Title from '../components/Title';
-import StoryImage from '../components/StoryImage';
-import Summary from '../components/Summary';
-import { storyService } from '../services/storyService';
-import { Story } from '../models/Story';
+import Title from "../components/Title";
+import StoryImage from "../components/StoryImage";
+import Summary from "../components/Summary";
+import { storyService } from "../services/storyService";
+import { Story } from "../models/Story";
+
+import { useStories } from "../context/StoriesContext";
 
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
+  const { upsertStory } = useStories();
 
   const [story, setStory] = useState<Story | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
 
   useEffect(() => {
   if (!storyId) {
@@ -25,29 +28,28 @@ export default function StoryDetailScreen() {
     const fetchStory = async () => {
       try {
         const data = await storyService.getStoryById(storyId);
+        if (!data) {
+        throw new Error("Historien findes ikke");
+      }
         setStory(data);
-      } catch (err: any) {
-        setError(err.message ?? 'Failed to load story');
+        upsertStory(data);
+      } catch {
+        router.replace("/errorScreen?message=Historien gemmer sig");
+
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchStory();
-  }, [storyId]);
+  }, [storyId, upsertStory]);
 
   if (isLoading) {
   return <LoadingScreen />;
 }
 
 
-  if (error || !story) {
-    return (
-      <View style={styles.center}>
-        <Text>{error ?? 'Story not found'}</Text>
-      </View>
-    );
-  }
+  if(!story) return null;
 
   return (
     <ScrollView style={styles.container}>
