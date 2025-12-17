@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import StoriesList from '../components/StoriesList';
