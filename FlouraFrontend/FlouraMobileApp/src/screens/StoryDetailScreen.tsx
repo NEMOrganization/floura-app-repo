@@ -65,13 +65,13 @@ export default function StoryDetailScreen() {
     >
       <StatusBar style="dark" translucent />
 
-      <Title text={story.title} />
       <TouchableOpacity
         onPress={() => router.back()}
         style={{ marginBottom: 12 }}
       >
         <Text style={{ fontSize: 16, color: '#007AFF' }}>← Tilbage</Text>
       </TouchableOpacity>
+      <Title text={story.title} />
       <StoryImage source={story.coverImageUrl} testID="story-image" />
       <Summary text={story.summary} />
 
