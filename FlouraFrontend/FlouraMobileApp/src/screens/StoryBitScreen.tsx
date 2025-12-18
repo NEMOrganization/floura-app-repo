@@ -35,7 +35,7 @@ export default function StoryBitScreen() {
 
 
       return (
-        <ImageBackground source={backgroundImages} style={styles.background} resizeMode="cover">
+        <ImageBackground source={backgroundImages} style={styles.background} resizeMode="cover" testID="story-background">
             <View style={styles.overlay}>
               <StoryBitHeader
                 currentIndex={currentIndex}
