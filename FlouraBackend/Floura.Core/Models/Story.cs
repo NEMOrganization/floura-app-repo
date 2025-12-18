@@ -19,6 +19,8 @@ namespace Floura.Core.Models
         public required string Summary { get; set; }
         [Required]
         public required string CoverImage { get; set; }
+
+        public string? BackgroundImageKey { get; set; }
         [Required]
         public AgeRange AgeRange { get; set; }
 

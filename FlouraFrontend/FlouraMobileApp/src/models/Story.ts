@@ -3,6 +3,7 @@ export interface Story {
     title: string;
     summary: string;
     coverImageUrl: string;
+    backgroundImageKey?: string;
     storyBits: StoryBit[];
     ageRange: string;
 }
