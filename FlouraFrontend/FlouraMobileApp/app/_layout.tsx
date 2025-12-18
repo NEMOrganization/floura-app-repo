@@ -1,15 +1,13 @@
 import { Stack } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StoriesProvider } from "@/src/context/StoriesContext";
 
 export default function RootLayout() {
   return (
-    <StoriesProvider>
-      <Stack 
-        screenOptions={{
-          headerShown: true,
-          title: "",
-        }}
-      />
-    </StoriesProvider>
+    <SafeAreaProvider>
+      <StoriesProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </StoriesProvider>
+    </SafeAreaProvider>
   );
 }
