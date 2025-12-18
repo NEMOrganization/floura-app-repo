@@ -53,6 +53,7 @@ namespace Floura.Api.Repositories
             existing.Summary = story.Summary;
             existing.AgeRange = story.AgeRange;
             existing.CoverImage = story.CoverImage;
+            existing.BackgroundImageKey = story.BackgroundImageKey;
             existing.StoryBits = story.StoryBits;
 
             await _context.SaveChangesAsync();

@@ -89,5 +89,10 @@ describe('StoryBitScreen', () => {
         expect(getByText('Content of Story Bit 3')).toBeTruthy();
     });
 
+    it("uses default background when no backgroundImageKey is provided", () => {
+        const background = screen.getByTestId("story-background");
+        expect(background).toBeTruthy();
+    })
+
 });
 
