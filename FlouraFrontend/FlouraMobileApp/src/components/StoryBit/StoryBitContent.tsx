@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View } from "react-native";
 
 type Props = {
     content: string;
