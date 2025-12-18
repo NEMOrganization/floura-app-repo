@@ -3,11 +3,11 @@ using Floura.Core.Models;
 
 namespace Floura.Core.Services
 {
-    public class StoryService : IStoryService
+    public class UserService : IStoryService
     {
         private readonly IStoryRepository _repository;
 
-        public StoryService(IStoryRepository repository)
+        public UserService(IStoryRepository repository)
         {
             _repository = repository;
         }

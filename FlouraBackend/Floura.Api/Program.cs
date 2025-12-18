@@ -29,7 +29,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IStoryRepository, StoryRepository>();
-builder.Services.AddScoped<IStoryService, StoryService>();
+builder.Services.AddScoped<IStoryService, UserService>();
 
 builder.Services.AddCors(options =>
 {

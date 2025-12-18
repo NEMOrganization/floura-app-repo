@@ -34,7 +34,7 @@ public class StoryServiceUnitTest
         .Setup(repo => repo.AddAsync(newStory))
         .ReturnsAsync(newStory);
 
-        var storyService = new StoryService(_mockStoryRepository.Object); // dette er vores SUT objekt
+        var storyService = new UserService(_mockStoryRepository.Object); // dette er vores SUT objekt
 
         // Act 
         var result = await storyService.CreateAsync(newStory);
@@ -50,7 +50,7 @@ public class StoryServiceUnitTest
     public async Task CreateAsync_ShouldThrowArgumentNullException_WhenStoryIsNull()
     {
         // Arrange 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act & Assert
         var ex = await Assert.ThrowsAsync<ArgumentNullException>(() => storyService.CreateAsync(null!));
@@ -76,7 +76,7 @@ public class StoryServiceUnitTest
        .Setup(repo => repo.AddAsync(newStory))
        .ThrowsAsync(new InvalidOperationException("error"));
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act & Assert 
         await Assert.ThrowsAsync<InvalidOperationException>(() => storyService.CreateAsync(newStory));
@@ -101,7 +101,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.GetByIdAsync(storyId))
             .ReturnsAsync(existingStory);
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act
         var result = await storyService.GetByIdAsync(storyId);
@@ -124,7 +124,7 @@ public class StoryServiceUnitTest
         .Setup(repo => repo.GetByIdAsync(storyId))
         .ReturnsAsync((Story?)null);
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act 
         var result = await storyService.GetByIdAsync(storyId);
@@ -152,7 +152,7 @@ public class StoryServiceUnitTest
         .Setup(repo => repo.GetByIdAsync(storyId))
         .ReturnsAsync(existingStory);
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act
         var result = await storyService.GetByIdAsync(storyId);
@@ -172,7 +172,7 @@ public class StoryServiceUnitTest
           .Setup(repo => repo.GetByIdAsync(storyId))
           .ThrowsAsync(new InvalidOperationException("error"));
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act & Assert 
         await Assert.ThrowsAsync<InvalidOperationException>(() => storyService.GetByIdAsync(storyId));
@@ -207,7 +207,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.GetAllAsync())
             .ReturnsAsync(listOfStories);
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act
         var result = await storyService.GetAllAsync();
@@ -234,7 +234,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.GetAllAsync())
             .ReturnsAsync(emptyList);
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act
         var result = await storyService.GetAllAsync();
@@ -254,7 +254,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.GetAllAsync())
             .ThrowsAsync(new InvalidOperationException("error"));
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act & Assert 
         await Assert.ThrowsAsync<InvalidOperationException>(() =>
@@ -296,7 +296,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.UpdateAsync(storyId, updatedStory))
             .ReturnsAsync(updatedStory);
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act
         var result = await storyService.UpdateAsync(storyId, updatedStory);
@@ -327,7 +327,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.GetByIdAsync(storyId))
             .ReturnsAsync((Story?)null);
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act
         var result = await storyService.UpdateAsync(storyId, updatedStory);
@@ -357,7 +357,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.GetByIdAsync(storyId))
             .ThrowsAsync(new InvalidOperationException("error"));
 
-        var storyService = new StoryService(_mockStoryRepository.Object);
+        var storyService = new UserService(_mockStoryRepository.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() =>
@@ -391,7 +391,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.UpdateAsync(storyId, exsintingStory))
             .ThrowsAsync(new InvalidOperationException("error"));
 
-        var service = new StoryService(_mockStoryRepository.Object);
+        var service = new UserService(_mockStoryRepository.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() =>
@@ -423,7 +423,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.DeleteAsync(storyId))
             .ReturnsAsync(true);
 
-        var service = new StoryService(_mockStoryRepository.Object);
+        var service = new UserService(_mockStoryRepository.Object);
 
         // Act
         var result = await service.DeleteAsync(storyId);
@@ -444,7 +444,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.GetByIdAsync(storyId))
             .ReturnsAsync((Story?)null);
    
-        var service = new StoryService (_mockStoryRepository.Object);
+        var service = new UserService (_mockStoryRepository.Object);
 
         // Act 
         var result = await service.DeleteAsync(storyId);
@@ -478,7 +478,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.DeleteAsync(storyId))
             .ThrowsAsync(new InvalidOperationException("error Delete"));
 
-        var service = new StoryService(_mockStoryRepository.Object);
+        var service = new UserService(_mockStoryRepository.Object);
         
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.DeleteAsync(storyId));
