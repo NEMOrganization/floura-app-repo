@@ -34,8 +34,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   backButton: {
-    fontSize: 18,
-    color: '#850E35', // playful dark accent
+    fontSize: 24,
+    color: '#000000ff', // playful dark accent
   },
   progressContainer: {
     backgroundColor: 'rgba(255,255,255,0.3)',

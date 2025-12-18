@@ -7,9 +7,7 @@ import StoryBitHeader from "../components/StoryBit/StoryBitHeader";
 import StoryBitNavigationArrow from "../components/StoryBit/StoryBitNavigationArrow";
 import StoryBitContent from "../components/StoryBit/StoryBitContent";
 
-const StoryBackgrounds: { [key: string]: any } = {
-  goodmorningFloura: require("../../assets/images/backgroundImages/goodmorning-background.jpg")
-}
+import { STORY_BACKGROUNDS, DEFAULT_STORY_BACKGROUND } from "../constants/storyBackgrounds";
 
 export default function StoryBitScreen() {
       const { storyId } = useLocalSearchParams<{ storyId: string }>();
@@ -18,6 +16,8 @@ export default function StoryBitScreen() {
       
       const router = useRouter();
       const [currentIndex, setCurrentIndex] = useState(0);
+
+      const backgroundImages = STORY_BACKGROUNDS[story?.backgroundImageKey ?? ""] ?? DEFAULT_STORY_BACKGROUND;
 
       if (!story) {
         return (
@@ -33,10 +33,9 @@ export default function StoryBitScreen() {
       const handlePrev = () => setCurrentIndex((i) => i - 1);
       const handleBack = () => router.back();
 
-      const backgroundImage = StoryBackgrounds[story.id] || require("../../assets/images/backgroundImages/default-background.jpg");
 
       return (
-        <ImageBackground source={backgroundImage} style={styles.background}>
+        <ImageBackground source={backgroundImages} style={styles.background} resizeMode="cover">
             <View style={styles.overlay}>
               <StoryBitHeader
                 currentIndex={currentIndex}
