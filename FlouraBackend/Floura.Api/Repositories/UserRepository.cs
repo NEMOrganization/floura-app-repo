@@ -1,9 +1,10 @@
-﻿using Floura.Core.Models;
+﻿using Floura.Core.Interfaces;
+using Floura.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Floura.Api.Repositories
 {
-    public class UserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly FlouraDbContext _context;
 

@@ -3,7 +3,7 @@ using Floura.Core.Models;
 
 namespace Floura.Api.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _repository;
 

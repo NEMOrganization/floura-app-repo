@@ -31,6 +31,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IStoryRepository, StoryRepository>();
 builder.Services.AddScoped<IStoryService, StoryService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 
 builder.Services.AddCors(options =>
 {

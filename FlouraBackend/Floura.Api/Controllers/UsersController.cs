@@ -63,6 +63,14 @@ namespace Floura.Api.Controllers
 
             try
             {
+                if (user.Children != null)
+                {
+                    foreach (var child in user.Children)
+                    {
+                        child.User = user;  // EF Core kræver non-null User reference
+                    }
+                }
+
                 var newUser = await _userService.CreateAsync(user);
 
                 return CreatedAtAction(
