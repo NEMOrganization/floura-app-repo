@@ -46,7 +46,7 @@ namespace Floura.Api.Controllers
 
             if (user == null)
             {
-                return NotFound("This id does not exist");
+                return NotFound("The id does not exist");
             }
 
             return Ok(user);
@@ -59,7 +59,7 @@ namespace Floura.Api.Controllers
         public async Task<ActionResult<User>> Post([FromBody] User? user)
         {
             if (user == null)
-                return BadRequest("A user object can not be null");
+                return BadRequest("User can't be null");
 
             try
             {

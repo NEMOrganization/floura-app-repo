@@ -148,15 +148,15 @@ public class UserRepositoryUnitTest
     }
 
     [Fact]
-    public async Task UpdateAsync_Update_WhenUsersExists()
+    public async Task UpdateAsync_Update_WhenUserExists()
     {
         var id = Guid.NewGuid();
 
         var existing = new User
         {
-            Id = Guid.NewGuid(),
-            Email = "Test1@test1.com",
-            PasswordHash = "test1",
+            Id = id,
+            Email = "Old email",
+            PasswordHash = "Old password",
             Language = Core.Models.Enums.Language.Danish
         };
 
@@ -165,9 +165,9 @@ public class UserRepositoryUnitTest
 
         var updated = new User
         {
-            Id = Guid.NewGuid(),
-            Email = "Test1@test1.com",
-            PasswordHash = "test1",
+            Id = id,
+            Email = "New email",
+            PasswordHash = "New password",
             Language = Core.Models.Enums.Language.Danish
         };
 

@@ -1,4 +1,5 @@
-﻿using Floura.Core.Interfaces;
+﻿using Floura.Api.Services;
+using Floura.Core.Interfaces;
 using Floura.Core.Models;
 using Floura.Core.Services;
 using Moq;
@@ -179,8 +180,9 @@ public class UserServiceUnitTest
     public async Task GetAllAsync_ShouldReturnUsers_WhenUsersExist()
     {
         // Arrange
+        var userId = Guid.NewGuid();
         var listOfUsers = new List<User>
-    {
+        {
         new User
         {
             Id = userId,
@@ -450,30 +452,29 @@ public class UserServiceUnitTest
 
         // Arrange
         var userId = Guid.NewGuid();
-        var existingUser = new Story
+        var existingUser = new User
         {
             Id = userId,
-            Title = "New Title",
-            Summary = "New summary",
-            CoverImage = "new.jpg",
-            AgeRange = Core.Models.Enums.AgeRange.Age2To5
+            Email = "New email",
+            PasswordHash = "New password",
+            Language = Core.Models.Enums.Language.Danish
         };
 
-        _mockStoryRepository
+        _mockUserRepository
             .Setup(repo => repo.GetByIdAsync(userId))
             .ReturnsAsync(existingUser);
 
-        _mockStoryRepository
+        _mockUserRepository
             .Setup(repo => repo.DeleteAsync(userId))
             .ThrowsAsync(new InvalidOperationException("error Delete"));
 
-        var service = new StoryService(_mockStoryRepository.Object);
+        var service = new UserService(_mockUserRepository.Object);
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => service.DeleteAsync(userId));
 
-        _mockStoryRepository.Verify(repo => repo.GetByIdAsync(userId), Times.Once);
-        _mockStoryRepository.Verify(repo => repo.DeleteAsync(userId), Times.Once);
+        _mockUserRepository.Verify(repo => repo.GetByIdAsync(userId), Times.Once);
+        _mockUserRepository.Verify(repo => repo.DeleteAsync(userId), Times.Once);
     }
 }
 

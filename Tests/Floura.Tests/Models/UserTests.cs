@@ -40,11 +40,9 @@ namespace Floura.Tests.Models
         public void User_IsInvalid_WhenEmailIsEmpty()
         {
             // Arrange
-            var userId = Guid.NewGuid();
             var user = new User
             {
-                Id = userId,
-                Email = "test@test.com",
+                Email = "",
                 PasswordHash = "test1234",
                 Language = Core.Models.Enums.Language.Danish
             };
@@ -53,7 +51,8 @@ namespace Floura.Tests.Models
             var results = Validate(user);
 
             // Assert
-            Assert.Contains(results, email => email.MemberNames.Contains(nameof(User.Email)));
+            Assert.Contains(results, r =>
+                r.MemberNames.Contains(nameof(User.Email)));
         }
 
 
@@ -65,7 +64,7 @@ namespace Floura.Tests.Models
             var user = new User
             {
                 Id = userId,
-                Email = "test@test.com",
+                Email = null,
                 PasswordHash = "test1234",
                 Language = Core.Models.Enums.Language.Danish
             };
@@ -87,7 +86,7 @@ namespace Floura.Tests.Models
             {
                 Id = userId,
                 Email = "test@test.com",
-                PasswordHash = "test1234",
+                PasswordHash = "",
                 Language = Core.Models.Enums.Language.Danish
             };
 
@@ -108,7 +107,7 @@ namespace Floura.Tests.Models
             {
                 Id = userId,
                 Email = "test@test.com",
-                PasswordHash = "test1234",
+                PasswordHash = "t",
                 Language = Core.Models.Enums.Language.Danish
             };
 

@@ -6,6 +6,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.SystemConsole;
 using Serilog.Sinks.File;
+using Floura.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IStoryRepository, StoryRepository>();
-builder.Services.AddScoped<IStoryService, UserService>();
+builder.Services.AddScoped<IStoryService, StoryService>();
 
 builder.Services.AddCors(options =>
 {
