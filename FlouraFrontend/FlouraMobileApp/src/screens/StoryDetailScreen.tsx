@@ -60,7 +60,13 @@ export default function StoryDetailScreen() {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{ paddingTop: insets.top + 16, paddingBottom: 16 }}
+      contentContainerStyle={[
+        styles.content,
+        {
+          paddingTop: insets.top, // kun safe area (ingen ekstra “luft”)
+          paddingBottom: insets.bottom + 16, // lidt luft + sikker bund
+        },
+      ]}
       contentInsetAdjustmentBehavior="never"
     >
       <StatusBar style="dark" translucent />
@@ -85,7 +91,10 @@ export default function StoryDetailScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: 16,
   },
   center: {
     flex: 1,
