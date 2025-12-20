@@ -17,6 +17,9 @@ namespace Floura.Api.Services
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
+            // Hash password før gem
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
+
             return await _repository.AddAsync(user);
         }
 
@@ -36,7 +39,17 @@ namespace Floura.Api.Services
             if (existing == null)
                 return null;
 
-            return await _repository.UpdateAsync(id, user);
+            existing.Email = user.Email;
+            existing.Language = user.Language;
+            existing.Children = user.Children;
+
+            // Hash kun hvis password er sendt med
+            if (!string.IsNullOrWhiteSpace(user.PasswordHash))
+            {
+                existing.PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash);
+            }
+
+            return await _repository.UpdateAsync(id, existing);
         }
 
         public async Task<bool> DeleteAsync(Guid id)
