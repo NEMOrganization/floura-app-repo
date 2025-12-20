@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, Button, StyleSheet} from 'react-native';
+import { ScrollView, View, StyleSheet} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import LoadingScreen from '../components/Loading';
 
@@ -8,6 +8,7 @@ import StoryImage from "../components/StoryImage";
 import Summary from "../components/Summary";
 import { storyService } from "../services/storyService";
 import { Story } from "../models/Story";
+import Button from '../components/Button';
 
 import { useStories } from "../context/StoriesContext";
 
@@ -52,16 +53,21 @@ export default function StoryDetailScreen() {
 
   return (
     <ScrollView style={styles.container}>
-      <Title text={story.title} />
+      <Title text={story.title} 
+      style={{ color: '#432323', fontSize: 26, textAlign: 'center'}}/>
 
       <StoryImage source={story.coverImageUrl} testID="story-image" />
 
-      <Summary text={story.summary} />
+      <Summary text={story.summary}
+      style={{ color: '#432323', fontSize: 22, textAlign: 'center' }} />
 
-      <Button
-        title="Læs historien"
-        onPress={() => router.push(`../stories/${story.id}/bits`)}
-      />
+      <View style={styles.buttonContainer}>
+              <Button 
+                title="Læs historien" 
+                onPress={() => router.push(`../stories/${story.id}/bits`)} 
+                variant="third" 
+              />
+      </View>
     </ScrollView>
   );
 }
@@ -69,10 +75,14 @@ export default function StoryDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    backgroundColor: "#FCF9EA"
   },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonContainer: {
+
+  }
 });
