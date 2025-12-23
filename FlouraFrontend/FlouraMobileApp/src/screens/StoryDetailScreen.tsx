@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import LoadingScreen from '../components/Loading';
-import { StatusBar } from 'expo-status-bar';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Title from '../components/Title';
@@ -63,14 +62,12 @@ export default function StoryDetailScreen() {
       contentContainerStyle={[
         styles.content,
         {
-          paddingTop: insets.top, // kun safe area (ingen ekstra “luft”)
-          paddingBottom: insets.bottom + 16, // lidt luft + sikker bund
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom + 16,
         },
       ]}
       contentInsetAdjustmentBehavior="never"
     >
-      <StatusBar style="dark" translucent />
-
       <TouchableOpacity
         onPress={() => router.back()}
         style={{ marginBottom: 12 }}

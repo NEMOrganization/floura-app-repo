@@ -51,7 +51,7 @@ export default function StoryBitScreen() {
       <View style={styles.overlay}>
         <StatusBar style="dark" translucent />
 
-        <View style={{ paddingTop: insets.top - 16 }}></View>
+        <View style={{ paddingTop: Math.max(insets.top - 12, 8) }}></View>
         <StoryBitHeader
           currentIndex={currentIndex}
           totalBits={story.storyBits.length}

@@ -44,11 +44,9 @@ export default function StoriesOverviewScreen() {
 
   return (
     <>
-      <StatusBar style="dark" />
+      <StatusBar style="dark" /> 
       <SafeAreaView style={styles.container} edges={['top']}>
-        <View style={{ marginTop: -40 }}>
-          <Title text="Historie oversigt" />
-        </View>
+        <Title text="Historie oversigt" />
         <StoriesList items={stories} onPressStory={handlePressStory} />
       </SafeAreaView>
     </>
@@ -60,6 +58,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 12,
     paddingBottom: 12,
-    backgroundColor: '#ddb0d5ff',
+    backgroundColor: 'rgba(247, 236, 32, 0.52)',
   },
 });

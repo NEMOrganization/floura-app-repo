@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+/* import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,3 +26,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   }
 });
+ */
+
+
+import StoriesOverviewScreen from "../src/screens/StoriesOverviewScreen";
+
+export default function Index() {
+  return <StoriesOverviewScreen />;
+}
