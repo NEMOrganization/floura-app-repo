@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Button } from 'react-native';
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import StoriesList from '../components/StoriesList';
@@ -35,12 +35,17 @@ export default function StoriesOverviewScreen() {
   function handlePressStory(story: Story) {
     router.push(`../stories/${story.id}`);
   }
+
+  function handlePressReminder(){
+    router.push('/reminderSettingsScreen')
+  }
   if (isLoading) return <LoadingScreen />;
 
 
 
   return (
     <View style={styles.container}>
+      <Button title="Opsæt påmindelser" onPress={handlePressReminder} />
       <StoriesList items={stories} onPressStory={handlePressStory} />
     </View>
   );
