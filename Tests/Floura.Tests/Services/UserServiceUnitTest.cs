@@ -286,9 +286,12 @@ public class UserServiceUnitTest
             .Setup(repo => repo.GetByIdAsync(userId))
             .ReturnsAsync(existingUser);
 
+        User? capturedUser = null;
+
         _mockUserRepository
-            .Setup(repo => repo.UpdateAsync(userId, updatedUser))
-            .ReturnsAsync(updatedUser);
+            .Setup(repo => repo.UpdateAsync(userId, It.IsAny<User>()))
+            .Callback<Guid, User>((_, u) => capturedUser = u)
+            .ReturnsAsync(existingUser);
 
         var userService = new UserService(_mockUserRepository.Object);
 
@@ -297,11 +300,15 @@ public class UserServiceUnitTest
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(updatedUser, result);
+        Assert.Equal("New email", result!.Email);
+
+        Assert.NotNull(capturedUser);
+        Assert.True(BCrypt.Net.BCrypt.Verify("New password", capturedUser!.PasswordHash));
 
         _mockUserRepository.Verify(repo => repo.GetByIdAsync(userId), Times.Once);
-        _mockUserRepository.Verify(repo => repo.UpdateAsync(userId, updatedUser), Times.Once);
+        _mockUserRepository.Verify(repo => repo.UpdateAsync(userId, It.IsAny<User>()), Times.Once);
     }
+
 
     [Fact]
     public async Task UpdateAsync_ShouldReturnNull_WhenUserDoesNotExist()

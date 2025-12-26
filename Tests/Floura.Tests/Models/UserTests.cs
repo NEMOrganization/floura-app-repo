@@ -64,7 +64,7 @@ namespace Floura.Tests.Models
             var user = new User
             {
                 Id = userId,
-                Email = null,
+                Email = null!,
                 PasswordHash = "test1234",
                 Language = Core.Models.Enums.Language.Danish
             };
