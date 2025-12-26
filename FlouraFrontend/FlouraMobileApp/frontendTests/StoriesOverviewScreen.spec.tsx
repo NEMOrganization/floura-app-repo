@@ -1,26 +1,22 @@
-import React from 'react';
+import { Image } from 'react-native';
 import { render, waitFor } from '@testing-library/react-native';
+
+import StoriesOverviewScreen from '../src/screens/StoriesOverviewScreen';
 import { storyService } from '../src/services/storyService';
+import StoriesList from '../src/components/StoriesList';
 
-// Mock safe-area så den ikke sluger children i tests
-jest.mock('react-native-safe-area-context', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  return {
-    SafeAreaProvider: ({ children }: any) => <View>{children}</View>,
-    SafeAreaView: ({ children }: any) => <View>{children}</View>,
-    useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
-  };
-});
+jest.mock('react-native-safe-area-context', () => ({
+  SafeAreaProvider: ({ children }: any) => children,
+  SafeAreaView: ({ children }: any) => children,
+  useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
+}));
 
-// Mock service
 jest.mock('../src/services/storyService', () => ({
   storyService: {
     getStories: jest.fn(),
   },
 }));
 
-// Mock navigation
 jest.mock('expo-router', () => ({
   router: {
     push: jest.fn(),
@@ -29,40 +25,68 @@ jest.mock('expo-router', () => ({
   },
 }));
 
-// Mock statusbar
 jest.mock('expo-status-bar', () => ({
   StatusBar: () => null,
 }));
 
-// Gør Title testbar (ren tekst)
-jest.mock('../src/components/Title', () => {
-  const React = require('react');
-  const { Text } = require('react-native');
-  return function MockTitle({ text }: { text: string }) {
-    return <Text>{text}</Text>;
-  };
+// Vi tester ikke Loading/Title her -> de skal bare ikke larme
+jest.mock('../src/components/Loading', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+jest.mock('../src/components/Title', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+
+jest.mock('../src/components/StoriesList', () => ({
+  __esModule: true,
+  default: jest.fn(() => null),
+}));
+
+jest.mock('../assets/images/coverImages/coverKids.jpg', () => 1);
+
+beforeAll(() => {
+  // stabiliser den del af screenen der sætter coverImageUrl
+  jest
+    .spyOn(Image, 'resolveAssetSource')
+    .mockReturnValue({ uri: 'mock-uri' } as any);
 });
 
-// Gør StoriesList simpel
-jest.mock('../src/components/StoriesList', () => {
-  const React = require('react');
-  const { View } = require('react-native');
-  return function MockStoriesList() {
-    return <View />;
-  };
-});
+describe('StoriesOverviewScreen (data)', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
-// Import AFTER mocks
-import StoriesOverviewScreen from '../src/screens/StoriesOverviewScreen';
+  it('fetches stories and passes them to StoriesList', async () => {
+    const stories = [
+      {
+        id: '1',
+        title: 'Test historie',
+        coverImageUrl: '',
+        summary: 'Summary',
+        storyBits: [],
+      },
+    ];
+    (storyService.getStories as jest.Mock).mockResolvedValueOnce(stories);
 
-describe('StoriesOverviewScreen', () => {
-  it('renders overview title after loading', async () => {
-    (storyService.getStories as jest.Mock).mockResolvedValueOnce([]);
+    render(<StoriesOverviewScreen />);
 
-    const { getByText } = render(<StoriesOverviewScreen />);
+    // 1) den henter data
+    await waitFor(() =>
+      expect(storyService.getStories).toHaveBeenCalledTimes(1),
+    );
 
-    await waitFor(() => {
-      expect(getByText('Historie oversigt')).toBeTruthy();
+    // 2) den sender data videre til StoriesList
+    await waitFor(() => expect(StoriesList).toHaveBeenCalledTimes(1));
+
+    const props = (StoriesList as unknown as jest.Mock).mock.calls[0][0];
+
+    expect(props.items).toHaveLength(1);
+    expect(props.items[0]).toMatchObject({
+      id: '1',
+      title: 'Test historie',
+      summary: 'Summary',
     });
   });
 });
