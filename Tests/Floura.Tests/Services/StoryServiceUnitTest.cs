@@ -444,7 +444,7 @@ public class StoryServiceUnitTest
             .Setup(repo => repo.GetByIdAsync(storyId))
             .ReturnsAsync((Story?)null);
    
-        var service = new StoryService (_mockStoryRepository.Object);
+        var service = new StoryService(_mockStoryRepository.Object);
 
         // Act 
         var result = await service.DeleteAsync(storyId);
