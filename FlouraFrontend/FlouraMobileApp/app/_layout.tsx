@@ -1,15 +1,15 @@
 import { Stack } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StoriesProvider } from "@/src/context/StoriesContext";
+import { StatusBar } from "expo-status-bar";
 
 export default function RootLayout() {
   return (
-    <StoriesProvider>
-      <Stack 
-        screenOptions={{
-          headerShown: true,
-          title: "",
-        }}
-      />
-    </StoriesProvider>
+    <SafeAreaProvider>
+      <StatusBar translucent={false} />
+      <StoriesProvider>
+        <Stack screenOptions={{ headerShown: false }} />
+      </StoriesProvider>
+    </SafeAreaProvider>
   );
 }

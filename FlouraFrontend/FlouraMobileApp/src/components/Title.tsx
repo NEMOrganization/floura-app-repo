@@ -13,7 +13,7 @@ export default function Title({ text }: TitleProps) {
 const styles = StyleSheet.create({
   title: {
     fontSize: 28,
-    fontWeight: "700",
+    fontWeight: '700',
     marginBottom: 8,
   },
 });
