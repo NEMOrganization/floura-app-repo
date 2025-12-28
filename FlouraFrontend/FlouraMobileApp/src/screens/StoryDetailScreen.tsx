@@ -1,40 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, Button, StyleSheet} from 'react-native';
+import {
+  Text,
+  ScrollView,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import LoadingScreen from '../components/Loading';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import Title from "../components/Title";
-import StoryImage from "../components/StoryImage";
-import Summary from "../components/Summary";
-import { storyService } from "../services/storyService";
-import { Story } from "../models/Story";
+import Title from '../components/Title';
+import StoryImage from '../components/StoryImage';
+import Summary from '../components/Summary';
+import { storyService } from '../services/storyService';
+import { Story } from '../models/Story';
 
-import { useStories } from "../context/StoriesContext";
+import { useStories } from '../context/StoriesContext';
 
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
   const { upsertStory } = useStories();
+  const insets = useSafeAreaInsets();
 
   const [story, setStory] = useState<Story | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-
   useEffect(() => {
-  if (!storyId) {
-    setIsLoading(false);
-    return;
-  }
+    if (!storyId) {
+      setIsLoading(false);
+      return;
+    }
     const fetchStory = async () => {
       try {
         const data = await storyService.getStoryById(storyId);
         if (!data) {
-        throw new Error("Historien findes ikke");
-      }
+          throw new Error('Historien findes ikke');
+        }
         setStory(data);
         upsertStory(data);
       } catch {
-        router.replace("/errorScreen?message=Historien gemmer sig");
-
+        //router.replace("/errorScreen?message=Historien gemmer sig");
+        router.push('/errorScreen?message=Historien gemmer sig');
       } finally {
         setIsLoading(false);
       }
@@ -44,18 +51,31 @@ export default function StoryDetailScreen() {
   }, [storyId, upsertStory]);
 
   if (isLoading) {
-  return <LoadingScreen />;
-}
+    return <LoadingScreen />;
+  }
 
-
-  if(!story) return null;
+  if (!story) return null;
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={[
+        styles.content,
+        {
+          paddingTop: insets.top,
+          paddingBottom: insets.bottom + 16,
+        },
+      ]}
+      contentInsetAdjustmentBehavior="never"
+    >
+      <TouchableOpacity
+        onPress={() => router.back()}
+        style={{ marginBottom: 12 }}
+      >
+        <Text style={{ fontSize: 16, color: '#007AFF' }}>← Tilbage</Text>
+      </TouchableOpacity>
       <Title text={story.title} />
-
       <StoryImage source={story.coverImageUrl} testID="story-image" />
-
       <Summary text={story.summary} />
 
       <Button
@@ -68,7 +88,10 @@ export default function StoryDetailScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: 16,
   },
   center: {
     flex: 1,
