@@ -14,8 +14,7 @@ export default function Title({ text, style }: TitleProps) {
 const styles = StyleSheet.create({
   title: {
     fontSize: 28,
-    fontWeight: "700",
-    fontFamily: 'Roboto',
+    fontWeight: '700',
     marginBottom: 8,
     color: '#000', 
   },
