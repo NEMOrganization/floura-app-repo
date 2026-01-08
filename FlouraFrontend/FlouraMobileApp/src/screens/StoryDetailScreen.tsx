@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, StyleSheet,TouchableOpacity, Image} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import LoadingScreen from '../components/Loading';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -33,13 +27,28 @@ export default function StoryDetailScreen() {
       return;
     }
     const fetchStory = async () => {
+      let coverKidsUri = '';
+      try {
+        const coverKids = require('../../assets/images/coverImages/coverKids.jpg');
+        coverKidsUri = Image.resolveAssetSource(coverKids)?.uri ?? '';
+      } catch {
+        coverKidsUri = '';
+      }
+
       try {
         const data = await storyService.getStoryById(storyId);
+
         if (!data) {
           throw new Error('Historien findes ikke');
         }
-        setStory(data);
-        upsertStory(data);
+
+        const storyWithCover: Story = {
+          ...data,
+          coverImageUrl: coverKidsUri,
+        };
+
+        setStory(storyWithCover);
+        upsertStory(storyWithCover);
       } catch {
         //router.replace("/errorScreen?message=Historien gemmer sig");
         router.push('/errorScreen?message=Historien gemmer sig');
@@ -77,7 +86,8 @@ export default function StoryDetailScreen() {
       </TouchableOpacity>
       <Title text={story.title} 
       style={{ color: '#432323', fontSize: 26, textAlign: 'center'}}/>
-      <StoryImage source={story.coverImageUrl} testID="story-image" />
+      <StoryImage source={{ uri: story.coverImageUrl }} />
+
       <Summary text={story.summary} style={{ color: '#432323', fontSize: 22, textAlign: 'center' }} />
 
       <View style={styles.buttonContainer}>

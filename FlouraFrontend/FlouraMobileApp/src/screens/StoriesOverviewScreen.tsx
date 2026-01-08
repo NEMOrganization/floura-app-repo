@@ -33,7 +33,7 @@ export default function StoriesOverviewScreen() {
 
         setStories(data.map((s) => ({ ...s, coverImageUrl: coverKidsUri })));
       } catch {
-        router.replace('/errorScreen?message=Historierne er blevet væk');
+        router.replace('/errorScreen?message=Internettet er vist forsvundet');
       } finally {
         setIsLoading(false);
       }
