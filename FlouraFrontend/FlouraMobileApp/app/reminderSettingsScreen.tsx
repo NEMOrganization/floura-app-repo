@@ -3,6 +3,7 @@ import { View, Text, Platform, Alert, StyleSheet, TouchableOpacity } from 'react
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
+import { router } from 'expo-router';
 
 // Opsæt notifikation handler
 Notifications.setNotificationHandler({
@@ -84,11 +85,17 @@ const ReminderSettingsScreen = () => {
     await scheduleDailyReminder(time);
   };
 
+   const handleBack = () => router.back();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Vælg tidspunkt for tandbørstning ⏰</Text>
+      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+        <Text style={styles.backButtonText}>← Tilbage</Text>
+      </TouchableOpacity>
 
       {/* Tidspicker knap */}
+      <View style={styles.content}>
+      <Text style={styles.label}>Vælg tidspunkt for tandbørstning ⏰</Text>
       <TouchableOpacity 
         style={styles.timeButton} 
         onPress={() => setShowPicker(true)}
@@ -115,6 +122,7 @@ const ReminderSettingsScreen = () => {
         <Text style={styles.saveButtonText}>Gem påmindelse</Text>
       </TouchableOpacity>
     </View>
+    </View>
   );
 };
 
@@ -123,10 +131,22 @@ export default ReminderSettingsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    paddingTop: 60,
+    paddingHorizontal: 20,
     backgroundColor: '#E8F5E9',
+  },
+  backButton: {               
+    alignSelf: 'flex-start',
+    marginBottom: 16,
+  },
+  backButtonText: {            
+    fontSize: 16,
+    color: '#007AFF',
+  },
+  content: {
+    flex: 1, 
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   label: {
     fontSize: 20,

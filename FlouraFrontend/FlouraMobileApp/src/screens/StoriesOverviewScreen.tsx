@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Image, Button } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import StoriesList from '../components/StoriesList';
 import LoadingScreen from '../components/Loading';
 import { router } from 'expo-router';
 import Title from '../components/Title';
+import Button from '../components/Button';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -59,9 +60,11 @@ export default function StoriesOverviewScreen() {
         <Title text="Historie oversigt" />
 
         <Button 
-          title="Opsæt påmindelser"
-          onPress={handlePressReminder}
-        />
+        title="Opsæt påmindelser"
+        onPress={handlePressReminder}
+        variant="third" 
+        style={{ marginVertical: 20 }} 
+      />
 
         <StoriesList items={stories} onPressStory={handlePressStory} />
       </SafeAreaView>
