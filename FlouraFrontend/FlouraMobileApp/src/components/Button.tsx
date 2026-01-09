@@ -1,13 +1,15 @@
 // src/components/Button.tsx
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
 interface ButtonProps {
   title: string;
   onPress?: () => void;
   disabled?: boolean;
   loading?: boolean;
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "third";
+  style?: ViewStyle;
+  textStyle?: TextStyle;
 }
 
 export default function Button({
@@ -15,13 +17,30 @@ export default function Button({
     onPress,
     disabled = false, 
     loading = false, 
-    variant = "primary"
+    variant = "primary",
+    style, 
+    textStyle,
+
 }: ButtonProps) {
 
-    const stylesForVariant = {
-        primary: {backgroundColor: "#FCF5EE"}, 
-        secondary: {backgroundColor: "#FFC4C4"}
-    }[variant];
+    const variantStyles: Record<string, {button: ViewStyle, text: TextStyle}> = {
+        primary: {
+            button: {backgroundColor: "#FCF5EE"},
+            text: {color: "#850E35"}
+        }, 
+
+        secondary: {
+            button: {backgroundColor: "#FFC4C4"},
+            text: {color: "#850E35"}
+        },
+
+        third: {
+            button: {backgroundColor: "#BDD2B6"},
+            text: {color: "#432323"}
+        }
+    };
+
+    const currentVariant = variantStyles[variant];
 
     return (
         <TouchableOpacity
@@ -29,12 +48,12 @@ export default function Button({
             accessibilityRole="button"
             disabled={disabled || loading}
             onPress={onPress}
-            style={[styles.button, stylesForVariant, disabled && styles.disabled]}
+            style={[styles.button, currentVariant.button, style, disabled && styles.disabled]}
             >
                 {loading ? (
                     <ActivityIndicator testID="button-loader" />
                 ) : (
-                    <Text style={styles.text}>{title}</Text>
+                    <Text style={[styles.text, currentVariant.text, textStyle]}>{title}</Text>
                 )}
             </TouchableOpacity>
         );
@@ -42,16 +61,17 @@ export default function Button({
 
     const styles = StyleSheet.create({
         button: {
-            padding: 12,
-            borderRadius: 8, 
+            paddingVertical: 12,
+            paddingHorizontal: 24,
+            borderRadius: 20, 
             alignItems: "center",
-            justifyContent: "center"
+            justifyContent: "center",
+            alignSelf: "center"
         },
         disabled: {
             opacity: 0.5
         },
         text: {
-            color: "#850E35",
             fontWeight: "400",
             fontSize: 18,
         }
