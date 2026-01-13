@@ -85,7 +85,7 @@ export default function StoryDetailScreen() {
         <Text style={{ fontSize: 16, color: '#007AFF' }}>← Tilbage</Text>
       </TouchableOpacity>
       <Title text={story.title} 
-      style={{ color: '#432323', fontSize: 26, textAlign: 'center'}}/>
+      style={{ color: '#432323', fontSize: 26}}/>
       <StoryImage source={{ uri: story.coverImageUrl }} />
 
       <Summary text={story.summary} style={{ color: '#432323', fontSize: 22, textAlign: 'center' }} />
