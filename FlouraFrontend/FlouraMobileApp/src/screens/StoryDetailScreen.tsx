@@ -77,9 +77,7 @@ export default function StoryDetailScreen() {
         }}
         contentInsetAdjustmentBehavior="never"
       >
-        <Title
-          text={story.title}
-        style={{ color: '#432323', fontSize: 26}}/>
+        <Title text={story.title} style={{ color: '#432323', fontSize: 26 }} />
 
         <StoryImage source={{ uri: story.coverImageUrl }} />
 
