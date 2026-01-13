@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Text,
-  ScrollView,
-  Button,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, ScrollView, StyleSheet,TouchableOpacity, Image} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import LoadingScreen from '../components/Loading';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,6 +9,7 @@ import StoryImage from '../components/StoryImage';
 import Summary from '../components/Summary';
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
+import Button from '../components/Button';
 
 import { useStories } from '../context/StoriesContext';
 
@@ -32,13 +27,28 @@ export default function StoryDetailScreen() {
       return;
     }
     const fetchStory = async () => {
+      let coverKidsUri = '';
+      try {
+        const coverKids = require('../../assets/images/coverImages/coverKids.jpg');
+        coverKidsUri = Image.resolveAssetSource(coverKids)?.uri ?? '';
+      } catch {
+        coverKidsUri = '';
+      }
+
       try {
         const data = await storyService.getStoryById(storyId);
+
         if (!data) {
           throw new Error('Historien findes ikke');
         }
-        setStory(data);
-        upsertStory(data);
+
+        const storyWithCover: Story = {
+          ...data,
+          coverImageUrl: coverKidsUri,
+        };
+
+        setStory(storyWithCover);
+        upsertStory(storyWithCover);
       } catch {
         //router.replace("/errorScreen?message=Historien gemmer sig");
         router.push('/errorScreen?message=Historien gemmer sig');
@@ -74,20 +84,27 @@ export default function StoryDetailScreen() {
       >
         <Text style={{ fontSize: 16, color: '#007AFF' }}>← Tilbage</Text>
       </TouchableOpacity>
-      <Title text={story.title} />
-      <StoryImage source={story.coverImageUrl} testID="story-image" />
-      <Summary text={story.summary} />
+      <Title text={story.title} 
+      style={{ color: '#432323', fontSize: 26, textAlign: 'center'}}/>
+      <StoryImage source={{ uri: story.coverImageUrl }} />
 
-      <Button
-        title="Læs historien"
-        onPress={() => router.push(`../stories/${story.id}/bits`)}
-      />
+      <Summary text={story.summary} style={{ color: '#432323', fontSize: 22, textAlign: 'center' }} />
+
+      <View style={styles.buttonContainer}>
+              <Button 
+                title="Læs historien" 
+                onPress={() => router.push(`../stories/${story.id}/bits`)} 
+                variant="third" 
+              />
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    padding: 16,
+    backgroundColor: "#FCF9EA",
     flex: 1,
   },
   content: {
@@ -98,4 +115,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonContainer: {
+
+  }
 });
