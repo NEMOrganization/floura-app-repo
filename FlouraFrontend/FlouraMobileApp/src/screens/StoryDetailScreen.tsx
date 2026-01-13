@@ -79,8 +79,7 @@ export default function StoryDetailScreen() {
       >
         <Title
           text={story.title}
-          style={{ color: '#432323', fontSize: 26, textAlign: 'center' }}
-        />
+        style={{ color: '#432323', fontSize: 26}}/>
 
         <StoryImage source={{ uri: story.coverImageUrl }} />
 
