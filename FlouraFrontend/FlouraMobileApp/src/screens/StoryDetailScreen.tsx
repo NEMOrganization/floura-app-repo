@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, StyleSheet,TouchableOpacity, Image} from 'react-native';
+import { View, ScrollView, StyleSheet, Image } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import LoadingScreen from '../components/Loading';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import LoadingScreen from '../components/Loading';
 import Title from '../components/Title';
 import StoryImage from '../components/StoryImage';
 import Summary from '../components/Summary';
+import Button from '../components/Button';
+import BackHeader from '../components/BackArrow';
+
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
-import Button from '../components/Button';
-
 import { useStories } from '../context/StoriesContext';
 
 export default function StoryDetailScreen() {
@@ -26,6 +27,7 @@ export default function StoryDetailScreen() {
       setIsLoading(false);
       return;
     }
+
     const fetchStory = async () => {
       let coverKidsUri = '';
       try {
@@ -37,10 +39,7 @@ export default function StoryDetailScreen() {
 
       try {
         const data = await storyService.getStoryById(storyId);
-
-        if (!data) {
-          throw new Error('Historien findes ikke');
-        }
+        if (!data) throw new Error('Historien findes ikke');
 
         const storyWithCover: Story = {
           ...data,
@@ -50,7 +49,6 @@ export default function StoryDetailScreen() {
         setStory(storyWithCover);
         upsertStory(storyWithCover);
       } catch {
-        //router.replace("/errorScreen?message=Historien gemmer sig");
         router.push('/errorScreen?message=Historien gemmer sig');
       } finally {
         setIsLoading(false);
@@ -60,62 +58,52 @@ export default function StoryDetailScreen() {
     fetchStory();
   }, [storyId, upsertStory]);
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
+  if (isLoading) return <LoadingScreen />;
   if (!story) return null;
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={[
-        styles.content,
-        {
-          paddingTop: insets.top,
+    <View style={styles.screen}>
+      {/* samme top spacer som StoryBitScreen */}
+      <View style={{ paddingTop: Math.max(insets.top - 12, 8) }} />
+
+      {/* header med pil (uden progress) */}
+      <BackHeader onBack={() => router.back()} />
+
+      {/* scrollbart indhold */}
+      <ScrollView
+        contentContainerStyle={{
+          paddingHorizontal: 16,
           paddingBottom: insets.bottom + 16,
-        },
-      ]}
-      contentInsetAdjustmentBehavior="never"
-    >
-      <TouchableOpacity
-        onPress={() => router.back()}
-        style={{ marginBottom: 12 }}
+        }}
+        contentInsetAdjustmentBehavior="never"
       >
-        <Text style={{ fontSize: 16, color: '#007AFF' }}>← Tilbage</Text>
-      </TouchableOpacity>
-      <Title text={story.title} 
-      style={{ color: '#432323', fontSize: 26, textAlign: 'center'}}/>
-      <StoryImage source={{ uri: story.coverImageUrl }} />
+        <Title
+          text={story.title}
+          style={{ color: '#432323', fontSize: 26, textAlign: 'center' }}
+        />
 
-      <Summary text={story.summary} style={{ color: '#432323', fontSize: 22, textAlign: 'center' }} />
+        <StoryImage source={{ uri: story.coverImageUrl }} />
 
-      <View style={styles.buttonContainer}>
-              <Button 
-                title="Læs historien" 
-                onPress={() => router.push(`../stories/${story.id}/bits`)} 
-                variant="third" 
-              />
-      </View>
-    </ScrollView>
+        <Summary
+          text={story.summary}
+          style={{ color: '#432323', fontSize: 22, textAlign: 'center' }}
+        />
+
+        <View style={{ marginTop: 12 }}>
+          <Button
+            title="Læs historien"
+            onPress={() => router.push(`../stories/${story.id}/bits`)}
+            variant="third"
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    backgroundColor: "#FCF9EA",
+  screen: {
     flex: 1,
+    backgroundColor: '#FCF9EA',
   },
-  content: {
-    paddingHorizontal: 16,
-  },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonContainer: {
-
-  }
 });
