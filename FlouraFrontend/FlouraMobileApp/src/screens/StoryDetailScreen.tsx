@@ -29,7 +29,7 @@ export default function StoryDetailScreen() {
     const fetchStory = async () => {
       let coverKidsUri = '';
       try {
-        const coverKids = require('../../assets/images/coverImages/coverKids.jpg');
+        const coverKids = require('../../assets/images/coverImages/FlouraMorgenCover.jpg');
         coverKidsUri = Image.resolveAssetSource(coverKids)?.uri ?? '';
       } catch {
         coverKidsUri = '';

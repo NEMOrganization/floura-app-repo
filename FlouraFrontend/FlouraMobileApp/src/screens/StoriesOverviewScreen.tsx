@@ -20,7 +20,7 @@ export default function StoriesOverviewScreen() {
       // ✅ Gør assets “testsikre”: i Jest kan require/resolveAssetSource crashe
       let coverKidsUri = '';
       try {
-        const coverKids = require('../../assets/images/coverImages/coverKids.jpg');
+        const coverKids = require('../../assets/images/coverImages/FlouraMorgenCover.jpg');
         coverKidsUri = Image.resolveAssetSource(coverKids)?.uri ?? '';
       } catch {
         coverKidsUri = '';
