@@ -1,12 +1,12 @@
 ﻿using Floura.Api.Repositories;
+using Floura.Api.Services;
 using Floura.Core.Interfaces;
 using Floura.Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.SystemConsole;
-using Serilog.Sinks.File;
-using Floura.Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +19,30 @@ builder.Host.UseSerilog((context, services, configuration) => {
 });
 
 builder.Logging.AddDebug();
+
+var jwtSettings = builder.Configuration.GetSection("Jwt");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Key"]);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
+
+builder.Services.AddAuthentication();
 
 
 builder.Services.AddDbContext<FlouraDbContext>(options =>
@@ -56,6 +80,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("MyAllowSpecificOrigins");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseAuthorization();
 
