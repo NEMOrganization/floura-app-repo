@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import StoriesList from '../components/StoriesList';
@@ -17,22 +17,13 @@ export default function StoriesOverviewScreen() {
 
   useEffect(() => {
     const fetchStories = async () => {
-      // ✅ Gør assets “testsikre”: i Jest kan require/resolveAssetSource crashe
-      let coverKidsUri = '';
-      try {
-        const coverKids = require('../../assets/images/coverImages/FlouraMorgenCover.jpg');
-        coverKidsUri = Image.resolveAssetSource(coverKids)?.uri ?? '';
-      } catch {
-        coverKidsUri = '';
-      }
-
       try {
         const data = await storyService.getStories();
         if (!data) {
           throw new Error('Der er ikke nogen historie');
         }
 
-        setStories(data.map((s) => ({ ...s, coverImageUrl: coverKidsUri })));
+        setStories(data);
       } catch {
         router.replace('/errorScreen?message=Internettet er vist forsvundet');
       } finally {
