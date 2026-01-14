@@ -1,10 +1,12 @@
 ﻿using Floura.Core.Interfaces;
 using Floura.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Floura.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StoriesController : ControllerBase
