@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Image } from 'react-native';
-import { router } from 'expo-router';
+import { StyleSheet, Image, View } from 'react-native';
+import { router, useNavigation } from 'expo-router';
 
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 
 import StoriesList from '../components/StoriesList';
 import LoadingScreen from './LoadingScreen';
 import Title from '../components/Title';
-import Button from '../components/Button';
-
-
+import MenuIcon from '../components/MenuIcon';
 
 export default function StoriesOverviewScreen() {
   const [stories, setStories] = useState<Story[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const fetchStories = async () => {
-      // ✅ Gør assets “testsikre”: i Jest kan require/resolveAssetSource crashe
       let coverKidsUri = '';
       try {
         const coverKids = require('../../assets/images/coverImages/coverKids.jpg');
@@ -46,32 +45,32 @@ export default function StoriesOverviewScreen() {
     fetchStories();
   }, []);
 
-  function handlePressStory(story: Story) {
+  const handlePressStory = (story: Story) => {
     router.push(`../stories/${story.id}`);
   }
 
-  function handlePressReminder(){
-    router.push('/reminderSettings');
+  const handleToggleDrawer = () => {
+    (navigation as any).toggleDrawer?.();
   }
 
   if (isLoading) return <LoadingScreen />;
 
   return (
-    <>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <StatusBar style="dark" />
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: '#432323', fontSize: 30}} />
 
-        <Button 
-        title="Opsæt påmindelser"
-        onPress={handlePressReminder}
-        variant="third" 
-        style={{ marginVertical: 20 }} 
+
+      <MenuIcon 
+        onPress={handleToggleDrawer} 
+        style={[
+          styles.menuIcon, { top: insets.top + 8}
+        ]} 
       />
 
-        <StoriesList items={stories} onPressStory={handlePressStory} />
-      </SafeAreaView>
-    </>
+      <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: "#432323", fontSize: 30 }} />
+
+      <StoriesList items={stories} onPressStory={handlePressStory} />
+    </SafeAreaView>
   );
 }
 
@@ -82,4 +81,10 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     backgroundColor: '#E3F2EA',
   },
+  menuIcon: {
+    position: 'absolute',
+    top: 12 + 0,
+    left: 12,
+    zIndex: 10,
+  }
 });

@@ -51,7 +51,7 @@ export default function StoryDetailScreen() {
         upsertStory(storyWithCover);
       } catch {
         //router.replace("/errorScreen?message=Historien gemmer sig");
-        router.push('/errorScreen?message=Historien gemmer sig');
+        router.push('/error?message=Historien gemmer sig');
       } finally {
         setIsLoading(false);
       }
