@@ -4,18 +4,14 @@ on:
   pull_request:
     paths:
       - "FlouraFrontend/FlouraMobileApp/**"
-      - ".github/workflows/frontend-ci.yml"
   push:
     branches:
       - main
-      - developer
     paths:
       - "FlouraFrontend/FlouraMobileApp/**"
-      - ".github/workflows/frontend-ci.yml"
-  workflow_dispatch:
 
 jobs:
-  lint-test-coverage:
+  frontend-ci:
     runs-on: ubuntu-latest
 
     defaults:
@@ -23,9 +19,11 @@ jobs:
         working-directory: FlouraFrontend/FlouraMobileApp
 
     steps:
+      # 1. Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Node
       - name: Use Node
         uses: actions/setup-node@v4
         with:
@@ -33,27 +31,29 @@ jobs:
           cache: npm
           cache-dependency-path: FlouraFrontend/FlouraMobileApp/package-lock.json
 
+      # 3. Install
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
+      # 4. Lint
       - name: Run ESLint
         run: npm run lint
 
+      # 5. Tests + coverage
       - name: Run tests with coverage
         run: npm run test:coverage
 
-      # (valgfri debug) viser at coverage faktisk er genereret
+      # 6. Debug (valgfri men god til eksamen)
       - name: Show coverage files
         if: ${{ always() }}
         run: |
-          echo "---- coverage folder ----"
-          ls -la coverage || true
-          echo "---- lcov-report ----"
-          ls -la coverage/lcov-report || true
+          echo "---- Coverage files ----"
+          ls -R coverage || true
 
-      - name: Upload coverage HTML
+      # 7. Upload HTML coverage
+      - name: Upload frontend coverage HTML
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-html
-          path: FlouraFrontend/FlouraMobileApp/coverage
+          path: coverage
