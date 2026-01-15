@@ -46,7 +46,7 @@ jobs:
         run: npm run lint
 
       - name: Run tests with coverage
-        run: npm run test:coverage
+        run: npx jest --coverage
         
       - name: Verify HTML report exists
         if: ${{ always() }}
