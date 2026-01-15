@@ -1,59 +1,49 @@
 name: Frontend CI
 
 on:
-  pull_request:
-    paths:
-      - "FlouraFrontend/FlouraMobileApp/**"
   push:
-    branches:
-      - main
-    paths:
-      - "FlouraFrontend/FlouraMobileApp/**"
+    branches: [ main, developer ]
+  pull_request:
+    branches: [ main, developer ]
+  workflow_dispatch:
 
 jobs:
-  frontend-ci:
+  build-test-coverage:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     defaults:
       run:
         working-directory: FlouraFrontend/FlouraMobileApp
 
     steps:
-      # 1. Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Node
-      - name: Use Node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
           cache-dependency-path: FlouraFrontend/FlouraMobileApp/package-lock.json
 
-      # 3. Install
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
-      # 4. Lint
       - name: Run ESLint
         run: npm run lint
 
-      # 5. Tests + coverage
       - name: Run tests with coverage
         run: npm run test:coverage
 
-      # 6. Debug (valgfri men god til eksamen)
-      - name: Show coverage files
+      - name: Verify HTML report exists
         if: ${{ always() }}
         run: |
-          echo "---- Coverage files ----"
-          ls -R coverage || true
+          test -f coverage/lcov-report/index.html && echo "HTML report OK" || (echo "Missing HTML report" && exit 1)
 
-      # 7. Upload HTML coverage
       - name: Upload frontend coverage HTML
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-html
-          path: coverage
+          path: FlouraFrontend/FlouraMobileApp/coverage
