@@ -127,7 +127,7 @@ jobs:
       - name: Generate HTML coverage report
         if: ${{ always() }}
         run: |
-          reportgenerator "-reports:**/coverage.xml;**/*.cobertura.xml;**/coverage.cobertura.xml" "-targetdir:coverage-report" "-reporttypes:Html
+          reportgenerator -reports:"**/coverage.xml;**/*.cobertura.xml;**/coverage.cobertura.xml" -targetdir:"coverage-report" -reporttypes:H*
         
       - name: Upload HTML coverage report
         if: ${{ always() && hashFiles('coverage-report/**') != '' }}
