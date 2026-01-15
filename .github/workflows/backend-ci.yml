@@ -68,8 +68,11 @@ jobs:
       # ----------------------------
       - name: Run tests with coverage
         run: |
-          dotnet test Tests/Floura.Tests/ --no-build --logger "trx;LogFileName=test_results.trx" \
-            /p:CollectCoverage=true /p:CoverletOutput=Tests/Floura.Tests/TestResults/coverage.xml /p:CoverletOutputFormat=cobertura
+          dotnet test Tests/Floura.Tests/Floura.Tests.csproj \
+          --no-build \
+          --logger "trx;LogFileName=test_results.trx" \
+          --results-directory Tests/Floura.Tests/TestResults \
+          --collect:"XPlat Code Coverage"
 
       # ----------------------------
       # 6b. Debug: Find coverage files (safe)
@@ -99,8 +102,8 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
-          path: Tests/Floura.Tests/TestResults/coverage.xml
+          name: backend-coverage
+          path: Tests/Floura.Tests/TestResults/**/coverage.cobertura.xml
           
       # ----------------------------
       # 8b. Upload coverage report (robust - safe)
@@ -114,31 +117,6 @@ jobs:
             **/coverage.xml
             **/coverage.cobertura.xml
             **/*.cobertura.xml
-
-      # ----------------------------
-      # 8c. Generate HTML coverage report (safe)
-      # ----------------------------
-      - name: Install ReportGenerator
-        if: ${{ always() }}
-        run: |
-          dotnet tool install -g dotnet-reportgenerator-globaltool
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
-
-      - name: Generate HTML coverage report
-        if: ${{ always() }}
-        run: |
-          reportgenerator \
-            -reports:"**/coverage.xml" \
-            -targetdir:"coverage-report" \
-            -reporttypes:Html
-
-      - name: Upload HTML coverage report
-        if: ${{ always() && hashFiles('coverage-report/**') != '' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-coverage-html
-          path: coverage-report
 
       # ----------------------------
       # 9. Publish API for deploy
