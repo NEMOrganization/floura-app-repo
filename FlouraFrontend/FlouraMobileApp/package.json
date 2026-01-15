@@ -65,7 +65,14 @@
     "preset": "jest-expo",
     "setupFilesAfterEnv": [
       "./jest-setup-after-env.ts"
-    ]
-  },
-  "private": true
+    ],
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "html",
+      "text",
+      "lcov"
+    ],
+    "private": true
+  }
 }
