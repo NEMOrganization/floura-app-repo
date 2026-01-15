@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Image } from 'react-native';
+import { router } from 'expo-router';
+
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from 'expo-status-bar';
+
 import StoriesList from '../components/StoriesList';
-import LoadingScreen from '../components/Loading';
-import { router } from 'expo-router';
+import LoadingScreen from './LoadingScreen';
 import Title from '../components/Title';
 import Button from '../components/Button';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
+
 
 export default function StoriesOverviewScreen() {
   const [stories, setStories] = useState<Story[]>([]);
@@ -34,7 +37,7 @@ export default function StoriesOverviewScreen() {
 
         setStories(data.map((s) => ({ ...s, coverImageUrl: coverKidsUri })));
       } catch {
-        router.replace('/errorScreen?message=Internettet er vist forsvundet');
+        router.replace('/error?message=Internettet er vist forsvundet');
       } finally {
         setIsLoading(false);
       }
@@ -48,7 +51,7 @@ export default function StoriesOverviewScreen() {
   }
 
   function handlePressReminder(){
-    router.push('/reminderSettingsScreen');
+    router.push('/reminderSettings');
   }
 
   if (isLoading) return <LoadingScreen />;

@@ -2,7 +2,7 @@ import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import "@testing-library/jest-native/extend-expect";
 import { Dimensions } from "react-native";
-import ErrorScreen from "../app/errorScreen";
+import ErrorScreen from "../src/screens/ErrorScreen";
 import { useLocalSearchParams } from "expo-router";
 
 const mockReplace = jest.fn();

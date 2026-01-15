@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet,TouchableOpacity, Image} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import LoadingScreen from '../components/Loading';
+import LoadingScreen from './LoadingScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import Title from '../components/Title';
