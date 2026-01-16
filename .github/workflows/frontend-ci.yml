@@ -38,9 +38,20 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
+      - name: Debug coverage folder
+        if: ${{ always() }}
+        run: |
+          echo "PWD:"
+          pwd
+          echo "Coverage folder:"
+          ls -la coverage || true
+          echo "LCOV report:"
+          ls -la coverage/lcov-report || true
+
       - name: Upload coverage HTML
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-html
-          path: coverage
+          path: FlouraFrontend/FlouraMobileApp/coverage/lcov-report
+
