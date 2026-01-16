@@ -1,13 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, use } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import * as SecureStore from "expo-secure-store";
 
 type AuthContextType = {
     token: string | null;
-    signIn: (token: string) => Promise<void>;
+    signIn: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
     const context = useContext(AuthContext);
@@ -17,20 +17,43 @@ export const useAuth = () => {
     return context;
 };
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+type Props = {
+    children: ReactNode;
+};
+
+export function AuthProvider({ children }: Props) {
     const [token, setToken] = useState<string | null>(null);
 
     useEffect(() => {
-        SecureStore.getItemAsync("token").then(setToken);
+        const loadToken = async () => {
+            const storedToken = await SecureStore.getItemAsync("userToken");
+            if (storedToken) setToken(storedToken);
+        };
+        loadToken();
     }, []);
 
-    const signIn = async (t: string) => {
-        await SecureStore.setItemAsync("token", t);
-        setToken(t);
+    const signIn = async (email: string, password: string) => {
+        try {
+            const response = await fetch("https://floura-api-asfmcdd6fdfkd4df.westeurope-01.azurewebsites.net/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Login failed");
+            };
+
+            const data = await response.json(); 
+            await SecureStore.setItemAsync("userToken", data.token);
+            setToken(data.token);
+        } catch (error) {
+            throw error;
+        }
     };
 
     const signOut = async () => {
-        await SecureStore.deleteItemAsync("token");
+        await SecureStore.deleteItemAsync("userToken");
         setToken(null);
     };
 
