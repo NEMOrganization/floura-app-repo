@@ -1,21 +1,14 @@
 import React from "react";
-import { AuthProvider, useAuth } from "../src/context/AuthContext";
-import AppDrawerLayout from "./(app)/_layout";
-import AuthLayout from "./(auth)/_layout";
+import { AuthProvider } from "../src/context/AuthContext";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Slot } from "expo-router";
 
 export default function RootLayout() {
   return (
     <AuthProvider>
       <SafeAreaProvider>
-        <RootNavigator />
+        <Slot />
       </SafeAreaProvider>
     </AuthProvider>
   );  
-}
-
-function RootNavigator() {
-  const { token } = useAuth();
-
-  return token ? <AppDrawerLayout /> : <AuthLayout />;
 }

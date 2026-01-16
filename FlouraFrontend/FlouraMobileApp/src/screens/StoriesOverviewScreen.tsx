@@ -46,7 +46,10 @@ export default function StoriesOverviewScreen() {
   }, []);
 
   const handlePressStory = (story: Story) => {
-    router.push(`../stories/${story.id}`);
+    router.push({
+      pathname: "/(routes)/stories/[storyId]", 
+      params: { storyId: story.id }
+    });
   }
 
   const handleToggleDrawer = () => {
