@@ -4,14 +4,29 @@ This repository contains the Floura application, including the backend, tests an
 
 ## Project Structure
 
-- **FlouraBackend/** - C# backend solution
-  - `Floura.Api/` � ASP.NET Core Web API (controllers, Swagger, DI, CORS)
-  - `Floura.Core/` - Core logic
-  - `FlouraBackend.sln` - Solution file
-- **Tests/Floura.Tests/** - XUnit test project
-- **.github/workflows/** - GitHub Actions workflows
+- **FlouraBackend/** – C# backend solution  
+  - `Floura.Api/` – ASP.NET Core Web API (controllers, Swagger, DI, CORS)  
+  - `Floura.Core/` – Core business logic  
+  - `FlouraBackend.sln` – Solution file  
+
+- **FlouraFrontend/FlouraMobileApp/** – React Native (Expo) mobile application  
+  - `src/` – Screens, components, context, constants  
+  - `frontendTests/` – Frontend unit tests (Jest)  
+  - `coverage/` – Frontend test coverage output (generated)  
+    - `lcov-report/index.html` – HTML coverage report  
+
+- **Tests/Floura.Tests/** – xUnit backend test project  
+
+- **.github/workflows/** – GitHub Actions workflows (backend + frontend)  
+
+---
 
 ## Getting Started
+
+```bash
+git clone <repo-url>
+cd floura-app-repo
+```
 
 ## API Documentation
 
@@ -77,6 +92,22 @@ dotnet test Tests/Floura.Tests/
 1. Select "Open with GitHub Desktop" and clone the repository.
 2. Open FlouraBackend.sln in Visual Studio or your preferred IDE.
 3. Restore dependencies and build the solution.
+
+
+## Frontend – Tests & Coverage
+
+### Run frontend tests locally
+
+```bash
+cd FlouraFrontend/FlouraMobileApp
+npm install
+npm run test:coverage
+```
+### View coverage report
+
+Open the HTML report in your browser:
+
+FlouraFrontend/FlouraMobileApp/coverage/lcov-report/index.html
 
 ## Backend CI / Workflow
 
