@@ -114,7 +114,6 @@ import React from 'react';
 import { render, fireEvent, act } from '@testing-library/react-native';
 import StoryBitScreen from '../src/screens/StoryBitScreen';
 import { Story } from '@/src/models/Story';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 jest.mock('@expo/vector-icons', () => {
   const Mock = () => null;
@@ -143,24 +142,11 @@ jest.mock('expo-router', () => ({
   useRouter: jest.fn(() => ({ back: jest.fn() })),
 }));
 
-const safeAreaMetrics = {
-  frame: { x: 0, y: 0, width: 390, height: 844 },
-  insets: { top: 24, left: 0, right: 0, bottom: 0 },
-};
-
-function renderWithSafeArea(ui: React.ReactElement) {
-  return render(
-    <SafeAreaProvider initialWindowMetrics={safeAreaMetrics as any}>
-      {ui}
-    </SafeAreaProvider>,
-  );
-}
-
 describe('StoryBitScreen', () => {
   let screen: ReturnType<typeof render>;
 
   beforeEach(() => {
-    screen = renderWithSafeArea(<StoryBitScreen />);
+    screen = render(<StoryBitScreen />);
   });
 
   it('renders first bit and slide count', () => {
