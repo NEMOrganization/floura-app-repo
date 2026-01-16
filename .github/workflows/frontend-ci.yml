@@ -30,24 +30,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Debug scripts (show correct package.json)
-        if: ${{ always() }}
-        run: |
-          echo "PWD:"
-          pwd
-          echo "List files:"
-          ls -la
-          echo "Scripts:"
-          npm run
-          echo "package.json (scripts only):"
-          node -e "const p=require('./package.json'); console.log(p.scripts)"
-
       - name: Run ESLint
         run: npm run lint
 
       - name: Run tests with coverage
         run: npm test -- --coverage
-        
+
       - name: Verify HTML report exists
         if: ${{ always() }}
         run: |
