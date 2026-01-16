@@ -49,7 +49,6 @@ jobs:
           ls -la coverage/lcov-report || true
 
       - name: Upload coverage HTML
-        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-html

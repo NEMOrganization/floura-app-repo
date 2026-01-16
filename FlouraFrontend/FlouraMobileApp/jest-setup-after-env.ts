@@ -1,4 +1,4 @@
-import '@testing-library/jest-native/extend-expect';
+/* import '@testing-library/jest-native/extend-expect';
 
 jest.mock('react-native-safe-area-context', () => ({
   __esModule: true,
@@ -7,3 +7,20 @@ jest.mock('react-native-safe-area-context', () => ({
     children({ top: 0, bottom: 0, left: 0, right: 0 }),
   useSafeAreaInsets: () => ({ top: 0, bottom: 0, left: 0, right: 0 }),
 }));
+
+ */
+
+jest.mock('react-native-safe-area-context', () => {
+  const React = jest.requireActual('react');
+
+  const mockInsets = { top: 0, bottom: 0, left: 0, right: 0 };
+
+  const SafeAreaInsetsContext = React.createContext(mockInsets);
+
+  return {
+    SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
+    SafeAreaConsumer: ({ children }: any) => children(mockInsets),
+    SafeAreaInsetsContext,
+    useSafeAreaInsets: () => mockInsets,
+  };
+});
