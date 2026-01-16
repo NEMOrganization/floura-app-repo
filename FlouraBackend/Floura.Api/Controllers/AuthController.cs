@@ -10,7 +10,7 @@ using System.Text;
 namespace Floura.Api.Controllers;
 
 [ApiController]
-[Route("api/[controller")]
+[Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly FlouraDbContext _context;
