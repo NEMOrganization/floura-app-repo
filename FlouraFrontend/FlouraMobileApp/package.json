@@ -62,12 +62,18 @@
     "react-test-renderer": "^19.1.0",
     "typescript": "~5.9.2"
   },
-"jest": {
-  "preset": "jest-expo",
-  "setupFilesAfterEnv": ["<rootDir>/jest-setup-after-env.ts"],
-  "collectCoverage": true,
-  "coverageDirectory": "coverage",
-  "coverageReporters": ["html", "text", "lcov"]
-},
-    "private": true
+  "jest": {
+    "preset": "jest-expo",
+    "setupFilesAfterEnv": [
+      "<rootDir>/jest-setup-after-env.ts"
+    ],
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "coverageReporters": [
+      "html",
+      "text",
+      "lcov"
+    ]
+  },
+  "private": true
 }
