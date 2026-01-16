@@ -75,5 +75,6 @@
       "lcov"
     ],
     "private": true
-  }
+  },
+  "setupFilesAfterEnv": ["<rootDir>/jest-setup-after-env.ts"]
 }

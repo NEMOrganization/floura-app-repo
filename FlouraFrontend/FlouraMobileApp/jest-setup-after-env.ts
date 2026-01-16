@@ -1,14 +1,24 @@
 import '@testing-library/jest-native/extend-expect';
 import 'react-native-gesture-handler/jestSetup';
+import * as React from 'react';
 
-import * as SafeAreaJestMock from 'react-native-safe-area-context/jest/mock';
+const INSETS = { top: 0, bottom: 0, left: 0, right: 0 };
+const SafeAreaInsetsContext = React.createContext(INSETS);
 
-// Nogle setups eksporterer mocken som default, andre som namespace.
-// Den her linje gør det robust i CI.
-const safeAreaMock: any = (SafeAreaJestMock as any).default ?? SafeAreaJestMock;
+jest.mock('react-native-safe-area-context', () => ({
+  __esModule: true,
 
-jest.mock('react-native-safe-area-context', () => safeAreaMock);
+  SafeAreaProvider: ({ children }: { children: React.ReactNode }) => children,
+  SafeAreaConsumer: ({ children }: any) => children(INSETS),
+  SafeAreaInsetsContext,
+
+  useSafeAreaInsets: () => INSETS,
+}));
+
 jest.mock(
   'react-native-safe-area-context/Libraries/NativeSafeAreaProvider',
-  () => safeAreaMock,
+  () => ({
+    __esModule: true,
+    default: ({ children }: { children: React.ReactNode }) => children,
+  }),
 );
