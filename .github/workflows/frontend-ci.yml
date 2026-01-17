@@ -5,29 +5,42 @@ on:
     paths:
       - "FlouraFrontend/FlouraMobileApp/**"
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "FlouraFrontend/FlouraMobileApp/**"
+  workflow_dispatch:
 
 jobs:
-  lint:
+  frontend-ci:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: FlouraFrontend/FlouraMobileApp
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Use Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
+          cache-dependency-path: FlouraFrontend/FlouraMobileApp/package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
+
+      - name: Run tests with coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-html
+          path: FlouraFrontend/FlouraMobileApp/coverage
+          
