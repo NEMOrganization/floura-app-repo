@@ -5,7 +5,7 @@ on:
     paths:
       - "FlouraFrontend/FlouraMobileApp/**"
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - "FlouraFrontend/FlouraMobileApp/**"
   workflow_dispatch:
@@ -39,8 +39,7 @@ jobs:
         run: npm run test:coverage
 
       - name: Upload coverage HTML
-        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-html
-          path: coverage
+          path: coverage/lcov-report
