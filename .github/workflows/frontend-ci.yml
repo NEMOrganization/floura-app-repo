@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Use Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -38,17 +38,7 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
-      - name: Debug coverage folder
-        if: ${{ always() }}
-        run: |
-          echo "PWD:"
-          pwd
-          echo "Coverage:"
-          ls -la coverage || true
-          echo "LCOV:"
-          ls -la coverage/lcov-report || true
-
-      - name: Upload frontend coverage (HTML)
+      - name: Upload coverage HTML
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
