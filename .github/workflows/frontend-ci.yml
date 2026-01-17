@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Use Node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -43,13 +43,14 @@ jobs:
         run: |
           echo "PWD:"
           pwd
-          echo "Coverage folder:"
+          echo "Coverage:"
           ls -la coverage || true
-          echo "LCOV report:"
+          echo "LCOV:"
           ls -la coverage/lcov-report || true
-      - name: Upload coverage HTML
+
+      - name: Upload frontend coverage (HTML)
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage-html
-          path: FlouraFrontend/FlouraMobileApp/coverage/lcov-report
+          path: coverage
