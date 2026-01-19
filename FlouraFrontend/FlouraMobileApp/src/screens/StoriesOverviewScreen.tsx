@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Image, View } from 'react-native';
-import { router, useNavigation } from 'expo-router';
+import { StyleSheet } from 'react-native';
+import { useRouter, useNavigation } from 'expo-router';
 
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
@@ -17,6 +17,7 @@ export default function StoriesOverviewScreen() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchStories = async () => {

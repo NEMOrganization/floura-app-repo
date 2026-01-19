@@ -12,6 +12,7 @@ export default function ErrorScreen({ message }: Props) {
   const router = useRouter();
   const displayMessage = message ?? "Der skete en fejl";
 
+
   return (
     <View style={styles.container}>
         <Image 
