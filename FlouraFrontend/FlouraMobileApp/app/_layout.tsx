@@ -1,14 +1,15 @@
 import React from "react";
-import { AuthProvider } from "../src/context/AuthContext";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { AppProviders } from "../src/providers/AppProviders";
 import { Slot } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <SafeAreaProvider>
+    <SafeAreaProvider>
+      <AppProviders>
         <Slot />
-      </SafeAreaProvider>
-    </AuthProvider>
+      </AppProviders>
+    </SafeAreaProvider>
+
   );  
 }
