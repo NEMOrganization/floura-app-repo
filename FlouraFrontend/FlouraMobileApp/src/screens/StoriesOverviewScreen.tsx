@@ -1,19 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { useRouter, useNavigation } from 'expo-router';
+
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
-import StoriesList from '../components/StoriesList';
-import LoadingScreen from '../components/Loading';
-import { router } from 'expo-router';
-import Title from '../components/Title';
-import Button from '../components/Button';
-
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+
+import StoriesList from '../components/StoriesList';
+import LoadingScreen from './LoadingScreen';
+import Title from '../components/Title';
+import MenuIcon from '../components/MenuIcon';
 
 export default function StoriesOverviewScreen() {
   const [stories, setStories] = useState<Story[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchStories = async () => {
@@ -25,7 +29,7 @@ export default function StoriesOverviewScreen() {
 
         setStories(data);
       } catch {
-        router.replace('/errorScreen?message=Internettet er vist forsvundet');
+        router.replace('/error?message=Internettet er vist forsvundet');
       } finally {
         setIsLoading(false);
       }
@@ -34,32 +38,35 @@ export default function StoriesOverviewScreen() {
     fetchStories();
   }, []);
 
-  function handlePressStory(story: Story) {
-    router.push(`../stories/${story.id}`);
+  const handlePressStory = (story: Story) => {
+    router.push({
+      pathname: "/(routes)/stories/[storyId]", 
+      params: { storyId: story.id }
+    });
   }
 
-  function handlePressReminder(){
-    router.push('/reminderSettingsScreen');
+  const handleToggleDrawer = () => {
+    (navigation as any).toggleDrawer?.();
   }
 
   if (isLoading) return <LoadingScreen />;
 
   return (
-    <>
+    <SafeAreaView style={styles.container} edges={["top"]}>
       <StatusBar style="dark" />
-      <SafeAreaView style={styles.container} edges={['top']}>
-        <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: '#432323', fontSize: 30}} />
 
-        <Button 
-        title="Opsæt påmindelser"
-        onPress={handlePressReminder}
-        variant="third" 
-        style={{ marginVertical: 20 }} 
+
+      <MenuIcon 
+        onPress={handleToggleDrawer} 
+        style={[
+          styles.menuIcon, { top: insets.top + 8}
+        ]} 
       />
 
-        <StoriesList items={stories} onPressStory={handlePressStory} />
-      </SafeAreaView>
-    </>
+      <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: "#432323", fontSize: 30 }} />
+
+      <StoriesList items={stories} onPressStory={handlePressStory} />
+    </SafeAreaView>
   );
 }
 
@@ -70,4 +77,10 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     backgroundColor: '#E3F2EA',
   },
+  menuIcon: {
+    position: 'absolute',
+    top: 12 + 0,
+    left: 12,
+    zIndex: 10,
+  }
 });

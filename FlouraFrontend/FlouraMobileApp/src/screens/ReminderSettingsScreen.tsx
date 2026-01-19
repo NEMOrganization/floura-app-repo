@@ -11,7 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
-import BackArrow from '../src/components/BackArrow';
+import BackArrow from '../../src/components/BackArrow';
 
 // Opsæt notifikation handler
 Notifications.setNotificationHandler({

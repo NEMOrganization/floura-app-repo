@@ -4,9 +4,11 @@ using Floura.Core.Interfaces;
 using Floura.Core.Models;
 using Floura.Core.Services;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Floura.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : Controller

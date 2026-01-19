@@ -9,7 +9,7 @@ import {
 import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import LoadingScreen from '../components/Loading';
+import LoadingScreen from './LoadingScreen';
 import Title from '../components/Title';
 import Summary from '../components/Summary';
 import Button from '../components/Button';
@@ -48,7 +48,8 @@ export default function StoryDetailScreen() {
         setStory(data);
         upsertStory(data);
       } catch {
-        router.push('/errorScreen?message=Historien gemmer sig');
+        //router.replace("/errorScreen?message=Historien gemmer sig");
+        router.push('/error?message=Historien gemmer sig');
       } finally {
         setIsLoading(false);
       }

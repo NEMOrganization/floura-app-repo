@@ -1,14 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import errorImage from "../assets/images/FlouraErrorScreenBasic.png";
-import Button from "../src/components/Button";
+import { useRouter } from "expo-router";
+import errorImage from "../../assets/images/FlouraErrorScreenBasic.png";
+import Button from "../components/Button";
 
+type Props = {
+  message?: string;
+};
 
+export default function ErrorScreen({ message }: Props) { 
+  const router = useRouter();
+  const displayMessage = message ?? "Der skete en fejl";
 
-export default function ErrorScreen() { 
-    const {message } = useLocalSearchParams<{message?: string}>();
-    const router = useRouter();
 
   return (
     <View style={styles.container}>
@@ -18,7 +21,7 @@ export default function ErrorScreen() {
         resizeMode="contain"/>
 
       <Text style={styles.title}>Hovsa!</Text>  
-      <Text style={styles.text}>{message || "Historien gemmer sig vist"}</Text>
+      <Text style={styles.text}>{displayMessage}</Text>
 
     <View style={styles.buttonContainer}>
         <Button 
