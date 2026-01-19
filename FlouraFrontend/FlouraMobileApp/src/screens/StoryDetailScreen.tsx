@@ -14,6 +14,8 @@ import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import { useStories } from '../context/StoriesContext';
 
+import { STORY_COVER, DEFAULT_STORY_COVER_IMAGE, } from '../constants/storyCoverImage';
+
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
   const { upsertStory } = useStories();
@@ -29,25 +31,14 @@ export default function StoryDetailScreen() {
     }
 
     const fetchStory = async () => {
-      let coverKidsUri = '';
-      try {
-        const coverKids = require('../../assets/images/coverImages/coverKids.jpg');
-        coverKidsUri = Image.resolveAssetSource(coverKids)?.uri ?? '';
-      } catch {
-        coverKidsUri = '';
-      }
-
       try {
         const data = await storyService.getStoryById(storyId);
-        if (!data) throw new Error('Historien findes ikke');
+        if (!data) {
+          throw new Error('Historien findes ikke');
+        }
 
-        const storyWithCover: Story = {
-          ...data,
-          coverImageUrl: coverKidsUri,
-        };
-
-        setStory(storyWithCover);
-        upsertStory(storyWithCover);
+        setStory(data);
+        upsertStory(data);
       } catch {
         router.push('/errorScreen?message=Historien gemmer sig');
       } finally {
@@ -58,8 +49,11 @@ export default function StoryDetailScreen() {
     fetchStory();
   }, [storyId, upsertStory]);
 
-  if (isLoading) return <LoadingScreen />;
+  if (isLoading) { return <LoadingScreen />; }
   if (!story) return null;
+
+  const coverImage =
+    STORY_COVER[story.coverImage?.trim() || ''] ?? DEFAULT_STORY_COVER_IMAGE;
 
   return (
     <View style={styles.screen}>
@@ -77,24 +71,24 @@ export default function StoryDetailScreen() {
         }}
         contentInsetAdjustmentBehavior="never"
       >
-        <Title text={story.title} style={{ color: '#432323', fontSize: 26 }} />
+        <Text style={{ fontSize: 16, color: '#007AFF' }}>← Tilbage</Text>
+      </TouchableOpacity>
 
-        <StoryImage source={{ uri: story.coverImageUrl }} />
+      <Title text={story.title} 
+      style={{ color: '#432323', fontSize: 26, textAlign: 'center'}}/>
+      
+      <Image source={coverImage} style={{ width: '100%', height: 250, borderRadius: 12, marginVertical: 16 }} resizeMode="contain" />
 
-        <Summary
-          text={story.summary}
-          style={{ color: '#432323', fontSize: 22, textAlign: 'center' }}
-        />
+      <Summary text={story.summary} style={{ color: '#432323', fontSize: 22, textAlign: 'center' }} />
 
-        <View style={{ marginTop: 12 }}>
-          <Button
-            title="Læs historien"
-            onPress={() => router.push(`../stories/${story.id}/bits`)}
-            variant="third"
-          />
-        </View>
-      </ScrollView>
-    </View>
+      <View style={styles.buttonContainer}>
+              <Button 
+                title="Læs historien" 
+                onPress={() => router.push(`../stories/${story.id}/bits`)} 
+                variant="third" 
+              />
+      </View>
+    </ScrollView>
   );
 }
 

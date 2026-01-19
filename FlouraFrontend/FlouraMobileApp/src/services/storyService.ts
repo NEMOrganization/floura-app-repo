@@ -16,7 +16,7 @@ function mapStory(dto: StoryDTO): Story {
         id: dto.id,
         title: dto.title,
         summary: dto.summary,
-        coverImageUrl: dto.coverImageUrl,
+        coverImage: dto.coverImage,
         backgroundImageKey: dto.backgroundImageKey,
         storyBits: dto.storyBits
             .sort((a, b) => a.order - b.order)
