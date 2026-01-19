@@ -7,6 +7,14 @@ type AuthContextType = {
     signOut: () => Promise<void>;
 };
 
+/**
+ * DEV ONLY
+ * Hardcoded token to unblock navigation, drawer & routing.
+ * REMOVE when real auth flow is implemented.
+ */
+
+const DEV_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYxNWI0MzU1LTY2YTYtNDRmZS05ODQ0LThkZDVhZGZjNDQ0NCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImVtbWFAdGVzdC5kayIsImV4cCI6MTc2ODU2NzUyMSwiaXNzIjoiRmxvdXJhQXBpIiwiYXVkIjoiRmxvdXJhQXBwIn0.XdLcYAW9ffbAOPRKjtRrQHbGxwtnsBE3qKfTakXLw6k";
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = () => {
@@ -22,51 +30,51 @@ type Props = {
 };
 
 export function AuthProvider({ children }: Props) {
-    const testToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYxNWI0MzU1LTY2YTYtNDRmZS05ODQ0LThkZDVhZGZjNDQ0NCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImVtbWFAdGVzdC5kayIsImV4cCI6MTc2ODU2NzUyMSwiaXNzIjoiRmxvdXJhQXBpIiwiYXVkIjoiRmxvdXJhQXBwIn0.XdLcYAW9ffbAOPRKjtRrQHbGxwtnsBE3qKfTakXLw6k";
-    const [token, setToken] = useState<string | null>(testToken);
+    const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+
+    /**
+     * Load token on app start
+     */
 
     useEffect(() => {
         const loadToken = async () => {
-            const storedToken = await SecureStore.getItemAsync("userToken");
-            if (storedToken) setToken(storedToken);
-            setLoading(false);
+            try {
+                const storedToken = await SecureStore.getItemAsync("userToken");
+
+                if (storedToken) {
+                    setToken(storedToken);
+                } else if (__DEV__) {
+                // DEV fallback so app is usable without login
+                setToken(DEV_TOKEN);
+                }
+            } finally {
+                setLoading(false);
+            }
         };
+
         loadToken();
     }, []);
 
+    /**
+     * DEV signIn 
+     * (real API login will replace this later)
+     */
+
+
     const signIn = async (email: string, password: string) => {
-        const testToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYxNWI0MzU1LTY2YTYtNDRmZS05ODQ0LThkZDVhZGZjNDQ0NCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImVtbWFAdGVzdC5kayIsImV4cCI6MTc2ODU2NzUyMSwiaXNzIjoiRmxvdXJhQXBpIiwiYXVkIjoiRmxvdXJhQXBwIn0.XdLcYAW9ffbAOPRKjtRrQHbGxwtnsBE3qKfTakXLw6k";
-        await SecureStore.setItemAsync("userToken", testToken);
-        setToken(testToken);
+        await SecureStore.setItemAsync("userToken", DEV_TOKEN);
+        setToken(DEV_TOKEN);
     };
 
-/*     const signIn = async (email: string, password: string) => {
-        try {
-            await SecureStore.setItemAsync("userToken", testToken);
-            setToken(token);
-            const response = await fetch("https://floura-api-asfmcdd6fdfkd4df.westeurope-01.azurewebsites.net/api/auth/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            });
+    /**
+     * Sign out
+     */
 
-            if (!response.ok) {
-                throw new Error("Login failed");
-            };
-
-            const data = await response.json(); 
-            await SecureStore.setItemAsync("userToken", data.token);
-            setToken(data.token);
-        } catch (error) {
-            throw error;
-        }
-    };
- */
     const signOut = async () => {
         await SecureStore.deleteItemAsync("userToken");
         setToken(null);
-    };
+    }
 
     return (
         <AuthContext.Provider value={{ token, signIn, signOut }}>
