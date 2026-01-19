@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Platform, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  Alert,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
+import BackArrow from '../src/components/BackArrow';
 
 // Opsæt notifikation handler
 Notifications.setNotificationHandler({
@@ -30,7 +38,7 @@ const ReminderSettingsScreen = () => {
     if (status !== 'granted') {
       Alert.alert(
         'Tillad notifikationer',
-        'Vi har brug for tilladelse til at sende påmindelser! 🪥'
+        'Vi har brug for tilladelse til at sende påmindelser! 🪥',
       );
     }
   };
@@ -62,8 +70,8 @@ const ReminderSettingsScreen = () => {
 
     await Notifications.scheduleNotificationAsync({
       content: {
-        title: "Tid til tandbørstning! 🪥",
-        body: "Husk at børste tænderne nu! 😁",
+        title: 'Tid til tandbørstning! 🪥',
+        body: 'Husk at børste tænderne nu! 😁',
         sound: true,
       },
       trigger,
@@ -71,7 +79,7 @@ const ReminderSettingsScreen = () => {
 
     Alert.alert(
       'Påmindelse gemt!',
-      `Du vil blive mindet hver dag kl. ${hour}:${minute.toString().padStart(2, '0')}`
+      `Du vil blive mindet hver dag kl. ${hour}:${minute.toString().padStart(2, '0')}`,
     );
   };
 
@@ -85,43 +93,39 @@ const ReminderSettingsScreen = () => {
     await scheduleDailyReminder(time);
   };
 
-   const handleBack = () => router.back();
+  const handleBack = () => router.back();
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-        <Text style={styles.backButtonText}>← Tilbage</Text>
-      </TouchableOpacity>
-
+      <View style={styles.backButton}>
+        <BackArrow onBack={handleBack} />
+      </View>
       {/* Tidspicker knap */}
       <View style={styles.content}>
-      <Text style={styles.label}>Vælg tidspunkt for tandbørstning ⏰</Text>
-      <TouchableOpacity 
-        style={styles.timeButton} 
-        onPress={() => setShowPicker(true)}
-      >
-        <Text style={styles.timeButtonText}>
-          {time.getHours()}:{time.getMinutes().toString().padStart(2, '0')}
-        </Text>
-      </TouchableOpacity>
-
-      {/* DateTimePicker */}
-      {showPicker && (
-        <View style={styles.pickerContainer}>
-          <DateTimePicker
-            value={time}
-            mode="time"
-            display="spinner"
-            onChange={onChange}
-          />
-        </View>
-      )}
-
-      {/* Gem påmindelse */}
-      <TouchableOpacity style={styles.saveButton} onPress={saveReminder}>
-        <Text style={styles.saveButtonText}>Gem påmindelse</Text>
-      </TouchableOpacity>
-    </View>
+        <Text style={styles.label}>Vælg tidspunkt for tandbørstning ⏰</Text>
+        <TouchableOpacity
+          style={styles.timeButton}
+          onPress={() => setShowPicker(true)}
+        >
+          <Text style={styles.timeButtonText}>
+            {time.getHours()}:{time.getMinutes().toString().padStart(2, '0')}
+          </Text>
+        </TouchableOpacity>
+        {showPicker && (
+          <View style={styles.pickerContainer}>
+            <DateTimePicker
+              value={time}
+              mode="time"
+              display="spinner"
+              onChange={onChange}
+            />
+          </View>
+        )}
+        {/* Gem påmindelse */}
+        <TouchableOpacity style={styles.saveButton} onPress={saveReminder}>
+          <Text style={styles.saveButtonText}>Gem påmindelse</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -131,22 +135,19 @@ export default ReminderSettingsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 60,
+    paddingTop: 45,
     paddingHorizontal: 20,
     backgroundColor: '#E8F5E9',
   },
-  backButton: {               
+  backButton: {
     alignSelf: 'flex-start',
     marginBottom: 16,
-  },
-  backButtonText: {            
-    fontSize: 16,
-    color: '#007AFF',
+      marginLeft: -15,
   },
   content: {
-    flex: 1, 
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   label: {
     fontSize: 20,
