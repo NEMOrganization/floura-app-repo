@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Image } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import LoadingScreen from '../components/Loading';
 import Title from '../components/Title';
-import StoryImage from '../components/StoryImage';
 import Summary from '../components/Summary';
 import Button from '../components/Button';
 import BackHeader from '../components/BackArrow';
@@ -14,7 +19,10 @@ import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import { useStories } from '../context/StoriesContext';
 
-import { STORY_COVER, DEFAULT_STORY_COVER_IMAGE, } from '../constants/storyCoverImage';
+import {
+  STORY_COVER,
+  DEFAULT_STORY_COVER_IMAGE,
+} from '../constants/storyCoverImage';
 
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
@@ -49,7 +57,9 @@ export default function StoryDetailScreen() {
     fetchStory();
   }, [storyId, upsertStory]);
 
-  if (isLoading) { return <LoadingScreen />; }
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
   if (!story) return null;
 
   const coverImage =
@@ -57,13 +67,8 @@ export default function StoryDetailScreen() {
 
   return (
     <View style={styles.screen}>
-      {/* samme top spacer som StoryBitScreen */}
       <View style={{ paddingTop: Math.max(insets.top - 12, 8) }} />
-
-      {/* header med pil (uden progress) */}
       <BackHeader onBack={() => router.back()} />
-
-      {/* scrollbart indhold */}
       <ScrollView
         contentContainerStyle={{
           paddingHorizontal: 16,
@@ -71,24 +76,41 @@ export default function StoryDetailScreen() {
         }}
         contentInsetAdjustmentBehavior="never"
       >
-        <Text style={{ fontSize: 16, color: '#007AFF' }}>← Tilbage</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={{ marginBottom: 12 }}
+        ></TouchableOpacity>
 
-      <Title text={story.title} 
-      style={{ color: '#432323', fontSize: 26, textAlign: 'center'}}/>
-      
-      <Image source={coverImage} style={{ width: '100%', height: 250, borderRadius: 12, marginVertical: 16 }} resizeMode="contain" />
+        <Title
+          text={story.title}
+          style={{ color: '#432323', fontSize: 26, textAlign: 'center' }}
+        />
 
-      <Summary text={story.summary} style={{ color: '#432323', fontSize: 22, textAlign: 'center' }} />
+        <Image
+          source={coverImage}
+          style={{
+            width: '100%',
+            height: 250,
+            borderRadius: 12,
+            marginVertical: 16,
+          }}
+          resizeMode="contain"
+        />
 
-      <View style={styles.buttonContainer}>
-              <Button 
-                title="Læs historien" 
-                onPress={() => router.push(`../stories/${story.id}/bits`)} 
-                variant="third" 
-              />
-      </View>
-    </ScrollView>
+        <Summary
+          text={story.summary}
+          style={{ color: '#432323', fontSize: 22, textAlign: 'center' }}
+        />
+
+        <View>
+          <Button
+            title="Læs historien"
+            onPress={() => router.push(`../stories/${story.id}/bits`)}
+            variant="third"
+          />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
 
