@@ -3,6 +3,7 @@ import * as SecureStore from "expo-secure-store";
 
 type AuthContextType = {
     token: string | null;
+    loading: boolean;
     signIn: (email: string, password: string) => Promise<void>;
     signOut: () => Promise<void>;
 };
@@ -37,22 +38,16 @@ export function AuthProvider({ children }: Props) {
      * Load token on app start
      */
 
-    useEffect(() => {
+   useEffect(() => {
         const loadToken = async () => {
             try {
                 const storedToken = await SecureStore.getItemAsync("userToken");
-
-                if (storedToken) {
-                    setToken(storedToken);
-                } else if (__DEV__) {
-                // DEV fallback so app is usable without login
-                setToken(DEV_TOKEN);
-                }
+                if (storedToken) setToken(storedToken);
+                else if (__DEV__) setToken(DEV_TOKEN);
             } finally {
-                setLoading(false);
+            setLoading(false); // <-- loading=false først når token er klar
             }
         };
-
         loadToken();
     }, []);
 
@@ -77,8 +72,8 @@ export function AuthProvider({ children }: Props) {
     }
 
     return (
-        <AuthContext.Provider value={{ token, signIn, signOut }}>
+        <AuthContext.Provider value={{ token, loading, signIn, signOut }}>
             {children}
         </AuthContext.Provider>
-    )
+    );
 }

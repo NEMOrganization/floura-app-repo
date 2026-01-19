@@ -28,6 +28,19 @@ function mapStory(dto: StoryDTO): Story {
 
 export const storyService = {
     getStories: async (): Promise<Story[]> => {
+        if (__DEV__) {
+            return [
+                { 
+                  id: '1', 
+                  title: 'Test historie', 
+                  summary: 'Dette er en test', 
+                  coverImage: '', 
+                  backgroundImageKey: '', 
+                  storyBits: [], 
+                  ageRange: '4-6' 
+                }
+            ];
+        }
         const stories = await apiClient.get<StoryDTO[]>(`/Stories`);
         return stories.map(mapStory);
     },

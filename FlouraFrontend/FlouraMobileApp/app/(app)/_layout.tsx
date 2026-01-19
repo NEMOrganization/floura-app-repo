@@ -5,15 +5,9 @@ import LoadingScreen from "@/src/screens/LoadingScreen";
 import React from "react";
 
 export default function AppDrawerLayout() {
-    const { token } = useAuth();
-    const [isLoading, setIsLoading] = React.useState(true);
+    const { token, loading } = useAuth();
 
-    React.useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 300);
-        return () => clearTimeout(timer);
-    }, []);
-
-    if (isLoading) {
+    if (loading) {
         return <LoadingScreen />;
     }
 
@@ -33,5 +27,5 @@ export default function AppDrawerLayout() {
                 }}
             />
         </Drawer>
-  );
+    );
 }
