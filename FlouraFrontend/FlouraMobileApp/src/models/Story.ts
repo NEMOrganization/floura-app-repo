@@ -2,7 +2,7 @@ export interface Story {
     id: string;
     title: string;
     summary: string;
-    coverImageUrl: string;
+    coverImage: string;
     backgroundImageKey?: string;
     storyBits: StoryBit[];
     ageRange: string;

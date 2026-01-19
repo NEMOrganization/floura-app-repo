@@ -20,21 +20,13 @@ export default function StoriesOverviewScreen() {
 
   useEffect(() => {
     const fetchStories = async () => {
-      let coverKidsUri = '';
-      try {
-        const coverKids = require('../../assets/images/coverImages/coverKids.jpg');
-        coverKidsUri = Image.resolveAssetSource(coverKids)?.uri ?? '';
-      } catch {
-        coverKidsUri = '';
-      }
-
       try {
         const data = await storyService.getStories();
         if (!data) {
           throw new Error('Der er ikke nogen historie');
         }
 
-        setStories(data.map((s) => ({ ...s, coverImageUrl: coverKidsUri })));
+        setStories(data);
       } catch {
         router.replace('/error?message=Internettet er vist forsvundet');
       } finally {

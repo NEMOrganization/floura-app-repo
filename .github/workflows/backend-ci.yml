@@ -68,8 +68,22 @@ jobs:
       # ----------------------------
       - name: Run tests with coverage
         run: |
-          dotnet test Tests/Floura.Tests/ --no-build --logger "trx;LogFileName=test_results.trx" \
-            /p:CollectCoverage=true /p:CoverletOutput=Tests/Floura.Tests/TestResults/coverage.xml /p:CoverletOutputFormat=cobertura
+          dotnet test Tests/Floura.Tests/Floura.Tests.csproj \
+          --no-build \
+          --logger "trx;LogFileName=test_results.trx" \
+          --results-directory Tests/Floura.Tests/TestResults \
+          --collect:"XPlat Code Coverage"
+
+      # ----------------------------
+      # 6b. Debug: Find coverage files (safe)
+      # ----------------------------
+      - name: Show coverage files
+        if: ${{ always() }}
+        run: |
+          echo "---- Coverage files found ----"
+          find . -type f \( -name "coverage.xml" -o -name "coverage.cobertura.xml" -o -name "*.cobertura.xml" \) -maxdepth 10 || true
+          echo "---- TestResults folders ----"
+          find . -type d -name "TestResults" -maxdepth 10 || true
 
       # ----------------------------
       # 7. Upload test results (safe)
@@ -88,9 +102,45 @@ jobs:
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-report
-          path: Tests/Floura.Tests/TestResults/coverage.xml
-
+          name: backend-coverage
+          path: Tests/Floura.Tests/TestResults/**/coverage.cobertura.xml
+          
+      # ----------------------------
+      # 8b. Upload coverage report (robust - safe)
+      # ----------------------------
+      - name: Upload coverage report (robust)
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-all
+          path: |
+            **/coverage.xml
+            **/coverage.cobertura.xml
+            **/*.cobertura.xml
+      # ----------------------------
+      # 8c. Generate HTML coverage report
+      # ----------------------------
+      - name: Install ReportGenerator
+        if: ${{ always() }}
+        run: |
+          dotnet tool install -g dotnet-reportgenerator-globaltool
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+          
+      - name: Generate HTML coverage report
+        if: ${{ always() }}
+        run: |
+          reportgenerator \
+          -reports:"Tests/Floura.Tests/TestResults/**/coverage.cobertura.xml" \
+          -targetdir:"coverage-report" \
+          -reporttypes:Html
+          
+      - name: Upload HTML coverage report
+        if: ${{ always() && hashFiles('coverage-report/**') != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-html
+          path: coverage-report
+          
       # ----------------------------
       # 9. Publish API for deploy
       # ----------------------------
