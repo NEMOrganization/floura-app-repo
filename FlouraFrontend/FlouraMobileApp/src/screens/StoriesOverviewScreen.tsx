@@ -48,7 +48,7 @@ export default function StoriesOverviewScreen() {
     <>
       <StatusBar style="dark" />
       <SafeAreaView style={styles.container} edges={['top']}>
-        <Title text="Historie oversigt" />
+        <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: '#432323', fontSize: 30}} />
 
         <Button 
         title="Opsæt påmindelser"
