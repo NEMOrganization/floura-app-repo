@@ -33,10 +33,9 @@ The frontend connects to the Floura backend API using a shared API client and fe
 
 EXPO_PUBLIC_API_URL="https://floura-api-asfmcdd6fdfkd4df.westeurope-01.azurewebsites.net/api"
 
-
-- All API requests go through `src/api/apiClient.ts`  
-- Feature services (like `storyService`) use the client  
-- Components call services, not `fetch()` directly  
+- All API requests go through `src/api/apiClient.ts`
+- Feature services (like `storyService`) use the client
+- Components call services, not `fetch()` directly
 
 A simple integration test verifies the app can successfully fetch data from the API:
 
@@ -73,18 +72,40 @@ This project uses ESLint and Prettier to ensure code quality and consistent form
 ### Running locally
 
 - Lint your code:
+
 ```bash
 npm run lint
 ```
 
+# Frontend CI Workflow
+
+The frontend CI workflow is implemented using GitHub Actions.
+
+## Workflow Responsibilities
+
+- Install dependencies using npm ci
+- Run ESLint to enforce code quality
+- Run Jest tests with code coverage enabled
+- Upload the HTML coverage report as a workflow artifact
+
+## Code Coverage
+
+Code coverage is generated using Jest and stored in the following location:
+
+```text
+coverage/lcov-report/index.html
+```
+
 ## Useful Scripts
 
-| Script                  | Description |
-|-------------------------|-------------|
-| `npm expo start`        | Starts Expo app |
-| `npm run lint`          | Runs ESLint to check code |
-| `npm run lint:fix`      | Auto-fixes lint issues |
-| `npm run format`        | Formats code using Prettier |
+| Script                  | Description                       |
+| ----------------------- | --------------------------------- |
+| `npm expo start`        | Starts Expo app                   |
+| `npm run lint`          | Runs ESLint to check code         |
+| `npm run lint:fix`      | Auto-fixes lint issues            |
+| `npm run format`        | Formats code using Prettier       |
 | `npm run reset-project` | Resets app to fresh project state |
 
+```
 
+```
