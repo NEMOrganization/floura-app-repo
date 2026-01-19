@@ -5,4 +5,5 @@ export const DEFAULT_STORY_BACKGROUND: ImageSourcePropType =
 
 export const STORY_BACKGROUNDS: Record<string, ImageSourcePropType> = {
     goodmorningFloura: require("../../assets/images/backgroundImages/goodmorning-background.jpg"),
+    goodnightFloura: require("../../assets/images/backgroundImages/FlouraNightCamping-background.jpg")
 };

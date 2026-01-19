@@ -2,12 +2,15 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 import { Story } from '../models/Story';
 
+import { STORY_COVER, DEFAULT_STORY_COVER_IMAGE, } from '../constants/storyCoverImage';
+
 interface StoryGridItemProps {
   story: Story;
   onPress?: (story: Story) => void;
 }
 export default function StoryGridTile({ story, onPress }: StoryGridItemProps) {
-  const hasImage = !!story.coverImageUrl;
+  const coverImage = 
+    STORY_COVER[story.coverImage?.trim() || ''] ?? DEFAULT_STORY_COVER_IMAGE;
 
   return (
     <TouchableOpacity
@@ -15,13 +18,8 @@ export default function StoryGridTile({ story, onPress }: StoryGridItemProps) {
       onPress={() => onPress?.(story)}
       activeOpacity={0.8}
     >
-      {hasImage ? (
-        <Image source={{ uri: story.coverImageUrl }} style={styles.image} />
-      ) : (
-        <View style={styles.imageFallback}>
-          <Text style={styles.fallbackText}>Ingen billede</Text>
-        </View>
-      )}
+    
+    <Image source={coverImage} style={styles.image}/>
 
       <View style={styles.titleContainer}>
         <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">

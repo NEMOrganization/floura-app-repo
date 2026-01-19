@@ -13,6 +13,8 @@ import Button from '../components/Button';
 
 import { useStories } from '../context/StoriesContext';
 
+import { STORY_COVER, DEFAULT_STORY_COVER_IMAGE, } from '../constants/storyCoverImage';
+
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
   const { upsertStory } = useStories();
@@ -27,30 +29,15 @@ export default function StoryDetailScreen() {
       return;
     }
     const fetchStory = async () => {
-      let coverKidsUri = '';
-      try {
-        const coverKids = require('../../assets/images/coverImages/coverKids.jpg');
-        coverKidsUri = Image.resolveAssetSource(coverKids)?.uri ?? '';
-      } catch {
-        coverKidsUri = '';
-      }
-
       try {
         const data = await storyService.getStoryById(storyId);
-
         if (!data) {
           throw new Error('Historien findes ikke');
         }
 
-        const storyWithCover: Story = {
-          ...data,
-          coverImageUrl: coverKidsUri,
-        };
-
-        setStory(storyWithCover);
-        upsertStory(storyWithCover);
+        setStory(data);
+        upsertStory(data);
       } catch {
-        //router.replace("/errorScreen?message=Historien gemmer sig");
         router.push('/errorScreen?message=Historien gemmer sig');
       } finally {
         setIsLoading(false);
@@ -60,11 +47,11 @@ export default function StoryDetailScreen() {
     fetchStory();
   }, [storyId, upsertStory]);
 
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
+  if (isLoading) { return <LoadingScreen />; }
   if (!story) return null;
+
+  const coverImage =
+    STORY_COVER[story.coverImage?.trim() || ''] ?? DEFAULT_STORY_COVER_IMAGE;
 
   return (
     <ScrollView
@@ -84,9 +71,11 @@ export default function StoryDetailScreen() {
       >
         <Text style={{ fontSize: 16, color: '#007AFF' }}>← Tilbage</Text>
       </TouchableOpacity>
+
       <Title text={story.title} 
-      style={{ color: '#432323', fontSize: 26}}/>
-      <StoryImage source={{ uri: story.coverImageUrl }} />
+      style={{ color: '#432323', fontSize: 26, textAlign: 'center'}}/>
+      
+      <Image source={coverImage} style={{ width: '100%', height: 250, borderRadius: 12, marginVertical: 16 }} resizeMode="contain" />
 
       <Summary text={story.summary} style={{ color: '#432323', fontSize: 22, textAlign: 'center' }} />
 
