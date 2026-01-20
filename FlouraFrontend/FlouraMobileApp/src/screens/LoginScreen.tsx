@@ -9,12 +9,11 @@ export default function LoginScreen() {
     const [ error, setError ] = useState<string | null>(null);
 
     const handleLogin = async () => {
-        setError(null); 
+        setError(null);
         try {
-            await signIn(email, password);
-
+            await signIn({ email, password });
         } catch (err: any) {
-            setError(err.message || "Login fejlede!");
+            setError(err.message || "Login fejlede");
         }
     };
 

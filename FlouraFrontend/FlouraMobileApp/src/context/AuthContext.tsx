@@ -7,7 +7,7 @@ import { LoginDTO } from "../api/dto/AuthDTO";
 type AuthContextType = {
     token: string | null;
     loading: boolean;
-    signIn: (credentials: LoginDTO) => Promise<void>;
+    signIn: (credentials: LoginDTO) => Promise<string>;
     signOut: () => Promise<void>;
 };
 
@@ -29,7 +29,7 @@ export function AuthProvider({ children }: Props) {
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-   useEffect(() => {
+    useEffect(() => {
         const loadToken = async () => {
             try {
                 const storedToken = await SecureStore.getItemAsync("userToken");
@@ -38,25 +38,37 @@ export function AuthProvider({ children }: Props) {
                     setToken(storedToken);
                 }
             } finally {
-            setLoading(false); 
+                setLoading(false); 
             }
         };
         loadToken();
     }, []);
+    
 
-    const signIn = async (email: string, password: string) => {
+    // 🔹 HACK: FORCE LOGOUT (sletter token og tvinger login) bruges ved at udkommentere ovenstående useEffect og bruge nedenstående i stedet <3
+/*     useEffect(() => {
+        const forceLogout = async () => {
+            console.log('🔥 FORCE LOGOUT HACK AKTIV');
+            await SecureStore.deleteItemAsync('userToken'); // 💥 slet gemt token
+            setToken(null);
+            setLoading(false);
+        };
+
+        forceLogout();
+    }, []); */
+
+    const signIn = async ({email, password}: LoginDTO) => {
         const { token } = await authService.login({ email, password });
-
-        console.log('Token received from API:', token);
-        
         await SecureStore.setItemAsync("userToken", token);
         setToken(token);
-    }
+        return token;
+    };
 
+    // 🔹 SIGN OUT
     const signOut = async () => {
         await SecureStore.deleteItemAsync("userToken");
         setToken(null);
-    }
+    };
 
     return (
         <AuthContext.Provider value={{ token, loading, signIn, signOut }}>
