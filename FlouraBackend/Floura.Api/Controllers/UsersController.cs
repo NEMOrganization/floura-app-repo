@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Floura.Api.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : Controller
     {
 

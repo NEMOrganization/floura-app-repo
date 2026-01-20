@@ -59,17 +59,22 @@ public class AuthController : ControllerBase
             new Claim(ClaimTypes.Email, user.Email),
         };
 
+        var keyString = _config["Jwt:Key"];
+        if (string.IsNullOrEmpty(keyString))
+            throw new Exception("JWT Key is missing in configuration");
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_config["Jwt:Key"])
+            Encoding.UTF8.GetBytes(keyString)
         );
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var expiresInMinutes = int.Parse(_config["Jwt:ExpiresInMinutes"]!);
 
         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpiresInMinutes"])),
+            expires: DateTime.UtcNow.AddMinutes(expiresInMinutes),
             signingCredentials: creds
         );
 

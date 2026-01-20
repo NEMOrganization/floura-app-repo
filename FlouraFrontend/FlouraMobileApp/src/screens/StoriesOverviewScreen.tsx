@@ -6,6 +6,7 @@ import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { useAuth } from '../context/AuthContext';
 
 import StoriesList from '../components/StoriesList';
 import LoadingScreen from './LoadingScreen';
@@ -18,25 +19,33 @@ export default function StoriesOverviewScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { token, loading } = useAuth();
 
   useEffect(() => {
+    if (loading) return;
+
+    console.log("Fetching stories with token:", token);
+
+
+    if (!token) {
+      router.replace('/(auth)/login');
+      return;
+    }
+
     const fetchStories = async () => {
-      try {
-        const data = await storyService.getStories();
-        if (!data) {
-          throw new Error('Der er ikke nogen historie');
-        }
+    try {
+      const data = await storyService.getStories(token); 
+      setStories(data);
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+      router.replace('/error?message=Der er sket en fejl ved hentning af historier');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-        setStories(data);
-      } catch {
-        router.replace('/error?message=Internettet er vist forsvundet');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchStories();
-  }, []);
+  fetchStories();
+}, [loading, token, router]);
 
   const handlePressStory = (story: Story) => {
     router.push({

@@ -7,6 +7,8 @@ import React from "react";
 export default function AppDrawerLayout() {
     const { token, loading } = useAuth();
 
+    console.log('Auth state:', { token, loading });
+
     if (loading) {
         return <LoadingScreen />;
     }

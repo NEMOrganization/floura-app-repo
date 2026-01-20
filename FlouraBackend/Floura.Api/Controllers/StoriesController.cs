@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Floura.Api.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class StoriesController : ControllerBase
     {
         private readonly IStoryService _storyService; 
