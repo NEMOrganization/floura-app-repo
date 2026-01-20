@@ -24,7 +24,7 @@ export default function StoriesOverviewScreen() {
   useEffect(() => {
     if (loading) return;
 
-    console.log("Fetching stories with token:", token);
+    console.log("Token length", token?.length, 'Token trimmed:', token?.trim());
 
 
     if (!token) {
@@ -34,7 +34,7 @@ export default function StoriesOverviewScreen() {
 
     const fetchStories = async () => {
     try {
-      const data = await storyService.getStories(token); 
+      const data = await storyService.getStories(token.trim()); 
       setStories(data);
     } catch (error) {
       console.error("Error fetching stories:", error);

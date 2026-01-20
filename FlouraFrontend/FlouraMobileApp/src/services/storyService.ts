@@ -28,12 +28,12 @@ function mapStory(dto: StoryDTO): Story {
 export const storyService = {
   getStories: async (token: string): Promise<Story[]> => {
     const headers = {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token.trim()}`,
     };
     console.log('StoryService headers:', headers);
 
     const stories = await apiClient.get<StoryDTO[]>('/Stories', headers);
-    
+
     return stories.map(mapStory);
   },
 
