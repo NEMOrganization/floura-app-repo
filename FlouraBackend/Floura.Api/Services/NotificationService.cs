@@ -20,7 +20,6 @@ namespace Floura.Api.Services
 
         public async Task<Notification> CreateAsync(Guid userId, CreateNotificationDto dto)
         {
-            // Eksempel på forretningsregel:
             // Kun én Morning og én Evening pr. bruger
             var existing = await _repository.GetByUserIdAsync(userId);
 
