@@ -59,10 +59,14 @@ export function AuthProvider({ children }: Props) {
     }, []); */
 
     const signIn = async ({email, password}: LoginDTO) => {
-        const { token } = await authService.login({ email, password });
-        await SecureStore.setItemAsync("userToken", token);
-        setToken(token);
-        return token;
+        try {
+            const { token } = await authService.login({ email, password });
+            setToken(token);
+            await SecureStore.setItemAsync("userToken", token);
+            return token;
+        } catch (err) {
+            throw err;
+        }
     };
 
     // 🔹 SIGN OUT

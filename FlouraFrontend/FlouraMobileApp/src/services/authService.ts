@@ -3,8 +3,11 @@ import { LoginDTO, RegisterDTO } from "../api/dto/AuthDTO";
 
 export const authService = {
     login: async (data: LoginDTO): Promise<{ token: string }> => {
-        console.log('Login body:', { email : data.email, password: data.password });
-        return apiClient.post("/auth/login", data);
+        try {
+            return await apiClient.post("/auth/login", data);
+        } catch (err: any) {
+            throw err.response?.data || err;    
+        }
     },
 
     register: async (data: RegisterDTO): Promise<{ token: string }> => {

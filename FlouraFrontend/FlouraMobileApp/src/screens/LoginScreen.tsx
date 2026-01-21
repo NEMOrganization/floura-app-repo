@@ -13,37 +13,35 @@ export default function LoginScreen() {
     const [ password, setPassword ] = useState("");
     const [ errorEmail, setErrorEmail ] = useState<string | null>(null);
     const [ errorPassword, setErrorPassword ] = useState<string | null>(null);
-    const [ generelError, setGenerelError ] = useState<string | null>(null);
     const [ loading, setLoading ] = useState(false);
+    const [ generelError, setGenerelError ] = useState<string | null>(null);
+
+    const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
     const handleLogin = async () => {
         setErrorEmail(null);
         setErrorPassword(null);
+        setGenerelError(null);
 
         let hasError = false;
 
-        if (!email) {
-            setErrorEmail("Email er påkrævet");
-            hasError = true;
-        }
-        if (!password) {
-            setErrorPassword("Adgangskode er påkrævet");
-            hasError = true;
-        }
+        if (!email) { setErrorEmail("Email er påkrævet"); hasError = true; }
+        if (!password) { setErrorPassword("Adgangskode er påkrævet"); hasError = true; }
+        if (email && !validateEmail(email)) { setErrorEmail("Indtast en gyldig email"); hasError = true; }
+
         if (hasError) return;
 
         setLoading(true);
-         try {
-            await signIn({ email, password });
-            router.replace("/");
+
+        try {
+            await signIn({email, password});
         } catch (err: any) {
-            if (err.response?.data?.field && err.response?.data?.message) {
-                const { field, message } = err.response.data;
-                if (field === "email") setErrorEmail(message);
-                if (field === "password") setErrorPassword(message);
+            if (err.field === "email") {
+                setErrorEmail(err.message);
+            } else if (err.field === "password") {
+                setErrorPassword(err.message);
             } else {
-                setErrorEmail("Login fejlede");
-                setErrorPassword("Login fejlede");
+                setGenerelError("Login fejlede");
             }
         } finally {
             setLoading(false);
@@ -81,7 +79,9 @@ export default function LoginScreen() {
                     error={errorPassword ?? undefined}
                 />
 
-                {generelError && <Text style={styles.error}>{generelError}</Text>}
+                {generelError && (
+                    <Text style={styles.error}>{generelError}</Text>
+        )}
 
                 <CustomButton
                     title={loading ? "Logger ind..." : "Login"}
@@ -90,17 +90,17 @@ export default function LoginScreen() {
                     disabled={loading}
                 />
 
-            <View style={styles.registerLink}>
-            <Text style={styles.switchText}>Har du ikke en konto?</Text>
-            <CustomButton
-                title="Opret dig her"
-                variant="text"
-                onPress={() => router.push("/(auth)/register")}
-            />
-            </View>
-        </ScrollView>
+                <View style={styles.registerLink}>
+                    <Text style={styles.switchText}>Har du ikke en konto?</Text>
+                    <CustomButton
+                        title="Opret dig her"
+                        variant="text"
+                        onPress={() => router.push("/(auth)/register")}
+                    />
+                </View>
+            </ScrollView>
         </KeyboardAvoidingView>
-  );
+    );
 }
 
 const styles = StyleSheet.create({
