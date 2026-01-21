@@ -24,7 +24,7 @@ export default function RegisterScreen() {
             setLoading(true);
             const { token } = await authService.register({ email, password });
             await signInWithToken(token);
-            Alert.alert("Succes", "Bruger oprettet. Du kan nu logge ind.");
+            Alert.alert("Succes", "Du er nu oprettet og logget ind.");
         } catch (error: any) {
             Alert.alert("Fejl", error.message || "Kunne ikke oprette bruger");
         } finally {
@@ -34,12 +34,13 @@ export default function RegisterScreen() {
 
     return (
         <View style={styles.container}>
-            <Title text="Opret Bruger" style={{ color: "#850E35", fontSize: 30 }} />
+            <Title text="Opret bruger" style={{ color: "#850E35", fontSize: 30 }} />
 
             <Input 
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
+                keyboardType="email-address"
                 autoCapitalize="none"
             />
 

@@ -26,7 +26,7 @@ export default function LoginScreen() {
     return (
         <View style={styles.container}>
 
-            <Title text="Log Ind" style={{ color: "#850E35", fontSize: 30 }}/>
+            <Title text="Log ind" style={{ color: "#850E35", fontSize: 30 }}/>
 
             <Input 
                 placeholder="Email"
