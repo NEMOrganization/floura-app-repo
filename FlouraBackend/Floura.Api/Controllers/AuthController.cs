@@ -46,8 +46,11 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login(LoginDto dto)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            return Unauthorized("Invalid credentials");
+        if (user == null)
+            return NotFound(new { field = "email", message = "Brugeren findes ikke" });
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+            return Unauthorized(new { field = "password", message = "Forkert adgangskode" });
 
         var token = CreateToken(user);
         return Ok(new { token });

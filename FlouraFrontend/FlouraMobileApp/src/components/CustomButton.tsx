@@ -19,7 +19,6 @@ export default function CustomButton({
     variant = "primary",
     style, 
     textStyle,
-
 }: ButtonProps) {
 
     const variantStyles: Record<string, {button: ViewStyle, text: TextStyle}> = {
@@ -54,7 +53,7 @@ export default function CustomButton({
             style={[styles.button, currentVariant.button, style, disabled && styles.disabled]}
             >
                 {loading ? (
-                    <ActivityIndicator testID="button-loader" />
+                    <ActivityIndicator testID="button-loader" color={currentVariant.text.color}/>
                 ) : (
                     <Text style={[styles.text, currentVariant.text, textStyle]}>{title}</Text>
                 )}
@@ -63,19 +62,15 @@ export default function CustomButton({
     }
 
     const styles = StyleSheet.create({
-        button: {
-            paddingVertical: 12,
-            paddingHorizontal: 24,
-            borderRadius: 20, 
+       button: {
+            paddingVertical: 14,
+            paddingHorizontal: 28,
+            borderRadius: 20,
             alignItems: "center",
             justifyContent: "center",
-            alignSelf: "center"
+            alignSelf: "center",
+            minWidth: 120,
         },
-        disabled: {
-            opacity: 0.5
-        },
-        text: {
-            fontWeight: "400",
-            fontSize: 18,
-        }
+        disabled: { opacity: 0.5 },
+        text: { fontWeight: "500", fontSize: 18 },
     });
