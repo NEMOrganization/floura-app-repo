@@ -9,6 +9,7 @@ type AuthContextType = {
     loading: boolean;
     signIn: (credentials: LoginDTO) => Promise<string>;
     signOut: () => Promise<void>;
+    signInWithToken: (token: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -70,8 +71,13 @@ export function AuthProvider({ children }: Props) {
         setToken(null);
     };
 
+    const signInWithToken = async (token: string) => {
+        await SecureStore.setItemAsync("userToken", token);
+        setToken(token);
+    }
+
     return (
-        <AuthContext.Provider value={{ token, loading, signIn, signOut }}>
+        <AuthContext.Provider value={{ token, loading, signIn, signOut, signInWithToken }}>
             {children}
         </AuthContext.Provider>
     );

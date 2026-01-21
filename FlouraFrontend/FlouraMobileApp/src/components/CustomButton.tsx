@@ -1,4 +1,3 @@
-// src/components/Button.tsx
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
@@ -7,12 +6,12 @@ interface ButtonProps {
   onPress?: () => void;
   disabled?: boolean;
   loading?: boolean;
-  variant?: "primary" | "secondary" | "third";
+  variant?: "primary" | "secondary" | "third" | "text";
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
 
-export default function Button({
+export default function CustomButton({
     title, 
     onPress,
     disabled = false, 
@@ -37,6 +36,10 @@ export default function Button({
         third: {
             button: {backgroundColor: "#BDD2B6"},
             text: {color: "#432323"}
+        },
+        text: {
+            button: {backgroundColor: "transparent"},
+            text: {color: "#850E35"}
         }
     };
 

@@ -70,7 +70,7 @@ export default function StoriesOverviewScreen() {
         ]} 
       />
 
-      <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: "#432323", fontSize: 30 }} />
+      <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: "#850E35", fontSize: 30 }} />
 
       <StoriesList items={stories} onPressStory={handlePressStory} />
     </SafeAreaView>

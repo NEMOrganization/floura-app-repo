@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { useRouter } from "expo-router";
 import errorImage from "../../assets/images/FlouraErrorScreenBasic.png";
-import Button from "../components/Button";
+import Button from "../components/CustomButton";
 
 type Props = {
   message?: string;

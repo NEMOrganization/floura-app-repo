@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { Text, View, TextInput, Button, StyleSheet} from "react-native";
+import { Text, View, StyleSheet} from "react-native";
 import { useAuth } from "../context/AuthContext";
 import { router } from "expo-router";
+
+import Title from "../components/Title";
+import Input from "../components/Input";
+import Button from "../components/CustomButton";
 
 export default function LoginScreen() {
     const { signIn } = useAuth();
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ error, setError ] = useState<string | null>(null);
+    const [ loading ] = React.useState(false);
 
     const handleLogin = async () => {
         setError(null);
@@ -20,34 +25,61 @@ export default function LoginScreen() {
 
     return (
         <View style={styles.container}>
-            <TextInput 
+
+            <Title text="Log Ind" style={{ color: "#850E35", fontSize: 30 }}/>
+
+            <Input 
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
-                style={styles.input}
                 keyboardType="email-address"
                 autoCapitalize="none"
             />
-            <TextInput 
+            <Input 
                 placeholder="Password"
                 value={password}
                 onChangeText={setPassword}
-                style={styles.input}
                 secureTextEntry
             />
-            <Button title="Login" onPress={handleLogin} />
-            {error && <Text>{error}</Text>}
+            {error && <Text style={styles.error}>{error}</Text>}
+
             <Button 
-                title="Opret Bruger"
-                onPress={() => router.replace("/(auth)/register")}
+                title={loading ? "Logger ind..." : "Login"} 
+                variant="third"
+                onPress={handleLogin}
+                disabled={loading} 
             />
 
+            <View style={styles.registerLink}>
+                <Text style={styles.switchText}>Har du ikke en konto?</Text>
+                <Button 
+                    title="Opret dig her"
+                    variant="text"
+                    onPress={() => router.push("/(auth)/register")}
+                />
+            </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
-  input: { borderWidth: 1, borderColor: "#ccc", padding: 10, marginBottom: 12, borderRadius: 6 },
-  error: { color: "red", marginTop: 10 },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 24,
+    backgroundColor: "#FCF9EA",
+  },
+  error: {
+    color: "#C0392B",
+    marginBottom: 12,
+    textAlign: "center",
+  },
+  registerLink: {
+    marginTop: 16,
+    alignItems: "center",
+  },
+  switchText: {
+    color: "#432323",
+    marginBottom: 4,
+  },
 });

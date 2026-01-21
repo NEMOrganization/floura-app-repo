@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LoadingScreen from './LoadingScreen';
 import Title from '../components/Title';
 import Summary from '../components/Summary';
-import Button from '../components/Button';
+import Button from '../components/CustomButton';
 import BackHeader from '../components/BackArrow';
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
@@ -72,7 +72,7 @@ export default function StoryDetailScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: '#FCF9EA',
+    backgroundColor: '#E3F2EA',
   },
   topSpacer: {
     // paddingTop styres dynamisk via insets
