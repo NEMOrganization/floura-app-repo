@@ -8,6 +8,6 @@ export const authService = {
     },
 
     register: async (data: RegisterDTO): Promise<{ token: string }> => {
-        return apiClient.post("auth/register", data);
+        return apiClient.post("/auth/register", data);
     }
 };

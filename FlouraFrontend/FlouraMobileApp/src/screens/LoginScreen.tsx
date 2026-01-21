@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Text, View, TextInput, Button, StyleSheet} from "react-native";
 import { useAuth } from "../context/AuthContext";
+import { router } from "expo-router";
 
 export default function LoginScreen() {
     const { signIn } = useAuth();
@@ -36,6 +37,10 @@ export default function LoginScreen() {
             />
             <Button title="Login" onPress={handleLogin} />
             {error && <Text>{error}</Text>}
+            <Button 
+                title="Opret Bruger"
+                onPress={() => router.replace("/(auth)/register")}
+            />
 
         </View>
     );

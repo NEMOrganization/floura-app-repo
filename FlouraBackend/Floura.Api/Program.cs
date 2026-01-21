@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-IdentityModelEventSource.ShowPII = true;
+//IdentityModelEventSource.ShowPII = true;
 
 builder.Logging.ClearProviders();
 
