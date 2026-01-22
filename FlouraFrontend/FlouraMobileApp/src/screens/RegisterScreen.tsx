@@ -50,7 +50,6 @@ export default function RegisterScreen() {
             setLoading(true);
             const { token } = await authService.register({ email, password });
             await signInWithToken(token);
-            router.replace('/');
         } catch (error: any) {
             Alert.alert("Fejl", error.message || "Kunne ikke oprette bruger");
         } finally {
