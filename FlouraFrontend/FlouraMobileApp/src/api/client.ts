@@ -14,6 +14,8 @@ async function request<T>(
 ): Promise<T> {
   const { method = 'GET', body, headers = {} } = options;
 
+  console.log('API REQUEST:', { url: `${BASE_URL}${path}`, method, body, headers });
+
   const response = await fetch(`${BASE_URL}${path}`, {
     method,
     headers: {
@@ -33,10 +35,13 @@ async function request<T>(
 }
 
 export const apiClient = {
-  get: <T>(path: string) => request<T>(path, { method: 'GET' }),
-  post: <T>(path: string, body: any) =>
-    request<T>(path, { method: 'POST', body }),
-  put: <T>(path: string, body: any) =>
-    request<T>(path, { method: 'PUT', body }),
-  delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
+  get: <T>(path: string, headers: Record<string, string> = {}) =>
+    request<T>(path, { method: 'GET', headers }),
+  post: <T>(path: string, body: any, headers: Record<string, string> = {}) =>
+    request<T>(path, { method: 'POST', body, headers }),
+  put: <T>(path: string, body: any, headers: Record<string, string> = {}) =>
+    request<T>(path, { method: 'PUT', body, headers }),
+  delete: <T>(path: string, headers: Record<string, string> = {}) =>
+    request<T>(path, { method: 'DELETE', headers }),
 };
+

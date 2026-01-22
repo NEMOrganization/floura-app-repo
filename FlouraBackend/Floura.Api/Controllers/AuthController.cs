@@ -37,15 +37,20 @@ public class AuthController : ControllerBase
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return Ok();
+        var token = CreateToken(user);
+
+        return Ok(new { token });
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginDto dto)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-        if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            return Unauthorized("Invalid credentials");
+        if (user == null)
+            return NotFound(new { field = "email", message = "Brugeren findes ikke" });
+
+        if (!BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+            return Unauthorized(new { field = "password", message = "Forkert adgangskode" });
 
         var token = CreateToken(user);
         return Ok(new { token });
@@ -59,17 +64,22 @@ public class AuthController : ControllerBase
             new Claim(ClaimTypes.Email, user.Email),
         };
 
+        var keyString = _config["Jwt:Key"];
+        if (string.IsNullOrEmpty(keyString))
+            throw new Exception("JWT Key is missing in configuration");
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_config["Jwt:Key"])
+            Encoding.UTF8.GetBytes(keyString)
         );
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var expiresInMinutes = int.Parse(_config["Jwt:ExpiresInMinutes"]!);
 
         var token = new JwtSecurityToken(
             issuer: _config["Jwt:Issuer"],
             audience: _config["Jwt:Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpiresInMinutes"])),
+            expires: DateTime.UtcNow.AddMinutes(expiresInMinutes),
             signingCredentials: creds
         );
 

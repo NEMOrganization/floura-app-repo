@@ -1,20 +1,16 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import * as SecureStore from "expo-secure-store";
 
+import { authService } from "../services/authService";
+import { LoginDTO } from "../api/dto/AuthDTO";
+
 type AuthContextType = {
     token: string | null;
     loading: boolean;
-    signIn: (email: string, password: string) => Promise<void>;
+    signIn: (credentials: LoginDTO) => Promise<string>;
     signOut: () => Promise<void>;
+    signInWithToken: (token: string) => Promise<void>;
 };
-
-/**
- * DEV ONLY
- * Hardcoded token to unblock navigation, drawer & routing.
- * REMOVE when real auth flow is implemented.
- */
-
-const DEV_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjYxNWI0MzU1LTY2YTYtNDRmZS05ODQ0LThkZDVhZGZjNDQ0NCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImVtbWFAdGVzdC5kayIsImV4cCI6MTc2ODU2NzUyMSwiaXNzIjoiRmxvdXJhQXBpIiwiYXVkIjoiRmxvdXJhQXBwIn0.XdLcYAW9ffbAOPRKjtRrQHbGxwtnsBE3qKfTakXLw6k";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -34,45 +30,58 @@ export function AuthProvider({ children }: Props) {
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-    /**
-     * Load token on app start
-     */
-
-   useEffect(() => {
+    useEffect(() => {
         const loadToken = async () => {
             try {
                 const storedToken = await SecureStore.getItemAsync("userToken");
-                if (storedToken) setToken(storedToken);
-                else if (__DEV__) setToken(DEV_TOKEN);
+
+                if (storedToken) {
+                    setToken(storedToken);
+                }
             } finally {
-            setLoading(false); // <-- loading=false først når token er klar
+                setLoading(false); 
             }
         };
         loadToken();
     }, []);
+    
 
-    /**
-     * DEV signIn 
-     * (real API login will replace this later)
-     */
+    // 🔹 HACK: FORCE LOGOUT (sletter token og tvinger login) bruges ved at udkommentere ovenstående useEffect og bruge nedenstående i stedet <3
+/*     useEffect(() => {
+        const forceLogout = async () => {
+            console.log('🔥 FORCE LOGOUT HACK AKTIV');
+            await SecureStore.deleteItemAsync('userToken'); // 💥 slet gemt token
+            setToken(null);
+            setLoading(false);
+        };
 
+        forceLogout();
+    }, []); */
 
-    const signIn = async (email: string, password: string) => {
-        await SecureStore.setItemAsync("userToken", DEV_TOKEN);
-        setToken(DEV_TOKEN);
+    const signIn = async ({email, password}: LoginDTO) => {
+        try {
+            const { token } = await authService.login({ email, password });
+            setToken(token);
+            await SecureStore.setItemAsync("userToken", token);
+            return token;
+        } catch (err) {
+            throw err;
+        }
     };
 
-    /**
-     * Sign out
-     */
-
+    // 🔹 SIGN OUT
     const signOut = async () => {
         await SecureStore.deleteItemAsync("userToken");
         setToken(null);
+    };
+
+    const signInWithToken = async (token: string) => {
+        await SecureStore.setItemAsync("userToken", token);
+        setToken(token);
     }
 
     return (
-        <AuthContext.Provider value={{ token, loading, signIn, signOut }}>
+        <AuthContext.Provider value={{ token, loading, signIn, signOut, signInWithToken }}>
             {children}
         </AuthContext.Provider>
     );

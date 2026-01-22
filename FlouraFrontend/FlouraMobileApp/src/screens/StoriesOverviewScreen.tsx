@@ -6,6 +6,7 @@ import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { useAuth } from '../context/AuthContext';
 
 import StoriesList from '../components/StoriesList';
 import LoadingScreen from './LoadingScreen';
@@ -18,32 +19,38 @@ export default function StoriesOverviewScreen() {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { token, loading } = useAuth();
 
   useEffect(() => {
+    if (loading) return;
+
+    if (!token) {
+      console.log('Ingen token, sender til login');
+      router.replace('/(auth)/login');
+      return;
+    }
+
+    console.log('Sender token til API:', token.trim());
+
     const fetchStories = async () => {
-      try {
-        const data = await storyService.getStories();
-        if (!data) {
-          throw new Error('Der er ikke nogen historie');
-        }
+    try {
+      const data = await storyService.getStories(token); 
+      setStories(data);
+    } catch (error) {
+      console.error("Error fetching stories:", error);
+      router.replace('/error?message=Der er sket en fejl ved hentning af historier');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-        setStories(data);
-      } catch {
-        router.replace('/error?message=Internettet er vist forsvundet');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchStories();
-  }, []);
+  fetchStories();
+}, [loading, token, router]);
 
   const handlePressStory = (story: Story) => {
-    router.push({
-      pathname: "/(routes)/stories/[storyId]", 
-      params: { storyId: story.id }
-    });
-  }
+    router.push(`/stories/${story.id}`);
+  };
+
 
   const handleToggleDrawer = () => {
     (navigation as any).toggleDrawer?.();
@@ -63,7 +70,7 @@ export default function StoriesOverviewScreen() {
         ]} 
       />
 
-      <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: "#432323", fontSize: 30 }} />
+      <Title text={"Flouras\n tandbørsteeventyr"} style={{ color: "#850E35", fontSize: 30 }} />
 
       <StoriesList items={stories} onPressStory={handlePressStory} />
     </SafeAreaView>
