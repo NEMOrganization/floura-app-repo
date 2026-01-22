@@ -1,4 +1,3 @@
-// src/components/Button.tsx
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
@@ -7,12 +6,12 @@ interface ButtonProps {
   onPress?: () => void;
   disabled?: boolean;
   loading?: boolean;
-  variant?: "primary" | "secondary" | "third";
+  variant?: "primary" | "secondary" | "third" | "text";
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
 
-export default function Button({
+export default function CustomButton({
     title, 
     onPress,
     disabled = false, 
@@ -20,7 +19,6 @@ export default function Button({
     variant = "primary",
     style, 
     textStyle,
-
 }: ButtonProps) {
 
     const variantStyles: Record<string, {button: ViewStyle, text: TextStyle}> = {
@@ -37,6 +35,10 @@ export default function Button({
         third: {
             button: {backgroundColor: "#BDD2B6"},
             text: {color: "#432323"}
+        },
+        text: {
+            button: {backgroundColor: "transparent"},
+            text: {color: "#850E35"}
         }
     };
 
@@ -51,7 +53,7 @@ export default function Button({
             style={[styles.button, currentVariant.button, style, disabled && styles.disabled]}
             >
                 {loading ? (
-                    <ActivityIndicator testID="button-loader" />
+                    <ActivityIndicator testID="button-loader" color={currentVariant.text.color}/>
                 ) : (
                     <Text style={[styles.text, currentVariant.text, textStyle]}>{title}</Text>
                 )}
@@ -60,19 +62,15 @@ export default function Button({
     }
 
     const styles = StyleSheet.create({
-        button: {
-            paddingVertical: 12,
-            paddingHorizontal: 24,
-            borderRadius: 20, 
+       button: {
+            paddingVertical: 14,
+            paddingHorizontal: 28,
+            borderRadius: 20,
             alignItems: "center",
             justifyContent: "center",
-            alignSelf: "center"
+            alignSelf: "center",
+            minWidth: 120,
         },
-        disabled: {
-            opacity: 0.5
-        },
-        text: {
-            fontWeight: "400",
-            fontSize: 18,
-        }
+        disabled: { opacity: 0.5 },
+        text: { fontWeight: "500", fontSize: 18 },
     });

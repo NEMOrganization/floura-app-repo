@@ -1,14 +1,13 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
-import Button from '../src/components/Button';
+import CustomButton from '../src/components/CustomButton';
 
 
-describe("Button", () => {
+describe("CustomButton", () => {
     
     it("Shows title", () => {
         // arrange
-        const { getByText } = render(<Button title="Click me" />);
-
+        const { getByText } = render(<CustomButton title="Click me" />);
         // assert
         expect(getByText("Click me")).toBeTruthy();
     });
@@ -16,7 +15,7 @@ describe("Button", () => {
     it("Calls onPress when button is pressed", () => {
         // arrange
         const onPress = jest.fn();
-        const { getByText } = render(<Button title="Click" onPress={onPress} />);
+        const { getByText } = render(<CustomButton title="Click" onPress={onPress} />);
 
         // act
         fireEvent.press(getByText("Click"));
@@ -29,7 +28,7 @@ describe("Button", () => {
         // arrange
         const onPress = jest.fn();
         const { getByText } = render(
-        <Button title="Disabled" onPress={onPress} disabled />);
+        <CustomButton title="Disabled" onPress={onPress} disabled />);
 
         // act
         fireEvent.press(getByText("Disabled"));
@@ -40,7 +39,7 @@ describe("Button", () => {
 
     it("Shows loading when loading=true", () => {
         // arrange
-        const { getByTestId } = render(<Button title="Load" loading />);
+        const { getByTestId } = render(<CustomButton title="Load" loading />);
 
         // assert
         expect(getByTestId("button-loader")).toBeTruthy();
@@ -48,7 +47,7 @@ describe("Button", () => {
 
     it("Hides title when loading=true", () => {
         // arrange
-        const { queryByText } = render(<Button title="Load" loading />);
+        const { queryByText } = render(<CustomButton title="Load" loading />);
 
         // assert
         expect(queryByText("Load")).toBeNull();
@@ -56,7 +55,7 @@ describe("Button", () => {
 
     it("Uses correct style variant (primary)", () => {
         // arrange
-        const { getByTestId } = render(<Button title="Test" variant="primary" />);
+        const { getByTestId } = render(<CustomButton title="Test" variant="primary" />);
         const wrapper = getByTestId("button-wrapper");
 
         // assert
@@ -65,7 +64,7 @@ describe("Button", () => {
 
     it("Has accessibilityRole='button'", () => {
         // arrange
-        const { getByRole } = render(<Button title="Acc" />);
+        const { getByRole } = render(<CustomButton title="Acc" />);
 
         // assert
         expect(getByRole("button")).toBeTruthy();

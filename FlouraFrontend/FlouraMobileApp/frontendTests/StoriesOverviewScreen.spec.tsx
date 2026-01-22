@@ -4,6 +4,13 @@ import StoriesOverviewScreen from '../src/screens/StoriesOverviewScreen';
 import { storyService } from '../src/services/storyService';
 import StoriesList from '../src/components/StoriesList';
 
+jest.mock('../src/context/AuthContext', () => ({
+  useAuth: () => ({
+    token: 'fake-token',
+    loading: false,
+  }),
+}));
+
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaProvider: ({ children }: any) => children,
   SafeAreaView: ({ children }: any) => children,
