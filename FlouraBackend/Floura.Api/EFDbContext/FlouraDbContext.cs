@@ -12,5 +12,6 @@ public class FlouraDbContext : DbContext
     public DbSet<StoryBits> StoryBits { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<Child> children { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
 
 }

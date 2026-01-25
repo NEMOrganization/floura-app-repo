@@ -30,6 +30,10 @@ async function request<T>(
     throw new Error(`API request failed: ${response.status} ${errorText}`);
   }
 
+  if (response.status === 204) {
+    return {} as T;
+  }
+
   const data: T = await response.json();
   return data;
 }

@@ -1,19 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Platform,
-  Alert,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, FlatList, Alert, StyleSheet, TouchableOpacity, Platform} from 'react-native';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
+import { useAuth } from '../context/AuthContext';
 import BackArrow from '../../src/components/BackArrow';
+import { Notification, NotificationType, createNotification, deleteNotification, getUserNotifications, } from '../services/notificationService';
+import NotificationItem from '../components/NotificationItem';
 
-// Opsæt notifikation handler
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -24,73 +18,145 @@ Notifications.setNotificationHandler({
   }),
 });
 
-const ReminderSettingsScreen = () => {
-  const [time, setTime] = useState(new Date());
-  const [showPicker, setShowPicker] = useState(false);
+export default function ReminderSettingsScreen() {
+  const router = useRouter();
+  const { token } = useAuth();
+
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [morningTime, setMorningTime] = useState(new Date());
+  const [eveningTime, setEveningTime] = useState(new Date());
+  const [showMorningPicker, setShowMorningPicker] = useState(false);
+  const [showEveningPicker, setShowEveningPicker] = useState(false);
+
+  // Hent notifikationer fra backend
+  const loadNotifications = useCallback (async () => {
+    if (!token) return;
+
+    try {
+      const data = await getUserNotifications(token);
+      setNotifications(data);
+
+      // Sæt tid til eksisterende notifikationer
+      const morning = data.find((n) => n.type === 0);
+      const evening = data.find((n) => n.type === 1);
+
+      if (morning) setMorningTime(new Date(morning.time));
+      if (evening) setEveningTime(new Date(evening.time));
+    } catch (err) {
+      console.log('Kunne ikke hente notifikationer', err);
+    }
+  }, [token]);
 
   useEffect(() => {
-    loadReminderTime();
-    requestNotificationPermission();
-  }, []);
+    loadNotifications();
+  }, [loadNotifications]);
 
+  // Bed om notifikationstilladelse
   const requestNotificationPermission = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert(
         'Tillad notifikationer',
-        'Vi har brug for tilladelse til at sende påmindelser! 🪥',
+        'Vi har brug for tilladelse til at sende påmindelser! 🪥'
       );
     }
   };
 
-  const loadReminderTime = async () => {
-    const json = await AsyncStorage.getItem('reminderTime');
-    if (json) {
-      const savedTime = new Date(JSON.parse(json));
-      setTime(savedTime);
-    }
-  };
+  useEffect(() => {
+    requestNotificationPermission();
+  }, []);
 
-  const saveReminderTime = async (selectedTime: Date) => {
-    await AsyncStorage.setItem('reminderTime', JSON.stringify(selectedTime));
-  };
-
-  const scheduleDailyReminder = async (selectedTime: Date) => {
+  // Planlæg daglig lokal notifikation
+  const scheduleDailyNotification = async (
+    time: Date,
+    title: string,
+    body: string
+  ) => {
     await Notifications.cancelAllScheduledNotificationsAsync();
-
-    const hour = selectedTime.getHours();
-    const minute = selectedTime.getMinutes();
 
     const trigger: Notifications.CalendarTriggerInput = {
       type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
+      hour: time.getHours(),
+      minute: time.getMinutes(),
       repeats: true,
-      hour,
-      minute,
     };
 
     await Notifications.scheduleNotificationAsync({
-      content: {
-        title: 'Tid til tandbørstning! 🪥',
-        body: 'Husk at børste tænderne nu! 😁',
-        sound: true,
-      },
+      content: { title, body, sound: true },
       trigger,
     });
-
-    Alert.alert(
-      'Påmindelse gemt!',
-      `Du vil blive mindet hver dag kl. ${hour}:${minute.toString().padStart(2, '0')}`,
-    );
   };
 
-  const onChange = (event: any, selectedDate?: Date) => {
-    setShowPicker(Platform.OS === 'ios');
-    if (selectedDate) setTime(selectedDate);
+  const handleCreate = async (type: NotificationType) => {
+    if (!token) return;
+
+    const exists = notifications.find((n) => n.type === type);
+    if (exists) {
+      Alert.alert('Info', 'Du har allerede en notifikation for dette tidspunkt.');
+      return;
+    }
+
+    const time = type === 0 ? morningTime : eveningTime;
+
+    try {
+      await createNotification(
+        { time: time.toISOString(), type },
+        token
+      );
+
+      await scheduleDailyNotification(
+        time,
+        type === 0 ? 'Morgenpåmindelse' : 'Aftenpåmindelse',
+        'Tid til at børste tænder! 🪥'
+      );
+
+      await loadNotifications();
+
+      // Luk DateTimePicker
+      if (type === 0) setShowMorningPicker(false);
+      else setShowEveningPicker(false);
+
+      Alert.alert(
+        'Påmindelse gemt!',
+        `Du vil blive mindet hver dag kl. ${time.getHours()}:${time
+          .getMinutes()
+          .toString()
+          .padStart(2, '0')}`
+      );
+    } catch {
+      Alert.alert('Fejl', 'Kunne ikke gemme påmindelsen 😢');
+    }
   };
 
-  const saveReminder = async () => {
-    await saveReminderTime(time);
-    await scheduleDailyReminder(time);
+  const handleDelete = async (id: string) => {
+    if (!token) return;
+    try {
+      await deleteNotification(id, token);
+      await loadNotifications();
+      Alert.alert('Påmindelse slettet');
+    } catch {
+      Alert.alert('Fejl', 'Kunne ikke slette påmindelsen 😢');
+    }
+  };
+
+  const onMorningChange = (pickerEvent: DateTimePickerEvent, selectedDate?: Date) => {
+    if (pickerEvent.type === 'dismissed') {
+      setShowMorningPicker(false);
+      return;
+    }
+
+    setShowMorningPicker(Platform.OS === 'ios');
+    if (selectedDate) setMorningTime(selectedDate);
+  };
+
+  const onEveningChange = (pickerEvent: DateTimePickerEvent, selectedDate?: Date) => {
+    if (pickerEvent.type === 'dismissed') {
+    setShowEveningPicker(false);
+    return;
+  }
+
+    setShowEveningPicker(Platform.OS === 'ios');
+    if (selectedDate) setEveningTime(selectedDate);
   };
 
   const handleBack = () => router.back();
@@ -100,100 +166,119 @@ const ReminderSettingsScreen = () => {
       <View style={styles.backButton}>
         <BackArrow onBack={handleBack} />
       </View>
-      {/* Tidspicker knap */}
-      <View style={styles.content}>
-        <Text style={styles.label}>Vælg tidspunkt for tandbørstning ⏰</Text>
+
+      <Text style={styles.header}>Påmindelser</Text>
+
+    {/* Morgen */}
+<View style={styles.section}>
+  <Text style={styles.label}>Morgenpåmindelse</Text>
+
+  <TouchableOpacity
+    style={styles.timeButton}
+    onPress={() => setShowMorningPicker(true)}
+  >
+    <Text style={styles.timeText}>
+      {morningTime.getHours()}:
+      {morningTime.getMinutes().toString().padStart(2, '0')}
+    </Text>
+  </TouchableOpacity>
+ 
+  {showMorningPicker && (
+    <>
+      <DateTimePicker
+        value={morningTime}
+        mode="time"
+        is24Hour={true}
+        display="spinner"
+        onChange={onMorningChange}
+      />
+
+      <TouchableOpacity
+        style={styles.cancelButton}
+        onPress={() => setShowMorningPicker(false)}
+      >
+        <Text style={styles.cancelText}>Annuller</Text>
+      </TouchableOpacity>
+    </>
+  )}
+
+  <TouchableOpacity
+    style={[styles.button, { backgroundColor: '#FFD6E0' }]}
+    onPress={() => handleCreate(0)}
+  >
+    <Text style={styles.buttonText}>Gem påmindelse</Text>
+  </TouchableOpacity>
+</View>
+
+
+      {/* Aften */}
+      <View style={styles.section}>
+        <Text style={styles.label}>Aftenpåmindelse</Text>
+
         <TouchableOpacity
           style={styles.timeButton}
-          onPress={() => setShowPicker(true)}
+          onPress={() => setShowEveningPicker(true)}
         >
-          <Text style={styles.timeButtonText}>
-            {time.getHours()}:{time.getMinutes().toString().padStart(2, '0')}
+          <Text style={styles.timeText}>
+            {eveningTime.getHours()}:{eveningTime.getMinutes().toString().padStart(2, '0')}
           </Text>
         </TouchableOpacity>
-        {showPicker && (
-          <View style={styles.pickerContainer}>
-            <DateTimePicker
-              value={time}
-              mode="time"
-              display="spinner"
-              onChange={onChange}
-            />
-          </View>
-        )}
-        {/* Gem påmindelse */}
-        <TouchableOpacity style={styles.saveButton} onPress={saveReminder}>
-          <Text style={styles.saveButtonText}>Gem påmindelse</Text>
+
+        {showEveningPicker && (
+          <>
+          <DateTimePicker
+            value={eveningTime}
+            mode="time"
+            is24Hour={true}
+            display="spinner"
+            onChange={onEveningChange}
+          />
+
+          <TouchableOpacity
+        style={styles.cancelButton}
+        onPress={() => setShowEveningPicker(false)}
+      >
+        <Text style={styles.cancelText}>Annuller</Text>
+      </TouchableOpacity>
+    </>
+    )}
+        <TouchableOpacity
+          style={[styles.button, { backgroundColor: '#AAC4F5' }]}
+          onPress={() => handleCreate(1)}
+        >
+          <Text style={styles.buttonText}>Gem påmindelse</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Liste af notifikationer */}
+      <FlatList
+        data={notifications}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <NotificationItem notification={item} onDelete={handleDelete} />
+        )}
+        style={{ marginTop: 20 }}
+      />
     </View>
   );
-};
-
-export default ReminderSettingsScreen;
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 45,
-    paddingHorizontal: 20,
-    backgroundColor: '#E8F5E9',
-  },
-  backButton: {
-    alignSelf: 'flex-start',
-    marginBottom: 16,
-      marginLeft: -15,
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  label: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 20,
-    color: '#432323',
-    textAlign: 'center',
-  },
-  timeButton: {
-    backgroundColor: '#F5AFAF',
-    paddingVertical: 15,
-    paddingHorizontal: 50,
-    borderRadius: 20,
-    marginBottom: 50,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  timeButtonText: {
-    fontSize: 18,
-    color: '#fff',
-    fontWeight: '600',
-  },
-  pickerContainer: {
-    backgroundColor: '#C8E6C9',
-    borderRadius: 20,
-    padding: 10,
-    marginBottom: 30,
-  },
-  saveButton: {
-    backgroundColor: '#F5AFAF',
-    paddingVertical: 15,
-    paddingHorizontal: 50,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-    elevation: 5,
-  },
-  saveButtonText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#fff',
-    textAlign: 'center',
-  },
+  container: { flex: 1, padding: 20, backgroundColor: '#FFF8DE' },
+  backButton: { marginBottom: 10 },
+  header: { fontSize: 28, color: '#432323', textAlign: 'center', marginBottom: 20, fontFamily: 'Roboto', },
+  section: { marginBottom: 25, padding: 15, backgroundColor: '#F5EFE6', borderRadius: 20, shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 5 },
+  label: { fontSize: 18, fontWeight: '500', color: '#432323', marginBottom: 20, fontFamily: 'Roboto', textAlign: 'center' },
+  timeButton: { padding: 12, borderRadius: 12, backgroundColor: '#E8DFCA', alignItems: 'center', marginBottom: 5 },
+  timeText: { fontSize: 16, fontWeight: '500' },
+  button: { padding: 10, borderRadius: 30, alignItems: 'center', marginTop: 5 },
+  buttonText: { color: '#432323', fontWeight: '600', fontFamily: 'Roboto' },
+  cancelButton: { marginTop: 10, alignSelf: 'center', marginBottom: 10 },
+  cancelText: { color: '#BB6653', fontSize: 20, },
 });
+
+
+
+
+
+
