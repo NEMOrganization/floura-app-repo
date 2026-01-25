@@ -20,22 +20,17 @@ namespace Floura.Api.Services
 
         public async Task<Notification> CreateAsync(Guid userId, CreateNotificationDto dto)
         {
+            // Kun én Morning og én Evening pr. bruger
             var existing = await _repository.GetByUserIdAsync(userId);
 
             if (existing.Any(n => n.Type == dto.Type))
                 throw new InvalidOperationException("Notification type already exists");
 
-            // Parse tiden til DateTime med i dag som dato
-            var timeParts = dto.Time.Split(':');
-            var hour = int.Parse(timeParts[0]);
-            var minute = int.Parse(timeParts[1]);
-            var dateTime = DateTime.Today.AddHours(hour).AddMinutes(minute);
-
             var notification = new Notification
             {
                 Id = Guid.NewGuid(),
                 UserId = userId,
-                Time = dateTime,
+                Time = dto.Time,
                 Type = dto.Type,
                 IsEnabled = true
             };
@@ -43,8 +38,6 @@ namespace Floura.Api.Services
             await _repository.AddAsync(notification);
             return notification;
         }
-
-
         public async Task ToggleAsync(Guid notificationId, bool isEnabled)
         {
             var notification = await _repository.GetByIdAsync(notificationId);

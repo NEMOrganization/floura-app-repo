@@ -15,7 +15,7 @@ namespace Floura.Core.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; } = Guid.NewGuid();
 
-        public TimeSpan Time { get; set; }
+        public DateTime Time { get; set; }
 
         public bool IsEnabled { get; set; }
 

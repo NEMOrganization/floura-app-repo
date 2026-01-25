@@ -28,7 +28,6 @@ namespace Floura.Core.Models
         public ICollection<Notification> Notifications { get; set; }
 
 
-
         public User()
         {
 

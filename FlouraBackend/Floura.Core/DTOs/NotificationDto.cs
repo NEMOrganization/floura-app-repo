@@ -10,7 +10,7 @@ namespace Floura.Core.DTOs
     public class NotificationDto
     {
         public Guid Id { get; set; }
-        public string Time { get; set; }
+        public DateTime Time { get; set; }
         public bool IsEnabled { get; set; }
         public NotificationType Type { get; set; }
     }
