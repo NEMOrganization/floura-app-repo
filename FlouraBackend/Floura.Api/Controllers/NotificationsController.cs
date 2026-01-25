@@ -2,6 +2,7 @@
 using Floura.Core.Models;
 using Floura.Core.Models.Enums;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -10,6 +11,7 @@ namespace Floura.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("MyAllowSpecificOrigins")]
     [Authorize]
     public class NotificationsController : ControllerBase
     {
@@ -41,13 +43,6 @@ namespace Floura.Api.Controllers
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
-
-            // Tjek om brugeren allerede har denne type
-            var exists = await _context.Notifications.AnyAsync(n =>
-                n.UserId == Guid.Parse(userId) && n.Type == dto.Type);
-
-            if (exists)
-                return BadRequest("Notification type already exists");
 
             var notification = new Notification
             {
