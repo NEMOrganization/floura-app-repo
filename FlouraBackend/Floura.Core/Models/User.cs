@@ -25,7 +25,7 @@ namespace Floura.Core.Models
         [Required]
         public Language Language { get; set; }
 
-        public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
 
         public User()

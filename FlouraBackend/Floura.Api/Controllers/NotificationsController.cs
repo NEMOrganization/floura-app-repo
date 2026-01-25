@@ -66,8 +66,14 @@ namespace Floura.Api.Controllers
             var notification = await _context.Notifications.FindAsync(id);
             if (notification == null) return NotFound();
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (notification.UserId != Guid.Parse(userId)) return Forbid();
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Forbid();
+            }
+
+            var userId = Guid.Parse(userIdString);
+            if (notification.UserId != userId) return Forbid();
 
             notification.IsEnabled = !notification.IsEnabled;
             await _context.SaveChangesAsync();
@@ -82,8 +88,14 @@ namespace Floura.Api.Controllers
             var notification = await _context.Notifications.FindAsync(id);
             if (notification == null) return NotFound();
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (notification.UserId != Guid.Parse(userId)) return Forbid();
+            var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdString))
+            {
+                return Forbid();
+            }
+
+            var userId = Guid.Parse(userIdString);
+            if (notification.UserId != userId) return Forbid();
 
             _context.Notifications.Remove(notification);
             await _context.SaveChangesAsync();
