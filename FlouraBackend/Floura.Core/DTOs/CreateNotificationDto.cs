@@ -9,7 +9,7 @@ namespace Floura.Core.DTOs
 {
     public class CreateNotificationDto
     {
-        public DateTime Time { get; set; }
+        public string Time { get; set; }
         public NotificationType Type { get; set; }
     }
 

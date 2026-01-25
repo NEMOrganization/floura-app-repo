@@ -1,6 +1,7 @@
 import { apiClient } from '../api/client';
+import * as Notifications from 'expo-notifications';
 
-export type NotificationType = "Morning" | "Evening";
+export type NotificationType = 0 | 1;
 
 export interface Notification {
   id: string;
@@ -41,3 +42,17 @@ export const deleteNotification = async (id: string, token: string) => {
     Authorization: `Bearer ${token}`,
   });
 };
+
+export async function scheduleDailyNotification(time: Date, title: string, body: string) {
+  const trigger: Notifications.CalendarTriggerInput = {
+    type: Notifications.SchedulableTriggerInputTypes.CALENDAR, // her bruger vi enum fra expo
+    hour: time.getHours(),
+    minute: time.getMinutes(),
+    repeats: true,
+  };
+
+  await Notifications.scheduleNotificationAsync({
+    content: { title, body },
+    trigger,
+  });
+}

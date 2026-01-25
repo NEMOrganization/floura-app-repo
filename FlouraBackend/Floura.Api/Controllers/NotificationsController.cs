@@ -31,10 +31,19 @@ namespace Floura.Api.Controllers
 
             var notifications = await _context.Notifications
                 .Where(n => n.UserId == Guid.Parse(userId))
-                .OrderByDescending(n => n.Time)
+                .OrderBy(n => n.Time)
                 .ToListAsync();
 
-            return Ok(notifications);
+            // Return DTO med Time som "HH:mm"
+            var dtoList = notifications.Select(n => new NotificationDto
+            {
+                Id = n.Id,
+                Type = n.Type,
+                Time = n.Time.ToString(@"hh\:mm"), // fx "06:30"
+                IsEnabled = n.IsEnabled
+            }).ToList();
+
+            return Ok(dtoList);
         }
 
         // POST: api/notifications
@@ -44,10 +53,21 @@ namespace Floura.Api.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null) return Unauthorized();
 
+            // Konverter tid fra "HH:mm" til TimeSpan
+            if (!TimeSpan.TryParse(dto.Time, out TimeSpan time))
+                return BadRequest("Invalid time format. Expected HH:mm");
+
+            // Tjek om brugeren allerede har en notifikation af denne type
+            var exists = await _context.Notifications
+                .AnyAsync(n => n.UserId == Guid.Parse(userId) && n.Type == dto.Type);
+
+            if (exists)
+                return BadRequest("Du har allerede en notifikation af denne type.");
+
             var notification = new Notification
             {
                 UserId = Guid.Parse(userId),
-                Time = dto.Time,
+                Time = time,
                 Type = dto.Type,
                 IsEnabled = true
             };
@@ -55,9 +75,16 @@ namespace Floura.Api.Controllers
             _context.Notifications.Add(notification);
             await _context.SaveChangesAsync();
 
-            return Ok(notification);
-        }
+            var resultDto = new NotificationDto
+            {
+                Id = notification.Id,
+                Type = notification.Type,
+                Time = notification.Time.ToString(@"hh\:mm"),
+                IsEnabled = notification.IsEnabled
+            };
 
+            return Ok(resultDto);
+        }
 
         // PATCH: api/notifications/{id}/toggle
         [HttpPatch("{id}/toggle")]
@@ -72,7 +99,15 @@ namespace Floura.Api.Controllers
             notification.IsEnabled = !notification.IsEnabled;
             await _context.SaveChangesAsync();
 
-            return Ok(notification);
+            var resultDto = new NotificationDto
+            {
+                Id = notification.Id,
+                Type = notification.Type,
+                Time = notification.Time.ToString(@"hh\:mm"),
+                IsEnabled = notification.IsEnabled
+            };
+
+            return Ok(resultDto);
         }
 
         // DELETE: api/notifications/{id}
@@ -91,6 +126,6 @@ namespace Floura.Api.Controllers
             return NoContent();
         }
     }
-
 }
+
 
