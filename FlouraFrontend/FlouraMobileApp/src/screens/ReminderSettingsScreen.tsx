@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, Text, FlatList, Alert, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
@@ -29,8 +29,9 @@ export default function ReminderSettingsScreen() {
   const [showEveningPicker, setShowEveningPicker] = useState(false);
 
   // Hent notifikationer fra backend
-  const loadNotifications = async () => {
+  const loadNotifications = useCallback (async () => {
     if (!token) return;
+
     try {
       const data = await getUserNotifications(token);
       setNotifications(data);
@@ -44,11 +45,11 @@ export default function ReminderSettingsScreen() {
     } catch (err) {
       console.log('Kunne ikke hente notifikationer', err);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
-    if (token) loadNotifications();
-  }, [token]);
+    loadNotifications();
+  }, [loadNotifications]);
 
   // Bed om notifikationstilladelse
   const requestNotificationPermission = async () => {
@@ -122,7 +123,7 @@ export default function ReminderSettingsScreen() {
           .toString()
           .padStart(2, '0')}`
       );
-    } catch (err) {
+    } catch {
       Alert.alert('Fejl', 'Kunne ikke gemme påmindelsen 😢');
     }
   };
@@ -133,7 +134,7 @@ export default function ReminderSettingsScreen() {
       await deleteNotification(id, token);
       await loadNotifications();
       Alert.alert('Påmindelse slettet');
-    } catch (err) {
+    } catch {
       Alert.alert('Fejl', 'Kunne ikke slette påmindelsen 😢');
     }
   };
