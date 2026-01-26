@@ -7,13 +7,16 @@ import LoadingScreen from './LoadingScreen';
 import Title from '../components/Title';
 import Summary from '../components/Summary';
 import Button from '../components/CustomButton';
-import BackHeader from '../components/BackArrow';
+import BackHeader from '../components/BackHeader';
 import { storyService } from '../services/storyService';
 import { Story } from '../models/Story';
 import { useStories } from '../context/StoriesContext';
 import { useAuth } from '../context/AuthContext';
 
-import { STORY_COVER, DEFAULT_STORY_COVER_IMAGE } from '../constants/storyCoverImage';
+import {
+  STORY_COVER,
+  DEFAULT_STORY_COVER_IMAGE,
+} from '../constants/storyCoverImage';
 
 export default function StoryDetailScreen() {
   const { storyId } = useLocalSearchParams<{ storyId: string }>();
@@ -35,7 +38,9 @@ export default function StoryDetailScreen() {
         upsertStory(data);
       } catch (error) {
         console.error(error);
-        router.replace(`/error?message=${encodeURIComponent('Historien findes ikke')}`);
+        router.replace(
+          `/error?message=${encodeURIComponent('Historien findes ikke')}`,
+        );
       } finally {
         setIsLoading(false);
       }
@@ -47,15 +52,25 @@ export default function StoryDetailScreen() {
   if (isLoading || authLoading) return <LoadingScreen />;
   if (!story) return null;
 
-  const coverImage = STORY_COVER[story.coverImage?.trim() || ''] ?? DEFAULT_STORY_COVER_IMAGE;
+  const coverImage =
+    STORY_COVER[story.coverImage?.trim() || ''] ?? DEFAULT_STORY_COVER_IMAGE;
 
   return (
     <View style={styles.screen}>
-      <View style={[styles.topSpacer, { paddingTop: Math.max(insets.top - 12, 8) }]} />
+      <View
+        style={[styles.topSpacer, { paddingTop: Math.max(insets.top - 12, 8) }]}
+      />
       <BackHeader onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={[styles.scrollContent]} contentInsetAdjustmentBehavior="never">
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent]}
+        contentInsetAdjustmentBehavior="never"
+      >
         <Title text={story.title} style={styles.title} />
-        <Image source={coverImage} style={styles.coverImage} resizeMode="contain" />
+        <Image
+          source={coverImage}
+          style={styles.coverImage}
+          resizeMode="contain"
+        />
         <Summary text={story.summary} style={styles.summary} />
         <View style={styles.buttonContainer}>
           <Button
@@ -102,4 +117,3 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
 });
-
